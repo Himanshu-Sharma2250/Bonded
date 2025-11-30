@@ -1,31 +1,39 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken"
+import { User } from "../models/user.model.js";
 
-export const auth = async (req, res, next) => {
-    // get the cookie from the req
-    // using jwt 
+export const verifyJWT = async (req, res, next) => {
+    // get the token from the cookie and then verify it 
+    // get the user and the assign the user to req.user
+    const token = req.cookies?.AccessToken || req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized request"
+        })
+    }
+
     try {
-        let token = req.cookies.AccessToken || "";
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET );
 
-        console.log("Token Cookie is : ", token);
+        const user = await User.findById(decodedToken?._id).select(
+            "-password -refreshToken -emailVerificationToken, -emailVerificationExpiry"
+        );
 
-        if (!token) {
+        if (!user) {
             return res.status(400).json({
-                success: false,
-                message: "Authetication Failed"
+                success: true,
+                message: "Invalid Access Token"
             })
         }
 
-        const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded Data : ", decoded);
-
-        req.user = decoded;
-
+        req.user = user;
         next();
     } catch (error) {
-        console.error("Authentication Error - ", error);
+        console.error("Error in verifyJWT: ", error);
         res.status(500).json({
             success: false,
-            message: "Authetication Error"
+            message: "Invalid access token"
         })
     }
-};
+}

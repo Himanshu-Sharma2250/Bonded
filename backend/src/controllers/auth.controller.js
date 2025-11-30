@@ -1,281 +1,257 @@
-import {User} from "../model/user.model.js";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv"
 
-import {registerUserSchema, loginUserSchema} from "../validator/auth.validator.js"
-import { mailGenerator, resetPasswordEmail, verifyEmail } from "../utils/mail.js";
+dotenv.config({
+    path: "./.env"
+})
+
+import { forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswordSchema } from "../validators/auth.validator.js"
+import { emailVerificationMailgenContent, forgotPasswordMailgenContent, sendEmail } from "../utils/mail.js";
+import bcrypt from "bcryptjs";
+import { User } from "../models/user.model.js";
 
 export const registerUser = async (req, res) => {
-    // get the username, email, password
     const {data, error} = registerUserSchema.safeParse(req.body);
 
     if (error) {
-        console.error("Error - ", error);
+        console.error("Error in safeParse : ", error);
         return res.status(400).json({
             success: false,
-            message: "Error occured"
+            message: "Error in safeParse of zod"
         })
     }
 
-    const {username, email, password} = data;
-    // check if they present
-    if (!username || !email || !password) {
-        return res.status(400).json({
-            success: false,
-            message: "All fields are required"
-        })
-    }
-    
-    if (typeof(password) !== "string") {
-        console.log("The password must be of type string");
-        password = String(password);
-    }
+    const {name, email, password} = data;
 
     try {
-        const existingUser = await User.findOne({email});
+        // find if the user already exist or not 
+        const existingUser = await User.findOne({
+            email
+        });
+
         if (existingUser) {
-            return res.status(401).json({
+            return res.status(400).json({
                 success: false,
-                message: 'User already registered'
+                message: "User already registered"
             })
         }
 
         const user = await User.create({
-            username,
+            name,
             email,
-            password
+            password,
         });
 
-        const token = crypto.randomBytes(32).toString('hex');
+        const {unHashedToken, hashedToken, tokenExpiry} = user.generateTemporaryToken();
 
-        user.emailVerificationToken = token;
-        user.emailTokenExpiry = Date.now() + 1000 * 60;
+        user.emailVerificationToken = hashedToken;
+        user.emailVerificationExpiry = tokenExpiry;
 
         await user.save();
 
-        // generating the email body to send
-        const verifyEmailOption = {
-            name: username,
-            subject: "Click on the button below to verify email:",
-            link: `${process.env.FRONTEND_BASE_URL}/verify/${token}`
-        }
-
-        const verifyEmailBody = verifyEmail(verifyEmailOption);
-
-        // Generate an HTML and text email with the provided contents
-        const htmlEmailBody = mailGenerator.generate(verifyEmailBody);
-        const textEmailBody = mailGenerator.generatePlaintext(verifyEmailBody);
-
-        // create a transporter to send the email
-        const transporter = nodemailer.createTransport({
-            host: process.env.MAILTRAP_HOST,
-            port: process.env.MAILTRAP_PORT,
-            secure: false, 
-            auth: {
-                user: process.env.MAILTRAP_USER,
-                pass: process.env.MAILTRAP_PASSWORD,
-            },
+        sendEmail({
+            email: user?.email,
+            subject: "Verify Your Email",
+            mailgenContent: emailVerificationMailgenContent(
+                user.name,
+                `${process.env.BASE_URL}/api/v1/auth/verify-email/${unHashedToken}`
+            )
         });
 
-        const mailOptions = {
-            from: process.env.MAILTRAP_SENDER,
-            to: user.email,
-            subject: "To verify your email",
-            text: textEmailBody, // plain‑text body
-            html: htmlEmailBody, // HTML body
+        const createdUser = await User.findById(user._id).select(
+            "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
+        )
+
+        if (!createdUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not registered"
+            })
         }
 
-        await transporter.sendMail(mailOptions);
-
         res.status(201).json({
-            success:true,
-            message: "Verify your email",
+            success: true,
+            message: "User registered",
             user
         })
     } catch (error) {
-        console.error("Error registering user- ", error);
+        console.error("Error registering user: ", error);
         res.status(500).json({
             success: false,
-            message: "Failed to register user"
-        })
+            message: "Error registering User"
+        })   
     }
 }
 
-export const verifyUser = async (req, res) => {
+export const verifyEmail = async function(req, res) {
+    // get the unhashed token from the user's params
+    // check if the hashed token we stored is the same after hashing the token
+    const {token} = req.params;
+
     try {
-        const { token } = req.params;
-        
-        const user = await User.findOne({ emailVerificationToken: token });
+        // convert the unhashed token in hashed token
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex");
+
+        const user = await User.findOne({
+            emailVerificationToken: hashedToken,
+            emailVerificationExpiry: {
+                $gt: Date.now()
+            }
+        });
 
         if (!user) {
-            return res.status(400).json({ error: "Invalid verification token" });
+            return res.status(400).json({
+                success: false,
+                message: "Invalid or expired verification token"
+            })
         }
 
-        user.isEmailVerified = true;
-        user.emailVerificationToken = undefined; // Clear token
+        user.emailVerificationToken = undefined;
+        user.emailVerificationExpiry = undefined;
+        user.isVerified = true;
 
         await user.save();
 
-        res.status(200).json({ message: "User verified successfully" });
+        res.status(200).json({
+            success: true,
+            message: "User's email verified",
+            user
+        })
     } catch (error) {
-        console.error("Verification error:", error);
-        res.status(500).json({ error: "Internal server error" });
+        console.error("Error in verifying the User's email: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error in Verifying the User's email"
+        })
     }
 };
 
 export const loginUser = async (req, res) => {
-    // get the email and password
-    // validate the email and password
-    // get the user and validate
-    // match if the password is same
-    // create a jwt token and store it in cookie
-    if (!req.body) {
-        console.log("body doesnot exist");
-    }
-
     const {data, error} = loginUserSchema.safeParse(req.body);
 
     if (error) {
-        console.error("Error - ", error);
+        console.error("Error in safeParse: ", error);
         return res.status(400).json({
-            message: "Error occured parsing"
+            success: false,
+            message: "Error in safeParse of zod"
         })
     }
 
-    const { email, password } = data;
-
-    if (!email || !password) {
-        return res.status(401).json({
-            success:false,
-            message: "All fields required"
-        })
-    }
+    const {email, password} = data;
 
     try {
-        const user = await User.findOne({email:email});
+        // get the user using email and check if the user is present
+        // then compare the passwords with hashed password stored in the db
+        // if true then create a token using jwt which will be store in the cookie
+        const user = await User.findOne({
+            email
+        });
 
         if (!user) {
-            return res.status(404).json({
+            return res.status(400).json({
                 success: false,
-                message: "User not found"
+                message: "Email or Password is Incorrect"
             })
         }
-        console.log("Password given : ", password);
-        console.log("Password stored : ", user.password);
-        console.log("User detail : ", user.email);
 
-        const isMatch = await bcrypt.compare(password.toString(), user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
             return res.status(400).json({
                 success: false,
-                message: "Either Email or Password is wrong"
+                message: "Email or Password is Incorrect"
             })
         }
 
-        const token = jwt.sign(
-            { id: user._id },
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+
+        const loggedUser = await User.findById(user._id).select(
+            "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
         );
 
-        const cookieOption = {
-            secure: true,
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24
-        }
-
-        res.cookie("AccessToken", token, cookieOption);
-
-        res.status(200).json({
-            success: true,
-            message: "User login successful",
-            token,
-            user: {
-                id: user._id,
-                name: user.username,
-                role: user.role
-            }
-        })
-    } catch (error) {
-        console.error("Error in user login - ", error);
-        res.status(500).json({
-            success: false,
-            message: "Error in User login"
-        })
-    }
-}
-
-export const profile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select("-password");
-
-        if (!user) {
+        if (!loggedUser) {
             return res.status(400).json({
                 success: false,
-                message: "User not found"
+                message: "User not logged in"
             })
         }
 
-        res.status(200).json({
-            success: true,
-            message: "User profile:",
-            user
-        })
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        const cookieOption = {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+            secure: process.env.NODE_ENV === "production"
+        }
+
+        res.status(200)
+            .cookie("AccessToken", accessToken, cookieOption)
+            .cookie("RefreshToken", refreshToken, cookieOption)
+            .json({
+                success: true,
+                message: "User logged in successfully", 
+                user
+            })
     } catch (error) {
-        console.error("Error in getting Profile - ", error);
+        console.error("Error in loginUser: ", error);
         res.status(500).json({
             success: false,
-            message: "Error in getting Profile"
+            message: "Error in Login User"
         })
     }
-}
+};
 
 export const logoutUser = async (req, res) => {
-    // check if user logged in
-    // then remove the cookie token
+    // just clear the tokens stored in the cookie
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                $set: {
+                    refreshToken: "",
+                }
+            }, 
+            {new: true}
+        )
 
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: "user logged out or doesnot exist"
-            })
+        const cookieOption = {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+            secure: process.env.NODE_ENV === "production"
         }
 
-        res.cookie("AccessToken", "", {
-            expires: new Date(0)
-        });
-
-        res.status(200).json({
-            success: true,
-            message: "User logged out successfully"
-        })
+        res.status(200)
+            .clearCookie("AccessToken", cookieOption)
+            .clearCookie("RefreshToken", cookieOption)
+            .json({
+                success: true,
+                message: "User logged out successfully", 
+            })
     } catch (error) {
-        console.error("Error in log out -", error);
-        res.status(500).json({
-            success: false,
-            message: "Error in logout"
-        })
+        
     }
 }
 
 export const forgotPassword = async (req, res) => {
-    // get the email 
-    // validate the email 
-    // find the user using email
-    // send the email
-    const {email} = req.body;
+    // get the email from the user and get the user 
+    // send the email to the user
+    const {data, error} = forgotPasswordSchema.safeParse(req.body);
 
-    if (!email) {
+    if (error) {
+        console.error("Error in safeParse: ", error);
         return res.status(400).json({
             success: false,
-            message: "Email is required"
+            message: "Error in safeParse of zod"
         })
     }
+
+    const {email} = data;
 
     try {
         const user = await User.findOne({email});
@@ -283,120 +259,240 @@ export const forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: "User not found"
+                message: "Incorrect Email"
             })
         }
 
-        const token = crypto.randomBytes(32).toString('hex');
-        user.forgetPasswordToken = token;
-        user.forgetPasswordExpiry = Date.now() + 1000 * 60 * 60;
+        const {unHashedToken, hashedToken, tokenExpiry} = user.generateTemporaryToken();
+
+        user.forgetPasswordToken = hashedToken;
+        user.forgetPasswordExpiry = tokenExpiry;
+
+        console.log("Hashed token stored in db : ", hashedToken);
 
         await user.save();
 
-        // generating the email body to send
-        const resetPasswordOption = {
-            name: user.username,
-            subject: "Click on the button below to reset your password:",
-            link: `${process.env.FRONTEND_BASE_URL}/resetPassword/${token}`
-        }
-
-        const resetPasswordBody = resetPasswordEmail(resetPasswordOption);
-
-        // Generate an HTML and text email with the provided contents
-        const htmlEmailBody = mailGenerator.generate(resetPasswordBody);
-        const textEmailBody = mailGenerator.generatePlaintext(resetPasswordBody);
-
-        // create a transporter to send the email
-        const transporter = nodemailer.createTransport({
-            host: process.env.MAILTRAP_HOST,
-            port: process.env.MAILTRAP_PORT,
-            secure: false, 
-            auth: {
-                user: process.env.MAILTRAP_USER,
-                pass: process.env.MAILTRAP_PASSWORD,
-            },
+        sendEmail({
+            email: user?.email,
+            subject: "Reset Your Password",
+            mailgenContent: forgotPasswordMailgenContent(
+                user.name,
+                `${process.env.BASE_URL}/api/v1/auth/reset-password/${unHashedToken}`
+            )
         });
-
-        const mailOptions = {
-            from: process.env.MAILTRAP_SENDER,
-            to: user.email,
-            subject: "To reset your password",
-            text: textEmailBody, // plain‑text body
-            html: htmlEmailBody, // HTML body
-        }
-
-        await transporter.sendMail(mailOptions);
 
         res.status(200).json({
             success: true,
-            message: "forget password email send"
+            message: "reset password email send"
         })
     } catch (error) {
-        console.error("Error in forgetpassword - ", error);
+        console.error("Error in forgot password: ", error);
         res.status(500).json({
             success: false,
-            message: "Error in forgot password"
+            message: "Error in forgotPassword"
         })
     }
-}
+};
 
-export const resetPassword = async (req, res) => {
-    // get new password and confirm password and token
-    // validate
-    // updatet the password
-    const {newPassword, confirmPassword} = req.body;
+export const resetForgottenPassword = async (req, res) => {
+    // get the token from the params
+    // check if the token is correct or not
+    // get the passwords from the user 
     const {token} = req.params;
+    const {data, error} = resetPasswordSchema.safeParse(req.body);
 
-    if (!newPassword || !confirmPassword) {
+    if (error) {
+        console.error("Error in safeParse: ", error);
         return res.status(400).json({
             success: false,
-            message: "All fields required"
+            message: "Error in safeParse of zod"
         })
     }
 
-    if (!token) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid Token"
-        })
-    }
+    const {newPassword, confirmPassword} = data;
 
     if (newPassword !== confirmPassword) {
         return res.status(400).json({
             success: false,
-            message: "Confirmed password should be equal to new Password"
+            message: "Confirm Password must be same a new Password"
         })
     }
 
     try {
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex");
+        
+        console.log("hashed token in reset password : ", hashedToken);
+
         const user = await User.findOne({
-            forgetPasswordToken: token,
-            forgetPasswordExpiry: {$gt: Date.now()}
-        })
+            forgetPasswordToken: hashedToken,
+            forgetPasswordExpiry: {
+                $gt: Date.now()
+            }
+        });
+
+        console.log("User : ", user)
 
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: "user not found"
+                message: "Invalid or expired reset token"
             })
         }
 
-        user.password = newPassword;
-        user.forgetPasswordExpiry = new Date();
         user.forgetPasswordToken = undefined;
+        user.forgetPasswordExpiry = undefined;
+
+        user.password = newPassword;
 
         await user.save();
 
         res.status(200).json({
             success: true,
-            message: "Password reset successful",
+            message: "User's Password resetted successfully",
             user
         })
     } catch (error) {
-        console.error('Error in reseting password', error);
+        console.error("Error in reseting password: ", error);
         res.status(500).json({
             success: false,
             message: "Error in reseting password"
+        })
+    }
+}
+
+export const getProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user?._id);
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Login"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "User's Profile",
+            user
+        })
+    } catch (error) {
+        console.error("Error getting User's Profile: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error getting User's Profile"
+        })
+    }
+}
+
+export const resendEmailVerification = async (req, res) => {
+    try {
+        const user = await User.findById(req.user?._id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User do not exist"
+            })
+        }
+
+        if (user.isVerified) {
+            return res.status(409).json({
+                success: false,
+                message: "User already verified"
+            })
+        }
+
+        const {unHashedToken, hashedToken, tokenExpiry} = user.generateTemporaryToken();
+
+        user.emailVerificationToken = hashedToken;
+        user.emailVerificationExpiry = tokenExpiry;
+
+        await user.save();
+
+        sendEmail({
+            email: user?.email,
+            subject: "Verify Your Email",
+            mailgenContent: emailVerificationMailgenContent(
+                user.name,
+                `${process.env.BASE_URL}/api/v1/auth/verify-email/${unHashedToken}`
+            )
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Email send to your Id"
+        })
+    } catch (error) {
+        console.error("Error re-sending email: ", error)
+        res.status(500).json({
+            success: false,
+            message: "Error re-sending email"
+        })
+    }
+}
+
+export const refreshAccessToken = async (req, res) => {
+    const inCommingRefreshToken = req.cookies?.RefreshToken || req.body.RefreshToken;
+
+    if (!inCommingRefreshToken) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized request"
+        })
+    }
+
+    try {
+        const decodedToken = jwt.verify(inCommingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+        const user = await User.findById(decodedToken?._id);
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid refresh token"
+            })
+        }
+
+        // check if incoming refresh token is same as the refresh token attached in the user document
+        // This shows that the refresh token is used or not
+        // Once it is used, we are replacing it with new refresh token below
+        if (user.refreshToken !== inCommingRefreshToken) {
+            // token is valid but used
+            return res.status(401).json({
+                success: false,
+                message: "Refresh token expired"
+            })
+        }
+
+        const accessToken = user.generateAccessToken();
+        const newRefreshToken = user.generateRefreshToken();
+
+        user.refreshToken = newRefreshToken;
+        await user.save();
+
+        const cookieOption = {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+            secure: process.env.NODE_ENV === "production"
+        }
+
+        res.cookie("AccessToken", accessToken, cookieOption)
+        res.cookie("RefreshToken", newRefreshToken, cookieOption)
+
+        res.status(200).json({
+            success: true,
+            message: "Access Token Refreshed",
+            user
+        })
+    } catch (error) {
+        console.error("Error refreshing access token: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error refreshing access token"
         })
     }
 }

@@ -1,29 +1,41 @@
-import {z} from "zod";
+import z from "zod";
 
 export const registerUserSchema = z.object({
-    username: z
+    name: z
         .string()
-        .trim()
-        .min(4, {message: "Minimum length of username should be 3"})
-        .max(20, {message: "Maximum length of username is 20"}),
-    
-    email: z.string()
-        .email({message: "Enter correct email"})
         .trim(),
-
+    email: z
+        .email({message: "Enter a valid email"})
+        .trim(),
     password: z
         .string()
-        .min(8, {message: "Minimum length of password should be 8"})
-        .max(13, {message: "Maximum lenght of password is 13"})
+        .min(8, "Length of password should be atleast 8 characters")
+        .max(13, "Length of password must not exceed 13 characters")
 });
 
 export const loginUserSchema = z.object({
-    email: z.string()
-        .email({message: "Enter correct email"})
+    email: z
+        .email({message: "Enter a valid email"})
         .trim(),
-
     password: z
         .string()
-        .min(8, {message: "Minimum length of password should be 8"})
-        .max(13, {message: "Maximum lenght of password is 13"})
+        .min(8, "Length of password should be atleast 8 characters")
+        .max(13, "Length of password must not exceed 13 characters")
 });
+
+export const forgotPasswordSchema = z.object({
+    email: z
+        .email()
+        .trim()
+})
+
+export const resetPasswordSchema = z.object({
+    newPassword: z
+        .string()
+        .min(8, "Length of password should be atleast 8 characters")
+        .max(13, "Length of password must not exceed 13 characters"),
+    confirmPassword: z
+        .string()
+        .min(8, "Length of password should be atleast 8 characters")
+        .max(13, "Length of password must not exceed 13 characters")
+})

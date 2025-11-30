@@ -1,74 +1,91 @@
 import Mailgen from "mailgen";
+import nodemailer from "nodemailer"
 
-export const mailGenerator = new Mailgen({
-    theme: 'salted',
-    product: {
-        // Appears in header & footer of e-mails
-        name: 'Bonded',
-        link: 'https://bonded.js/'
-        // Optional product logo
-        // logo: 'https://mailgen.js/img/logo.png'
+const sendEmail = async (options) => {
+    // Initialize mailgen instance with default theme and brand configuration
+    const mailGenerator = new Mailgen({
+            theme: "default",
+            product: {
+            name: "Bonded",
+            link: "https://bonded.app",
+        },
+    });
+
+    // For more info on how mailgen content work visit https://github.com/eladnava/mailgen#readme
+    // Generate the plaintext version of the e-mail (for clients that do not support HTML)
+    const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
+
+    // Generate an HTML email with the provided contents
+    const emailHtml = mailGenerator.generate(options.mailgenContent);
+
+    // Create a nodemailer transporter instance which is responsible to send a mail
+    const transporter = nodemailer.createTransport({
+        host: process.env.MAILTRAP_HOST,
+        port: process.env.MAILTRAP_PORT,
+        auth: {
+            user: process.env.MAILTRAP_USER,
+            pass: process.env.MAILTRAP_PASSWORD,
+        },
+    });
+
+    const mail = {
+        from: process.env.MAILTRAP_SENDER, // We can name this anything. The mail will go to your Mailtrap inbox
+        to: options.email, // receiver's mail
+        subject: options.subject, // mail subject
+        text: emailTextual, // mailgen content textual variant
+        html: emailHtml, // mailgen content html variant
+    };
+
+    try {
+        console.log("mail: ", mail)
+        await transporter.sendMail(mail);
+    } catch (error) {
+        console.error("Error sending email: ", error);
     }
-});
-
-// const email = {
-//     body: {
-//         name: 'John Appleseed',
-//         intro: 'Welcome to Mailgen! We\'re very excited to have you on board.',
-//         action: {
-//             instructions: 'To get started with Mailgen, please click here:',
-//             button: {
-//                 color: '#22BC66', // Optional action button color
-//                 text: 'Confirm your account',
-//                 link: 'https://mailgen.js/confirm?s=d9729feb74992cc3482b350163a1a010'
-//             }
-//         },
-//         outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-//     }
-// };
-
-export const verifyEmail = (option) => {
-    const email = {
-        body: {
-            name: option.name,
-            intro: 'Welcome to Bonded! We\'re very excited to have you on board.',
-            action: {
-                instructions: option.subject,
-                button: {
-                    color: '#22BC66', // Optional action button color
-                    text: 'Confirm your account',
-                    link: option.link
-                }
-            },
-            outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-        }
-    };
-
-    return email;
 };
 
-export const resetPasswordEmail = (option) => {
-    const email = {
+const emailVerificationMailgenContent = (name, verificationUrl) => {
+    return {
         body: {
-            name: option.name,
-            intro: 'Welcome to Bonded! We\'re very excited to have you on board.',
-            action: {
-                instructions: option.subject,
-                button: {
-                    color: '#22BC66', // Optional action button color
-                    text: 'Reset your password',
-                    link: option.link
-                }
+        name: name,
+        intro: "Welcome to our app! We're very excited to have you on board.",
+        action: {
+            instructions:
+            "To verify your email please click on the following button:",
+            button: {
+                color: "#22BC66", // Optional action button color
+                text: "Verify your email",
+                link: verificationUrl,
             },
-            outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-        }
+        },
+        outro:
+            "Need help, or have questions? Just reply to this email, we'd love to help.",
+        },
     };
-
-    return email;
 };
 
-// // Generate an HTML email with the provided contents
-// export const emailBody = mailGenerator.generate(email);
+const forgotPasswordMailgenContent = (name, passwordResetUrl) => {
+    return {
+        body: {
+        name: name,
+        intro: "We got a request to reset the password of our account",
+        action: {
+            instructions:
+            "To reset your password click on the following button or link:",
+            button: {
+            color: "#22BC66", // Optional action button color
+            text: "Reset password",
+            link: passwordResetUrl,
+            },
+        },
+        outro:
+            "Need help, or have questions? Just reply to this email, we'd love to help.",
+        },
+    };
+};
 
-// // Generate the plaintext version of the e-mail (for clients that do not support HTML)
-// export const emailText = mailGenerator.generatePlaintext(email);
+export {
+  sendEmail,
+  emailVerificationMailgenContent,
+  forgotPasswordMailgenContent,
+};
