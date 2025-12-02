@@ -21,3 +21,23 @@ export const TeamMemberAction = {
 }
 
 export const availableTeamMemberActions = Object.values(TeamMemberAction);
+
+export const TeamAction = {
+    CREATED: "CREATED",
+    DELETED: "DELETED",
+    JOINED: "JOINED",
+    LEFT: "LEFT",
+    KICKED_OUT: "KICKED_OUT"
+}
+
+export const availableTeamActions = Object.values(TeamAction);
+
+export const UserAction = {
+    CREATED: "CREATED",
+    DELETED: "DELETED",
+    JOINED: "JOINED",
+    LEFT: "LEFT",
+    KICKED_OUT: "KICKED_OUT"
+}
+
+export const availableUserActions = Object.values(UserAction);
