@@ -63,5 +63,31 @@ export const createTeam = async (req, res) => {
 }
 
 // delete team
-// join team
-// left team
+export const deleteTeam = async (req, res) => {
+    const { albumId } = req.params;
+
+    try {
+        const delete_team = await Team.findByIdAndUpdate(albumId, 
+            { isDeleted: true },
+            { new: true }
+        )
+
+        if (!delete_team) {
+            return res.status(400).json({
+                success: false,
+                message: "Team not deleted"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Team deleted successfully"
+        })
+    } catch (error) {
+        console.error("Error deleting team", error);
+        res.status(500).json({
+            success: false,
+            message: "Error deleting team"
+        })
+    }
+}
