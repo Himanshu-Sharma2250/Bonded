@@ -62,12 +62,39 @@ export const createTeam = async (req, res) => {
     }
 }
 
-// delete team
-export const deleteTeam = async (req, res) => {
-    const { albumId } = req.params;
+export const getTeam = async (req, res) => {
+    const {teamId} = req.params;
 
     try {
-        const delete_team = await Team.findByIdAndUpdate(albumId, 
+        const team = await Team.findById(teamId);
+
+        if (!team) {
+            return res.status(404).json({
+                success: false,
+                message: "Team not found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Team",
+            team
+        })
+    } catch (error) {
+        console.error("Error getting team", error);
+        res.status(500).json({
+            success: false,
+            message: "Error getting team"
+        })
+    }
+}
+
+// delete team
+export const deleteTeam = async (req, res) => {
+    const { teamId } = req.params;
+
+    try {
+        const delete_team = await Team.findByIdAndUpdate(teamId, 
             { isDeleted: true },
             { new: true }
         )
