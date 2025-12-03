@@ -20,4 +20,12 @@ const teamSchema = new Schema({
     }
 }, { timestamps: true });
 
+teamSchema.index(
+    {userId: 1},
+    {
+        unique: true,
+        partialFilterExpression: { isDeleted: false }
+    }
+)
+
 export const Team = mongoose.model("Team", teamSchema);

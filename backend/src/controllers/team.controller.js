@@ -1,0 +1,67 @@
+import { Team } from "../models/team.model.js";
+import { createTeamSchema } from "../validators/team.validator.js";
+
+// create team
+export const createTeam = async (req, res) => {
+    const {data, error} = createTeamSchema.safeParse(req.body);
+
+    if (error) {
+        return res.status(400).json({
+            message: "error occured in req body",
+            error
+        })
+    }
+
+    const {name, description} = data;
+
+    try {
+        const existingTeam = await Team.findOne({
+            userId: req.user._id,
+            isDeleted: false
+        })
+
+        if (existingTeam) {
+            return res.status(400).json({
+                success: false,
+                message: "You already created a team"
+            })
+        }
+
+        const team = await Team.create({
+            userId: req.user._id,
+            name: name,
+            description: description,
+            isDeleted: false
+        })
+
+        await team.save();
+
+        const createdTeam = await Team.findOne({
+            userId: req.user._id,
+            isDeleted: false
+        })
+
+        if (!createdTeam) {
+            return res.status(400).json({
+                success: false,
+                message: 'Team not found'
+            })
+        }
+
+        res.status(201).json({
+            success: true,
+            message: "Team created successfully",
+            team
+        })
+    } catch (error) {
+        console.error("Error creating team", error);
+        res.status(500).json({
+            success: false,
+            message: "Error creating team"
+        })
+    }
+}
+
+// delete team
+// join team
+// left team
