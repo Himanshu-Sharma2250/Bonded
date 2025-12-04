@@ -62,6 +62,7 @@ export const createTeam = async (req, res) => {
     }
 }
 
+// get a team
 export const getTeam = async (req, res) => {
     const {teamId} = req.params;
 
@@ -89,6 +90,7 @@ export const getTeam = async (req, res) => {
     }
 }
 
+// get all teams which are not deleted
 export const getAllTeams = async (req, res) => {
     try {
         const teams = await Team.find({
