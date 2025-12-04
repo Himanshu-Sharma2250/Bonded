@@ -91,6 +91,7 @@ export const leftTeam = async (req, res) => {
         const alreadyLeftTeam = await TeamMember.findOne({
             userId: req.user._id,
             teamId: teamId,
+            memberAction: 'LEFT',
             active: false
         })
 
@@ -102,7 +103,7 @@ export const leftTeam = async (req, res) => {
         }
 
         const leftTeam = await TeamMember.findByIdAndUpdate(teamId,
-            {active: false},
+            {active: false, memberAction: 'LEFT'},
             {new: true}
         );
 
@@ -127,7 +128,48 @@ export const leftTeam = async (req, res) => {
 }
 
 // kicked out of a team
+export const kickedOutOfTeam = async (req, res) => {
+    const {teamId} = req.params;
 
+    try {
+        const alreadyKickedOutFromTeam = await TeamMember.findOne({
+            userId: req.user._id,
+            teamId: teamId,
+            memberAction: "KICKED_OUT",
+            active: false
+        })
+
+        if (alreadyKickedOutFromTeam) {
+            return res.status(400).json({
+                success: false,
+                message: "Already kicked out of the team"
+            })
+        }
+
+        const kickOutTeamMember = await TeamMember.findByIdAndUpdate(teamId,
+            {active: false, memberAction: 'KICKED_OUT'},
+            {new: true}
+        );
+
+        if (!kickOutTeamMember) {
+            return res.status(400).json({
+                success: false,
+                message: "didn't kicked out of the team"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "kicked out of the team"
+        })
+    } catch (error) {
+        console.error("Error kicking out from the team", error)
+        res.status(500).json({
+            success: false,
+            message: "Error kicking out from the team"
+        })
+    }
+}
 
 // get a team member 
 // get all team members
