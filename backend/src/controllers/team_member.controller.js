@@ -172,4 +172,35 @@ export const kickedOutOfTeam = async (req, res) => {
 }
 
 // get a team member 
+export const getTeamMember = async (req, res) => {
+    const {teamId, userId} = req.params;
+
+    try {
+        const teamMember = await TeamMember.findOne({
+            userId: userId,
+            teamId: teamId,
+            active: true
+        })
+
+        if (!teamMember) {
+            return res.status(400).json({
+                success: false,
+                message: "Error getting team member"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Team member found",
+            teamMember
+        })
+    } catch (error) {
+        console.error("Error getting member", error);
+        res.status(500).json({
+            success: false,
+            message: "Error getting member"
+        })
+    }
+}
+
 // get all team members
