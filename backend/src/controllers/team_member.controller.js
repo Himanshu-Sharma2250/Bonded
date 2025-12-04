@@ -1,9 +1,20 @@
 import { Team } from "../models/team.model";
 import { TeamMember } from "../models/team_member.model";
+import { joinTeamSchema } from "../validators/team.validator";
 
 // join a team - create team member
 export const joinTeam = async (req, res) => {
     const {teamId} = req.params;
+    const {data, error} = joinTeamSchema.safeParse(req.body);
+
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Error in req.body"
+        })
+    }
+
+    const {name, email, reasonToJoin, githubLink} = data;
 
     try {
         // checking if user is a member of another team
@@ -45,7 +56,11 @@ export const joinTeam = async (req, res) => {
 
         const teamMember = await TeamMember.create({
             userId: req.user._id,
-            teamId: teamId
+            teamId: teamId,
+            name: name,
+            email: email,
+            reasonToJoin: reasonToJoin,
+            githubLink: githubLink
         })
 
         if (!teamMember) {
@@ -204,3 +219,32 @@ export const getTeamMember = async (req, res) => {
 }
 
 // get all team members
+export const getAllTeamMembers = async (req, res) => {
+    const {teamId} = req.params;
+
+    try {
+        const teamMembers = await TeamMember.find({
+            teamId: teamId,
+            active: true
+        })
+
+        if (!teamMembers) {
+            return res.status(404).json({
+                success: false,
+                message: "team members not found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "teams members found",
+            teamMembers
+        })
+    } catch (error) {
+        console.error("Error getting all team members ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error getting all team members"
+        })
+    }
+}

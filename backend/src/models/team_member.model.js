@@ -12,6 +12,21 @@ const teamMemberSchema = new Schema({
         ref: "Team",
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    reasonToJoin: {
+        type: String,
+        required: true
+    },
+    githubLink: {
+        type: String
+    },
     teamRole: {
         type: String,
         enum: availableTeamRoles,
