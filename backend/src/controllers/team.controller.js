@@ -89,6 +89,33 @@ export const getTeam = async (req, res) => {
     }
 }
 
+export const getAllTeams = async (req, res) => {
+    try {
+        const teams = await Team.find({
+            isDeleted: false
+        })
+
+        if (!teams) {
+            return res.status(400).json({
+                success: false,
+                message: "No teams found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Teams",
+            teams
+        })
+    } catch (error) {
+        console.error("Error getting teams", error);
+        res.status(500).json({
+            success: false,
+            message: "Error getting teams"
+        })
+    }
+}
+
 // delete team
 export const deleteTeam = async (req, res) => {
     const { teamId } = req.params;

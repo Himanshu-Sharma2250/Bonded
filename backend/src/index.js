@@ -5,6 +5,7 @@ import cors from "cors";
 
 import connect_db from "./utils/db.js";
 import authRouter from "./routes/auth.route.js";
+import teamRouter from "./routes/team.route.js";
 
 dotenv.config({path: './.env'});
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 connect_db();
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/team", teamRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World again!')
