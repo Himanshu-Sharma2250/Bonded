@@ -84,6 +84,50 @@ export const joinTeam = async (req, res) => {
 }
 
 // left a team
+export const leftTeam = async (req, res) => {
+    const {teamId} = req.params;
+
+    try {
+        const alreadyLeftTeam = await TeamMember.findOne({
+            userId: req.user._id,
+            teamId: teamId,
+            active: false
+        })
+
+        if (alreadyLeftTeam) {
+            return res.status(400).json({
+                success: false,
+                message: "Already left the team"
+            })
+        }
+
+        const leftTeam = await TeamMember.findByIdAndUpdate(teamId,
+            {active: false},
+            {new: true}
+        );
+
+        if (!leftTeam) {
+            return res.status(400).json({
+                success: false,
+                message: "didn't left the team"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Left the team"
+        })
+    } catch (error) {
+        console.error("Error lefting the team", error)
+        res.status(500).json({
+            success: false,
+            message: "Error lefting the team"
+        })
+    }
+}
+
 // kicked out of a team
+
+
 // get a team member 
 // get all team members
