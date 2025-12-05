@@ -12,7 +12,7 @@ export const createTeam = async (req, res) => {
         })
     }
 
-    const {name, description} = data;
+    const {name, description, totalMembers} = data;
 
     try {
         const existingTeam = await Team.findOne({
@@ -31,6 +31,7 @@ export const createTeam = async (req, res) => {
             userId: req.user._id,
             name: name,
             description: description,
+            totalMembers: totalMembers,
             isDeleted: false
         })
 

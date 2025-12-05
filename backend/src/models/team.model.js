@@ -14,6 +14,10 @@ const teamSchema = new Schema({
         type: String,
         required: true
     },
+    totalMembers: {
+        type: Number,
+        required: true
+    },
     isDeleted: {
         type: Boolean,
         default: false
