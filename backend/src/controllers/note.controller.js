@@ -119,3 +119,33 @@ export const getAllPrivateNotes = async (req, res) => {
     }
 }
 
+// get all public notes
+export const getAllPublicNotes = async (req, res) => {
+    const {teamId} = req.params;
+
+    try {
+        const publicNotes = await Note.find({
+            teamId: teamId,
+            isPrivate: false
+        })
+
+        if (!publicNotes) {
+            return res.status(404).json({
+                success: false,
+                message: 'Notes not found'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Public Notes",
+            publicNotes
+        })
+    } catch (error) {
+        console.error("Error getting public notes: ", error);
+        res.status(500).json({
+            success: false,
+            message: 'Error getting public notes'
+        })
+    }
+}
