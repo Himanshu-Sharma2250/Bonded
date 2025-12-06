@@ -1,5 +1,5 @@
-import { Note } from "../models/note.model";
-import { editNoteSchema, noteSchema } from "../validators/note.validator"
+import { Note } from "../models/note.model.js";
+import { editNoteSchema, noteSchema } from "../validators/note.validator.js"
 
 // create note
 export const createNote = async (req, res) => {
@@ -146,6 +146,33 @@ export const getAllPublicNotes = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error getting public notes'
+        })
+    }
+}
+
+// delete note
+export const deleteNote = async (req, res) => {
+    const {noteId} = req.params;
+
+    try {
+        const deleteNote = await Note.findByIdAndDelete(noteId);
+
+        if (!deleteNote) {
+            res.status(400).json({
+                success: false,
+                message: "note not deleted"
+            })
+        }
+
+        res.status(200).json({
+            success: false,
+            message: "Note deleted successfully"
+        })
+    } catch (error) {
+        console.error("Error deleting note: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error deleting note"
         })
     }
 }
