@@ -18,6 +18,9 @@ const noteSchema = new Schema({
     description: {
         type: String,
         required: true
+    },
+    isPrivate: {
+        type: Boolean
     }
 }, { timestamps: true })
 
