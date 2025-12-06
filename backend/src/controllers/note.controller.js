@@ -87,3 +87,35 @@ export const editNote = async (req, res) => {
         })
     }
 }
+
+// get all private note - for team members only
+export const getAllPrivateNotes = async (req, res) => {
+    const {teamId} = req.params;
+
+    try {
+        const privateNotes = await Note.find({
+            teamId: teamId,
+            isPrivate: true
+        })
+
+        if (!privateNotes) {
+            return res.status(404).json({
+                success: false,
+                message: 'Notes not found'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Private Notes",
+            privateNotes
+        })
+    } catch (error) {
+        console.error("Error getting private notes: ", error);
+        res.status(500).json({
+            success: false,
+            message: 'Error getting private notes'
+        })
+    }
+}
+
