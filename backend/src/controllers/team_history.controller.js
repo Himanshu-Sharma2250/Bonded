@@ -75,5 +75,40 @@ export const teamMemberLeft = async (req, res) => {
 }
 
 // member kicked out
+export const teamMemberKickedOut = async (req, res) => {
+    const {teamHistoryId} = req.params;
+    const {data, error} = teamHistorySchema.safeParse(req.body);
+
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Error in req body"
+        })
+    }
+
+    const {reason} = data;
+
+    try {
+        const history = await TeamHistory.findByIdAndUpdate(teamHistoryId, {
+            teamAction: "KICKED_OUT",
+            reason: reason
+        }, {new: true})
+
+        await history.save()
+
+        res.status(201).json({
+            success: true,
+            message: "Team history updated",
+            history
+        })
+    } catch (error) {
+        console.error("Error in updating team history ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error in updating team history"
+        })
+    }
+}
+
 // member joined
 // team deleted
