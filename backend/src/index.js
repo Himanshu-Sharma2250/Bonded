@@ -7,6 +7,7 @@ import connect_db from "./utils/db.js";
 import authRouter from "./routes/auth.route.js";
 import teamRouter from "./routes/team.route.js";
 import teamMemberRouter from "./routes/team_member.route.js";
+import noteRouter from "./routes/note.route.js";
 
 dotenv.config({path: './.env'});
 
@@ -29,6 +30,7 @@ connect_db();
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/team", teamRouter);
 app.use("/api/v1/team", teamMemberRouter);
+app.use("/api/v1/note", noteRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World again!')
