@@ -142,7 +142,7 @@ export const userLeftTeam = async (req, res) => {
         } 
 }
 
-export const userKickedOutTeam = async (req, res) => {
+export const userKickedOutOfTeam = async (req, res) => {
     const {userHistoryId} = req.params;
     const {data, error} = userHistorySchema.safeParse(req.body);
     
@@ -173,6 +173,41 @@ export const userKickedOutTeam = async (req, res) => {
             res.status(500).json({
                 success: false,
                 message: "Error in creating user_kickedOut_team history"
+            })
+        } 
+}
+
+export const userDeletedTeam = async (req, res) => {
+    const {userHistoryId} = req.params;
+    const {data, error} = userHistorySchema.safeParse(req.body);
+    
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Error in req body"
+        })
+    }
+    
+    const {reason} = data;
+
+    try {
+        const history = await UserHistory.findByIdAndUpdate(userHistoryId, {
+            userAction: "DELETED",
+            reason: reason
+        }, {new: true})
+    
+        await history.save()
+        
+        res.status(200).json({
+            success: true,
+            message: "User deleted team history",
+            history
+        })
+        } catch (error) {
+            console.error("Error in creating user_delete_team history ", error);
+            res.status(500).json({
+                success: false,
+                message: "Error in creating user_delete_team history"
             })
         } 
 }
