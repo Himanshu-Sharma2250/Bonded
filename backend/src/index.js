@@ -9,6 +9,7 @@ import teamRouter from "./routes/team.route.js";
 import teamMemberRouter from "./routes/team_member.route.js";
 import noteRouter from "./routes/note.route.js";
 import teamHistoryRouter from "./routes/team_history.route.js";
+import userHistoryRouter from "./routes/user_history.route.js";
 
 dotenv.config({path: './.env'});
 
@@ -33,6 +34,7 @@ app.use("/api/v1/team", teamRouter);
 app.use("/api/v1/team", teamMemberRouter);
 app.use("/api/v1/note", noteRouter);
 app.use("/api/v1/teamHistory", teamHistoryRouter);
+app.use("/api/v1/userHistory", userHistoryRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World again!')
