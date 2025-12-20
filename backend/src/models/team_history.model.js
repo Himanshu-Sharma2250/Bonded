@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import { availableTeamActions, TeamAction } from "../constant";
+import { availableTeamActions, TeamAction } from "../constant.js";
 
 const teamHistorySchema = new Schema({
     teamId: {

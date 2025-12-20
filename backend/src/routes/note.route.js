@@ -5,7 +5,7 @@ import { createNote, deleteNote, editNote, getAllPrivateNotes, getAllPublicNotes
 
 const noteRouter = express.Router();
 
-noteRouter.post("/create", verifyJWT, createNote);
+noteRouter.post("/create/:userId/:teamId", verifyJWT, createNote);
 noteRouter.patch("/edit/:noteId", verifyJWT, editNote);
 noteRouter.get("/get-private-notes/:teamId", verifyJWT, getAllPrivateNotes);
 noteRouter.get("/get-public-notes/:teamId", verifyJWT, getAllPublicNotes);

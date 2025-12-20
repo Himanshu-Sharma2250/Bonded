@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import { availableTeamMemberActions, availableTeamRoles, TeamMemberAction, TeamRolesEnum } from "../constant";
+import { availableTeamMemberActions, availableTeamRoles, TeamMemberAction, TeamRolesEnum } from "../constant.js";
 
 const teamMemberSchema = new Schema({
     userId: {

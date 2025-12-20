@@ -1,6 +1,6 @@
-import { Team } from "../models/team.model";
-import { TeamMember } from "../models/team_member.model";
-import { joinTeamSchema } from "../validators/team.validator";
+import { Team } from "../models/team.model.js";
+import { TeamMember } from "../models/team_member.model.js";
+import { joinTeamSchema } from "../validators/team.validator.js";
 
 // join a team - create team member
 export const joinTeam = async (req, res) => {
@@ -26,7 +26,7 @@ export const joinTeam = async (req, res) => {
         if (joinedAnotherTeam) {
             return res.status(400).json({
                 success: false,
-                message: "Cannot another team"
+                message: "Cannot join another team"
             })
         }
 
@@ -117,7 +117,10 @@ export const leftTeam = async (req, res) => {
             })
         }
 
-        const leftTeam = await TeamMember.findByIdAndUpdate(teamId,
+        const leftTeam = await TeamMember.findOneAndUpdate({
+            teamId: teamId,
+            userId: req.user._id
+        },
             {active: false, memberAction: 'LEFT'},
             {new: true}
         );
@@ -160,6 +163,20 @@ export const kickedOutOfTeam = async (req, res) => {
                 message: "Already kicked out of the team"
             })
         }
+        
+        const alreadyLeftTeam = await TeamMember.findOne({
+            userId: req.user._id,
+            teamId: teamId,
+            memberAction: "LEFT",
+            active: false
+        })
+
+        if (alreadyLeftTeam) {
+            return res.status(400).json({
+                success: false,
+                message: "Already left the team"
+            })
+        }
 
         const kickOutTeamMember = await TeamMember.findByIdAndUpdate(teamId,
             {active: false, memberAction: 'KICKED_OUT'},
@@ -200,7 +217,7 @@ export const getTeamMember = async (req, res) => {
         if (!teamMember) {
             return res.status(400).json({
                 success: false,
-                message: "Error getting team member"
+                message: "Error getting team member (left or kicked out of team)"
             })
         }
 
@@ -245,6 +262,60 @@ export const getAllTeamMembers = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Error getting all team members"
+        })
+    }
+}
+
+// create owner of team
+export const createOwner = async (req, res) => {
+    console.log("started")
+    const userId = req.user._id;
+    const {teamId} = req.params;
+    const {data, error} = joinTeamSchema.safeParse(req.body);
+
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Error in req.body"
+        })
+    }
+
+    const {name, email, reasonToJoin, githubLink} = data;
+
+    try {
+        // check if user is owner
+        const isOwner = await Team.findOne({
+            userId: userId
+        })
+
+        if (!isOwner) {
+            return res.status(400).json({
+                success: false,
+                message: "User not owner"
+            })
+        }
+        console.log("checked if isOwner")
+
+        const owner = await TeamMember.create({
+            userId: userId,
+            teamId: teamId,
+            name: name,
+            email: email,
+            reasonToJoin: reasonToJoin,
+            githubLink: githubLink,
+            teamRole: 'LEADER'
+        })
+
+        res.status(201).json({
+            success: true,
+            message: "Owner created",
+            owner
+        })
+    } catch (error) {
+        console.error("Error creating owner", error);
+        res.status(500).json({
+            success: false,
+            message: "Error creating owner"
         })
     }
 }

@@ -4,6 +4,7 @@ import { editNoteSchema, noteSchema } from "../validators/note.validator.js"
 // create note
 export const createNote = async (req, res) => {
     const {data, error} = noteSchema.safeParse(req.body);
+    const {teamId} = req.params;
 
     if (error) {
         return res.status(400).json({
@@ -16,6 +17,8 @@ export const createNote = async (req, res) => {
 
     try {
         const note = await Note.create({
+            userId: req.user._id,
+            teamId: teamId,
             title: title,
             description: description,
             isPrivate: isPrivate
@@ -31,7 +34,7 @@ export const createNote = async (req, res) => {
         await note.save();
 
         res.status(201).json({
-            success: false,
+            success: true,
             message: 'Note created successfully',
             note
         })

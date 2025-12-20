@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import { availableUserActions, UserAction } from "../constant";
+import { availableUserActions, UserAction } from "../constant.js";
 
 const userHistorySchema = new Schema({
     userId: {
