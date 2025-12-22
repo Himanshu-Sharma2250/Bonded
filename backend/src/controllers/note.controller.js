@@ -1,4 +1,5 @@
 import { Note } from "../models/note.model.js";
+import { TeamMember } from "../models/team_member.model.js";
 import { editNoteSchema, noteSchema } from "../validators/note.validator.js"
 
 // create note
