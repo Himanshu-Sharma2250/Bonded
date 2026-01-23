@@ -31,8 +31,8 @@ const Navbar = () => {
 
             {/* login signup buttons */}
             <div className='flex items-center gap-2 '>
-                <Button name="Log In" bgColor="2A6E8C" btnSize="18px"/>
-                <Button name="Sign Up" bgColor="FF7A59" btnSize="18px"/>
+                <Button name="Log In" bgColor="#2A6E8C" btnSize="18px"/>
+                <Button name="Sign Up" bgColor="#FF7A59" btnSize="18px"/>
             </div>
         </div>
     )
