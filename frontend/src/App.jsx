@@ -5,13 +5,14 @@ import SignUpPage from './pages/SignUpPage'
 import SignInPage from './pages/SignInPage'
 import SideMenu from './components/SideMenu'
 import Dashboard from './pages/Dashboard'
+import Announcement from './pages/Announcement'
 
 function App() {
 
     return (
         <>
             <div className='h-screen w-screen'>
-                <Dashboard />
+                <Announcement />
             </div>
         </>
     )
