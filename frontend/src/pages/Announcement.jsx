@@ -21,7 +21,7 @@ const Announcement = () => {
                 </span>
 
                 <span>
-                    [dot]
+                    •
                 </span>
 
                 <span>
@@ -51,7 +51,7 @@ const Announcement = () => {
                 <Searchbar />
 
                 {/* announcement hero */}
-                <main className='flex flex-col w-full h-60 px-3 py-4 gap-3'>
+                <main className='flex flex-col w-full h-full px-3 py-4 gap-3'>
                     
                 </main>
             </div>

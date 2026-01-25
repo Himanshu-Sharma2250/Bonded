@@ -14,7 +14,7 @@ const SideMenu = () => {
     };
 
     return (
-        <div className='h-screen w-[20%] border-r-2 bg-[#F8FAFC]'>
+        <div className='fixed left-0 top-0 h-screen w-[20%] border-r-2 bg-[#F8FAFC]'>
             {/* div 1 - Logo */}
             <div className='h-[10%] w-full flex items-center justify-center border-b-2'>
                 <h1 className='text-[26px] font-bold'>Bonded</h1>
