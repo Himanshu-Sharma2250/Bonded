@@ -4,13 +4,14 @@ import LandingPage from './pages/LandingPage'
 import SignUpPage from './pages/SignUpPage'
 import SignInPage from './pages/SignInPage'
 import SideMenu from './components/SideMenu'
+import Dashboard from './pages/Dashboard'
 
 function App() {
 
     return (
         <>
             <div className='h-screen w-screen'>
-                <SideMenu />
+                <Dashboard />
             </div>
         </>
     )
