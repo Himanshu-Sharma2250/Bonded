@@ -8,13 +8,14 @@ import Dashboard from './pages/Dashboard'
 import Announcement from './pages/Announcement'
 import Groups from './pages/Groups'
 import Applications from './pages/Applications'
+import GroupDetailPage from './pages/GroupDetailPage'
 
 function App() {
 
     return (
         <>
             <div className='h-screen w-screen'>
-                <Groups />
+                <GroupDetailPage />
             </div>
         </>
     )
