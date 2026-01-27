@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Button from '../components/Button'
 import GroupOverview from '../components/GroupOverview';
 import GroupMembers from '../components/GroupMembers';
+import GroupHistory from '../components/GroupHistory';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
@@ -60,7 +61,7 @@ const GroupDetailPage = () => {
             </div>
 
             {/* div 2 - shows the respective detail of above navigation btns */}
-            <GroupMembers />
+            <GroupHistory />
         </div>
     )
 }
