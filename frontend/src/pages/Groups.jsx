@@ -48,7 +48,7 @@ const Groups = () => {
         <div className='flex bg-[#F8FAFC]'>
             <SideMenu />
 
-            {/* contains the dashboard */}
+            {/* contains the groups */}
             <div className='flex-1 flex-col ml-[20%] gap-1 w-[80%] h-screen overflow-y-auto hide-scrollbar'>
                 {/* header */}
                 <div className='px-3 flex flex-col gap-1 py-1'>
@@ -64,15 +64,7 @@ const Groups = () => {
                 <Searchbar />
 
                 {/* announcement hero */}
-                <main className='flex flex-wrap w-full h-full px-3 py-4 gap-3'>
-                    {createGroupCards()}
-                    {createGroupCards()}
-                    {createGroupCards()}
-                    {createGroupCards()}
-                    {createGroupCards()}
-                    {createGroupCards()}
-                    {createGroupCards()}
-                    {createGroupCards()}
+                <main className='flex flex-wrap w-full  px-3 py-4 gap-3'>
                     {createGroupCards()}
                 </main>
             </div>

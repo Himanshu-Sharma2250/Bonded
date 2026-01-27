@@ -35,8 +35,8 @@ const Announcement = () => {
         <div className='flex bg-[#F8FAFC]'>
             <SideMenu />
 
-            {/* contains the dashboard */}
-            <div className='flex flex-col gap-1 w-[80%] h-full'>
+            {/* contains the announcements */}
+            <div className='flex-1 flex-col ml-[20%] gap-1 w-[80%] h-screen overflow-y-auto hide-scrollbar'>
                 {/* header */}
                 <div className='px-3 flex flex-col gap-1 py-1'>
                     <h1 className='text-3xl font-bold'>
@@ -51,8 +51,9 @@ const Announcement = () => {
                 <Searchbar />
 
                 {/* announcement hero */}
-                <main className='flex flex-col w-full h-full px-3 py-4 gap-3'>
-                    
+                <main className='flex flex-col w-full px-3 py-4 gap-3'>
+                    {createAnnouncements()}
+                    {createAnnouncements()}
                 </main>
             </div>
         </div>
