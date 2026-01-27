@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Button from '../components/Button'
 import GroupOverview from '../components/GroupOverview';
+import GroupMembers from '../components/GroupMembers';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
@@ -59,7 +60,7 @@ const GroupDetailPage = () => {
             </div>
 
             {/* div 2 - shows the respective detail of above navigation btns */}
-            <GroupOverview />
+            <GroupMembers />
         </div>
     )
 }
