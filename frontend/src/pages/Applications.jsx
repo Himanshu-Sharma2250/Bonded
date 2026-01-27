@@ -1,5 +1,3 @@
-import React from 'react'
-import SideMenu from '../components/SideMenu'
 import { Users } from 'lucide-react'
 import Button from '../components/Button'
 
@@ -71,34 +69,29 @@ const Applications = () => {
 
             {/* div 3 - contains withdraw button */}
             <div>
-                <Button name="Withdraw" bgColor="#2A6E8C" btnSize="18px" />
+                <Button name="Withdraw" bgColor="#FF7A59" btnSize="18px" />
             </div>
         </div>
     }
 
     return (
-        <div className='flex bg-[#F8FAFC]'>
-            <SideMenu />
+        <div className='flex-1 flex-col ml-[20%] gap-1 w-[80%] h-screen overflow-y-auto hide-scrollbar'>
+            {/* header */}
+            <div className='px-3 flex flex-col gap-1 py-1'>
+                <h1 className='text-3xl font-bold'>
+                    Applications
+                </h1>
 
-            {/* contains the applications */}
-            <div className='flex-1 flex-col ml-[20%] gap-1 w-[80%] h-screen overflow-y-auto hide-scrollbar'>
-                {/* header */}
-                <div className='px-3 flex flex-col gap-1 py-1'>
-                    <h1 className='text-3xl font-bold'>
-                        Applications
-                    </h1>
-
-                    <p>
-                        View all your group submitted join applications
-                    </p>
-                </div>
-
-                {/* applications hero */}
-                <main className='flex flex-col w-full px-3 py-4 mb-6 gap-3'>
-                    {createApplicationCards()}
-                                 
-                </main>
+                <p>
+                    View all your group submitted join applications
+                </p>
             </div>
+
+            {/* applications hero */}
+            <main className='flex flex-col w-full px-3 py-4 mb-6 gap-3'>
+                {createApplicationCards()}
+                                 
+            </main>
         </div>
     )
 }

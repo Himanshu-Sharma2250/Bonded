@@ -1,17 +1,12 @@
 import { User, LayoutDashboard, Megaphone, Users, Mail, MoveLeft } from 'lucide-react'
 import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom';
 
 const SideMenu = () => {
-    const [currentPage, setCurrentPage] = useState('Dashboard');
-
-    // Helper to determine classes for each menu item
-    const getLinkClass = (id) => {
-        const baseClasses = 'flex justify-start gap-2 px-3 items-center h-14 cursor-pointer transition-colors duration-200';
-        const activeClasses = 'bg-[#2A6E8C] text-[#F8FAFC]';
-        const inactiveClasses = 'text-[#000000] hover:bg-[#E9F1F5] hover:text-[#2A6E8C]';
-
-        return `${baseClasses} ${currentPage === id ? activeClasses : inactiveClasses}`;
-    };
+    const linkStyle = ({ isActive }) => 
+        `flex justify-start gap-2 px-3 items-center h-14 cursor-pointer transition-colors duration-200 ${
+            isActive ? 'bg-[#2A6E8C] text-[#F8FAFC]' : 'text-[#000000] hover:bg-[#E9F1F5] hover:text-[#2A6E8C]'
+        }`;
 
     return (
         <div className='fixed left-0 top-0 h-screen w-[20%] border-r-2 bg-[#F8FAFC]'>
@@ -22,25 +17,25 @@ const SideMenu = () => {
 
             {/* div 2 - Menu */}
             <div className='h-[80%] w-full flex flex-col py-2 px-2'>
-                <div className={getLinkClass('Dashboard')} onClick={() => setCurrentPage('Dashboard')}>
+                <NavLink to="/dashboard" className={linkStyle}>
                     <LayoutDashboard className='w-5' />
                     <h1 className='text-2xl'>Dashboard</h1>
-                </div>
-                
-                <div className={getLinkClass('Announcements')} onClick={() => setCurrentPage('Announcements')}>
-                    <Megaphone className='w-5' />
+                </NavLink>
+
+                <NavLink to="/announcements" className={linkStyle}>
+                    <Users className='w-5' />
                     <h1 className='text-2xl'>Announcements</h1>
-                </div>
+                </NavLink>
                 
-                <div className={getLinkClass('Groups')} onClick={() => setCurrentPage('Groups')}>
+                <NavLink to="/groups" className={linkStyle}>
                     <Users className='w-5' />
                     <h1 className='text-2xl'>Groups</h1>
-                </div>
+                </NavLink>
                 
-                <div className={getLinkClass('Applications')} onClick={() => setCurrentPage('Applications')}>
-                    <Mail className='w-5' />
+                <NavLink to="/applications" className={linkStyle}>
+                    <Users className='w-5' />
                     <h1 className='text-2xl'>Applications</h1>
-                </div>
+                </NavLink>
             </div>
 
             {/* div 3 - Profile */}
