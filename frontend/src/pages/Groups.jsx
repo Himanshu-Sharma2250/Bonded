@@ -1,6 +1,7 @@
 import React from 'react'
 import Searchbar from '../components/Searchbar'
 import { User, Users } from 'lucide-react'
+import CreateGroupModal from '../components/CreateGroupModal'
 
 const Groups = () => {
     const createGroupCards = () => {
@@ -46,14 +47,21 @@ const Groups = () => {
     return (
         <div className='flex-1 flex-col gap-1'>
             {/* header */}
-            <div className='px-3 flex flex-col gap-1 py-1'>
-                <h1 className='text-3xl font-bold'>
-                    Groups
-                </h1>
+            <div className='px-3 flex justify-between items-center py-1'>
+                <div className='flex flex-col gap-1'>
+                    <h1 className='text-3xl font-bold'>
+                        Groups
+                    </h1>
 
-                <p>
-                    Full view of your groups and other groups.
-                </p>
+                    <p>
+                        Full view of your groups and other groups.
+                    </p>
+                </div>
+
+                <div>
+                    {/* for the create group button to open a dialog */}
+                    <CreateGroupModal />
+                </div>
             </div>
 
             <Searchbar />

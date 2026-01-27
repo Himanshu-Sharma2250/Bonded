@@ -1,10 +1,14 @@
 import React from 'react'
 
-const Button = (props) => {
+const Button = ({ name, txtColor, bgColor, btnSize, ...rest }) => {
     return (
         <div>
-            <button className={`px-4 py-1 cursor-pointer rounded-xs text-[#F8FAFC] font-medium`} style={{ backgroundColor: props.bgColor, fontSize: props.btnSize }}>
-                {props.name}
+            <button 
+                {...rest}
+                className={`px-4 py-1 cursor-pointer rounded-xs font-medium`} 
+                style={{ backgroundColor: bgColor, fontSize: btnSize, color: txtColor ? txtColor : '#F8FAFC' }}
+            >
+                {name}
             </button>
         </div>
     )
