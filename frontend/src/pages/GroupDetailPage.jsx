@@ -3,6 +3,7 @@ import Button from '../components/Button'
 import GroupOverview from '../components/GroupOverview';
 import GroupMembers from '../components/GroupMembers';
 import GroupHistory from '../components/GroupHistory';
+import ApplyToGroupModal from '../components/ApplyToGroupModal';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
@@ -32,7 +33,7 @@ const GroupDetailPage = () => {
 
                 {/* contains apply btn and dialog that pop up */}
                 <div>
-                    <Button name={'Apply'} bgColor={'#2A6E8C'} btnSize={'16px'} />
+                    <ApplyToGroupModal />
                 </div>
             </div>
 
