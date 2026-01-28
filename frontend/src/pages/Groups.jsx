@@ -69,7 +69,7 @@ const Groups = () => {
             {/* announcement hero */}
             <main className='flex flex-wrap w-full  px-3 py-4 gap-3'>
                 {createGroupCards()}
-                </main>
+            </main>
         </div>
     )
 }

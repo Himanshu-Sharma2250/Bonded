@@ -4,14 +4,22 @@ import GroupOverview from '../components/GroupOverview';
 import GroupMembers from '../components/GroupMembers';
 import GroupHistory from '../components/GroupHistory';
 import ApplyToGroupModal from '../components/ApplyToGroupModal';
+import { MoveLeft } from 'lucide-react';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
 
     return (
         <div className='flex flex-col gap-1 px-5'>
+            {/* this div contains back button */}
+            <div className='flex justify-start items-center px-2 h-12'>
+                <button className='cursor-pointer'>
+                    <MoveLeft className='w-5' />
+                </button>
+            </div>
+
             {/* div 1 - shows group info like group image, name, members number and button to apply */}
-            <div className='flex justify-between items-center py-2 px-3 border-2'>
+            <div className='flex justify-between items-center py-2 px-3 '>
                 {/* contains group info */}
                 <div className='flex gap-1 items-center'>
                     <div>
@@ -62,7 +70,15 @@ const GroupDetailPage = () => {
             </div>
 
             {/* div 2 - shows the respective detail of above navigation btns */}
-            <GroupHistory />
+            {selectedTab === 'Overview' ? (
+                <GroupOverview />
+            ) : (
+                selectedTab === 'Members' ? (
+                    <GroupMembers />
+                ) : (
+                    <GroupHistory />
+                )
+            )}
         </div>
     )
 }
