@@ -29,7 +29,7 @@ const MyProfile = () => {
     }
 
     return (
-        <div className='px-20 py-2 flex flex-col gap-10'>
+        <div className='py-2 flex flex-col gap-10'>
             {/* shows page's header */}
             <div className='flex flex-col'>
                 <h1 className='text-2xl font-bold'>

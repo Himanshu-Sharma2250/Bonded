@@ -30,7 +30,7 @@ const UserProfilePage = () => {
     }
 
     return (
-        <div className='px-20 py-2 flex flex-col gap-10'>
+        <div className='py-2 flex flex-col gap-10'>
             {/* shows btn to move back and page's header */}
             <div className='flex gap-5 items-center'>
                 {/* back btn */}

@@ -4,7 +4,7 @@ const Dashboard = () => {
     return (
         <div className='flex-1 flex-col gap-1'>
             {/* header */}
-            <div className='px-3 flex flex-col gap-1 py-1'>
+            <div className='flex flex-col gap-1 py-1'>
                 <h1 className='text-3xl font-bold'>
                     Dashboard
                 </h1>
@@ -15,7 +15,7 @@ const Dashboard = () => {
             </div>
 
             {/* dashboard hero */}
-            <main className='flex w-full h-60 px-3 py-4 gap-3'>
+            <main className='flex w-full h-60 py-4 gap-3'>
                 {/* div 1 - shows group detail */}
                 <div className='flex flex-col border-2 w-[30%] px-2 py-3 justify-between rounded-xs'>
                     <div className='flex justify-between'>

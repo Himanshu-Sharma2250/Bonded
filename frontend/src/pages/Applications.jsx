@@ -77,7 +77,7 @@ const Applications = () => {
     return (
         <div className='flex-1 flex-col gap-1 '>
             {/* header */}
-            <div className='px-3 flex flex-col gap-1 py-1'>
+            <div className='flex flex-col gap-1 py-1'>
                 <h1 className='text-3xl font-bold'>
                     Applications
                 </h1>
@@ -88,7 +88,7 @@ const Applications = () => {
             </div>
 
             {/* applications hero */}
-            <main className='flex flex-col w-full px-3 py-4 mb-6 gap-3'>
+            <main className='flex flex-col w-full py-4 mb-6 gap-3'>
                 {createApplicationCards()}
                                  
             </main>

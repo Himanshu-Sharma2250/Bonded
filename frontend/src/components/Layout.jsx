@@ -10,7 +10,7 @@ const Layout = () => {
             <SideMenu isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
             
             {/* Outlet is where the specific page content (Groups, Applications, etc.) will render */}
-            <div className={`flex-1 ${isCollapsed ? 'ml-[4%] w-[96%]' : 'ml-[20%] w-[80%]'} h-screen overflow-y-auto hide-scrollbar transition-all duration-300`}>
+            <div className={`flex-1 ${isCollapsed ? 'ml-[4%] w-[96%]' : 'ml-[20%] w-[80%]'} px-10 h-screen overflow-y-auto hide-scrollbar transition-all duration-300`}>
                 <Outlet />
             </div>
         </div>

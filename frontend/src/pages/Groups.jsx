@@ -47,7 +47,7 @@ const Groups = () => {
     return (
         <div className='flex-1 flex-col gap-1'>
             {/* header */}
-            <div className='px-3 flex justify-between items-center py-1'>
+            <div className='flex justify-between items-center py-1'>
                 <div className='flex flex-col gap-1'>
                     <h1 className='text-3xl font-bold'>
                         Groups
@@ -67,7 +67,7 @@ const Groups = () => {
             <Searchbar />
 
             {/* announcement hero */}
-            <main className='flex flex-wrap w-full  px-3 py-4 gap-3'>
+            <main className='flex flex-wrap w-full py-4 gap-3'>
                 {createGroupCards()}
             </main>
         </div>
