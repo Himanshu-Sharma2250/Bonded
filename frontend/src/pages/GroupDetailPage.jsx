@@ -11,7 +11,7 @@ const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
 
     return (
-        <div className='py-2 flex flex-col gap-1'>
+        <div className='pb-1 flex flex-col gap-1'>
             {/* this div contains back button */}
             <div className='flex justify-start items-center px-2 h-12'>
                 <NavLink to={'/groups'} className='cursor-pointer'>

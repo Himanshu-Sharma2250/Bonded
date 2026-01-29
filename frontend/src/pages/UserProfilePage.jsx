@@ -81,50 +81,50 @@ const UserProfilePage = () => {
 
                 <div className='flex flex-col gap-2 px-2 py-1 rounded-xs shadow'>
                     {/* shows username and user email */}
-                    <div className='flex items-center justify-between'>
+                    <div className='flex items-center'>
                         {/* username */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
+                            <span className='text-xs text-gray-600 w-145'>
                                 Username
                             </span>
 
-                            <span className=''>
+                            <span className='w-145'>
                                 [Username]
                             </span>
                         </div>
 
                         {/* user email */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
+                            <span className='text-xs text-gray-600 w-145'>
                                 Email
                             </span>
 
-                            <span>
+                            <span className='w-145'>
                                 [User email]
                             </span>
                         </div>
                     </div>
 
                     {/* shows user role and date of joining team */}
-                    <div className='flex items-center justify-between'>
+                    <div className='flex items-center'>
                         {/* user role */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
+                            <span className='text-xs text-gray-600 w-145'>
                                 Role
                             </span>
 
-                            <span className=''>
+                            <span className='w-145'>
                                 USER
                             </span>
                         </div>
 
                         {/* user date of joining */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
+                            <span className='text-xs text-gray-600 w-145'>
                                 Member Since
                             </span>
 
-                            <span>
+                            <span className='w-145'>
                                 [date - time]
                             </span>
                         </div>

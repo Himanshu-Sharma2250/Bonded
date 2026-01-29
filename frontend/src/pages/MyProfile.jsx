@@ -45,19 +45,23 @@ const MyProfile = () => {
             <div className='flex gap-2 items-center'>
                 {/* user profile image */}
                 <div className='flex items-center'>
-                    <span className='p-4 bg-cyan-800'>
-                        U
+                    <span className='p-5 bg-cyan-800'>
+                        AS
                     </span>
                 </div>
 
                 {/* page header */}
-                <div>
-                    <h1 className='text-2xl '>
+                <div className='flex flex-col'>
+                    <h1 className='text-xl '>
                         User Name
                     </h1>
 
-                    <span className='text-lime-700'>
-                        USER
+                    <span className='text-gray-400 text-[14px]'>
+                        @email
+                    </span>
+
+                    <span className='text-gray-400 text-[13px]'>
+                        email.com
                     </span>
                 </div>
             </div>
@@ -70,51 +74,160 @@ const MyProfile = () => {
 
                 <div className='flex flex-col gap-2 px-2 py-1 rounded-xs shadow'>
                     {/* shows username and user email */}
-                    <div className='flex items-center justify-between'>
+                    <div className='flex items-center'>
                         {/* username */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
-                                Username
+                            <span className='text-xs text-gray-600 w-145'>
+                                Full Name
                             </span>
 
-                            <span className=''>
-                                [Username]
+                            <span className='w-145'>
+                                [Full name]
                             </span>
                         </div>
 
                         {/* user email */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
-                                Email
+                            <span className='text-xs text-gray-600 w-145'>
+                                Username
                             </span>
 
-                            <span>
-                                [User email]
+                            <span className='w-145'>
+                                [User name]
                             </span>
                         </div>
                     </div>
 
                     {/* shows user role and date of joining team */}
-                    <div className='flex items-center justify-between'>
+                    <div className='flex items-center'>
                         {/* user role */}
                         <div className='flex flex-col gap-1'>
                             <span className='text-xs text-gray-600'>
-                                Role
+                                email
                             </span>
 
-                            <span className=''>
-                                USER
+                            <span className='w-145'>
+                                [email]
                             </span>
                         </div>
 
                         {/* user date of joining bonded */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
-                                User Since
+                            <span className='text-xs text-gray-600 w-145'>
+                                Role
                             </span>
 
-                            <span>
-                                [date - time]
+                            <span className='w-145'>
+                                USER
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* social info - bio, website, github, linkedln, hashnode, twitter, leetcode */}
+            <div className='flex flex-col gap-2'>
+                <h1 className='text-2xl font-bold'>
+                    Social Information
+                </h1>
+
+                <div className='flex flex-col gap-2 px-2 py-1 rounded-xs shadow'>
+                    {/* shows bio and website */}
+                    <div className='flex items-center'>
+                        {/* bio */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Bio
+                            </span>
+
+                            <span className='w-145'>
+                                [bio]
+                            </span>
+                        </div>
+
+                        {/* website */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Website
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* shows linkedln and github */}
+                    <div className='flex items-center'>
+                        {/* linkedln */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Linkedln
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+
+                        {/* github */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Github
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* shows twitter and hashnode */}
+                    <div className='flex items-center'>
+                        {/* twitter */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Twitter/X
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+
+                        {/* hashnode */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                hashnode
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* shows medium and leetcode */}
+                    <div className='flex items-center'>
+                        {/* medium */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Medium
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+
+                        {/* leetcode */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Leetcode
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
                             </span>
                         </div>
                     </div>

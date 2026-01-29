@@ -4,7 +4,7 @@ const Dashboard = () => {
     return (
         <div className='flex-1 flex-col gap-1'>
             {/* header */}
-            <div className='flex flex-col gap-1 py-1'>
+            <div className='flex flex-col gap-1 pb-1'>
                 <h1 className='text-3xl font-bold'>
                     Dashboard
                 </h1>

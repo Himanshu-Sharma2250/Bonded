@@ -45,9 +45,9 @@ const Groups = () => {
     }
 
     return (
-        <div className='flex-1 flex-col gap-1'>
+        <div className='flex flex-col gap-1'>
             {/* header */}
-            <div className='flex justify-between items-center py-1'>
+            <div className='flex justify-between items-center pb-1'>
                 <div className='flex flex-col gap-1'>
                     <h1 className='text-3xl font-bold'>
                         Groups
