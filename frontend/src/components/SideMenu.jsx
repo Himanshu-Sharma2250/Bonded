@@ -1,6 +1,7 @@
 import { User, LayoutDashboard, Megaphone, Users, Mail, MoveLeft } from 'lucide-react'
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom';
+import ProfileOptionModal from './ProfileOptionModal';
 
 const SideMenu = ({isCollapsed, setIsCollapsed}) => {
     const linkStyle = ({ isActive }) => 
@@ -42,17 +43,15 @@ const SideMenu = ({isCollapsed, setIsCollapsed}) => {
 
             {/* div 3 - Profile */}
             <div className='h-[10%] w-full flex justify-between items-center px-2 border-t-2 relative'>
-                <NavLink 
-                    to={'/profile'} 
-                    className={`flex ${isCollapsed ? 'justify-center' : 'justify-start'} rounded-xs items-center gap-2 border-2 px-3 py-1.5 w-[95%] cursor-pointer`}
+                <div 
+                    className={`flex ${isCollapsed ? 'justify-center' : 'justify-start w-full'} rounded-xs items-center border-2 px-3 py-1.5 cursor-pointer relative`}
                 >
-                    <User className='w-5'/>
-                    {!isCollapsed && <span className='text-[17px]'>Username</span>}
-                </NavLink>
+                    <ProfileOptionModal isCollapsed={isCollapsed} />
+                </div>
 
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className='border-2 px-1 py-1 rounded-xs cursor-pointer absolute -right-4 bg-[#F8FAFC] z-50'
+                    className='border-2 px-1 py-1 rounded-xs cursor-pointer absolute -right-4.5 bg-[#F8FAFC] z-50'
                 >
                     <MoveLeft className={`w-5 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} />
                 </button>
