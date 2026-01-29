@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import './App.css'
+import {Toaster} from "react-hot-toast"
+import {Routes, Route, Navigate} from "react-router-dom"
+
 import LandingPage from './pages/LandingPage'
 import SignUpPage from './pages/SignUpPage'
 import SignInPage from './pages/SignInPage'
@@ -11,13 +14,26 @@ import Applications from './pages/Applications'
 import GroupDetailPage from './pages/GroupDetailPage'
 import UserProfilePage from './pages/UserProfilePage'
 import MyProfile from './pages/MyProfile'
+import Layout from './components/Layout'
 
 function App() {
 
     return (
         <>
             <div className='h-screen w-screen'>
-                <MyProfile />
+                <Toaster />
+                <Routes>
+                    <Route path="/" element={<Layout />}>
+                        <Route index element={<Navigate to="/dashboard" />} />
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="groups" element={<Groups />} />
+                        <Route path="announcements" element={<Announcement />} />
+                        <Route path="applications" element={<Applications />} />
+                        <Route path="/groups/group-id" element={<GroupDetailPage />} />
+                        <Route path="/user/user-id" element={<UserProfilePage />} />
+                        <Route path="/profile" element={<MyProfile />} />
+                    </Route>
+                </Routes>
             </div>
         </>
     )

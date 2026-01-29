@@ -40,10 +40,11 @@ const SideMenu = () => {
 
             {/* div 3 - Profile */}
             <div className='h-[10%] w-full flex justify-between items-center px-2 border-t-2'>
-                <div className='flex justify-start rounded-xs items-center gap-2 border-2 px-3 py-1.5 w-[80%] cursor-pointer'>
+                <NavLink to={'/profile'} className='flex justify-start rounded-xs items-center gap-2 border-2 px-3 py-1.5 w-[80%] cursor-pointer'>
                     <User className='w-5'/>
                     <span className='text-[17px]'>Username</span>
-                </div>
+                </NavLink>
+
                 <button className='border-2 px-1 py-1 rounded-xs cursor-pointer'>
                     <MoveLeft className='w-5' />
                 </button>

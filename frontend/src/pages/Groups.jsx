@@ -1,11 +1,11 @@
-import React from 'react'
+import { NavLink } from 'react-router-dom';
 import Searchbar from '../components/Searchbar'
 import { User, Users } from 'lucide-react'
 import CreateGroupModal from '../components/CreateGroupModal'
 
 const Groups = () => {
     const createGroupCards = () => {
-        return <div className='flex flex-col justify-between gap-2 border-2 px-2 py-1 min-h-56 w-72 rounded-xs cursor-pointer'>
+        return <NavLink to={'/groups/group-id'} className='flex flex-col justify-between gap-2 border-2 px-2 py-1 min-h-56 w-72 rounded-xs cursor-pointer'>
             <div className='flex flex-col'>
                 <h1 className='text-xl'>
                     Group Name
@@ -41,7 +41,7 @@ const Groups = () => {
                     active or not
                 </span>
             </div>
-        </div>
+        </NavLink>
     }
 
     return (

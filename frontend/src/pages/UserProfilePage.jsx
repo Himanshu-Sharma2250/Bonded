@@ -1,5 +1,5 @@
 import { MoveLeft } from 'lucide-react'
-import React from 'react'
+import { NavLink } from 'react-router-dom';
 
 const UserProfilePage = () => {
     const createHistories = () => {
@@ -35,9 +35,9 @@ const UserProfilePage = () => {
             <div className='flex gap-5 items-center'>
                 {/* back btn */}
                 <div className='flex items-center'>
-                    <button className='cursor-pointer'>
+                    <NavLink to={'/groups/group-id'} className='cursor-pointer'>
                         <MoveLeft className='w-6' />
-                    </button>
+                    </NavLink>
                 </div>
 
                 {/* page header */}

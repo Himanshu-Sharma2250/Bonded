@@ -75,7 +75,7 @@ const Applications = () => {
     }
 
     return (
-        <div className='flex-1 flex-col ml-[20%] gap-1 w-[80%] h-screen overflow-y-auto hide-scrollbar'>
+        <div className='flex-1 flex-col gap-1 '>
             {/* header */}
             <div className='px-3 flex flex-col gap-1 py-1'>
                 <h1 className='text-3xl font-bold'>

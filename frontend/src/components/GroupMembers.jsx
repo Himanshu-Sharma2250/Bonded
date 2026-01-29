@@ -1,4 +1,4 @@
-import React from 'react'
+import { NavLink } from 'react-router-dom';
 import Button from './Button'
 
 const GroupMembers = () => {
@@ -57,7 +57,9 @@ const GroupMembers = () => {
 
             {/* view profile btn */}
             <div>
-                <Button name={'View Profile'} btnSize={'16px'} bgColor={'#2A6E8C'} />
+                <NavLink to={'/user/user-id'}>
+                    <Button name={'View Profile'} btnSize={'16px'} bgColor={'#2A6E8C'} />
+                </NavLink>
             </div>
         </div>
     }
