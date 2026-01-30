@@ -1,4 +1,5 @@
 import React from 'react'
+import EditProfileModal from '../components/EditProfileModal'
 
 const MyProfile = () => {
     const createHistories = () => {
@@ -41,28 +42,34 @@ const MyProfile = () => {
                 </span>
             </div>
 
-            {/* shows user profile , name and role */}
-            <div className='flex gap-2 items-center'>
-                {/* user profile image */}
-                <div className='flex items-center'>
-                    <span className='p-5 bg-cyan-800'>
-                        AS
-                    </span>
+            <div className='flex justify-between items-center'>
+                {/* shows user profile , name and role */}
+                <div className='flex gap-2 items-center'>
+                    {/* user profile image */}
+                    <div className='flex items-center'>
+                        <span className='p-5 bg-cyan-800'>
+                            AS
+                        </span>
+                    </div>
+
+                    {/* page header */}
+                    <div className='flex flex-col'>
+                        <h1 className='text-xl '>
+                            User Name
+                        </h1>
+
+                        <span className='text-gray-400 text-[14px]'>
+                            @email
+                        </span>
+
+                        <span className='text-gray-400 text-[13px]'>
+                            email.com
+                        </span>
+                    </div>
                 </div>
 
-                {/* page header */}
-                <div className='flex flex-col'>
-                    <h1 className='text-xl '>
-                        User Name
-                    </h1>
-
-                    <span className='text-gray-400 text-[14px]'>
-                        @email
-                    </span>
-
-                    <span className='text-gray-400 text-[13px]'>
-                        email.com
-                    </span>
+                <div>
+                    <EditProfileModal />
                 </div>
             </div>
 

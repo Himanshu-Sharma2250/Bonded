@@ -51,7 +51,7 @@ const ApplyToGroupModal = () => {
                         ></textarea>
                     </label>
 
-                    <div className='flex gap-2 justify-center items-center w-full mt-3'>
+                    <div className='flex gap-2 justify-center items-center w-full mt-5'>
                         <Button 
                             name='Cancel' 
                             txtColor='#64748B' 

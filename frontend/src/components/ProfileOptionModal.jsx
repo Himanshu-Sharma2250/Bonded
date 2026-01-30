@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useRef } from 'react';
-import { User } from 'lucide-react';
+import { User, Moon, Sun } from 'lucide-react';
 
 const ProfileOptionModal = ({isCollapsed}) => {
     const dialogRef = useRef(null);
@@ -41,8 +41,9 @@ const ProfileOptionModal = ({isCollapsed}) => {
                     My Profile
                 </NavLink>
 
-                <span className='hover:bg-gray-300 px-2'>
+                <span className='hover:bg-gray-300 px-2 flex justify-between' onClick={closeModal}>
                     Toggle theme
+                    <Moon className='w-4' />
                 </span>
 
                 <span className='hover:bg-red-300 px-2'>

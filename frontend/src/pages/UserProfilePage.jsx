@@ -56,19 +56,23 @@ const UserProfilePage = () => {
             <div className='flex gap-2 items-center'>
                 {/* user profile image */}
                 <div className='flex items-center'>
-                    <span className='p-4 bg-cyan-800'>
-                        U
+                    <span className='p-5 bg-cyan-800'>
+                        UN
                     </span>
                 </div>
 
                 {/* page header */}
-                <div>
-                    <h1 className='text-2xl '>
+                <div className='flex flex-col'>
+                    <h1 className='text-xl '>
                         User Name
                     </h1>
 
-                    <span className='text-lime-700'>
-                        USER
+                    <span className='text-gray-400 text-[14px]'>
+                        @email
+                    </span>
+
+                    <span className='text-gray-400 text-[13px]'>
+                        email.com
                     </span>
                 </div>
             </div>

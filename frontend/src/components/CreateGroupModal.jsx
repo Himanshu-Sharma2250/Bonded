@@ -61,7 +61,7 @@ const CreateGroupModal = () => {
                         <input type="text" className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' placeholder="Group's Tech Stack" />
                     </label>
 
-                    <div className='flex gap-2 justify-center items-center w-full mt-3'>
+                    <div className='flex gap-2 justify-center items-center w-full mt-5'>
                         <Button 
                             name='Cancel' 
                             txtColor='#64748B' 
