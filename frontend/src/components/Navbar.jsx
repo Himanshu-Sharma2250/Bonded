@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from './Button';
+import { NavLink } from "react-router-dom"
 
 const Navbar = () => {
     return (
@@ -31,8 +32,13 @@ const Navbar = () => {
 
             {/* login signup buttons */}
             <div className='flex items-center gap-2 '>
-                <Button name="Log In" bgColor="#2A6E8C" btnSize="18px"/>
-                <Button name="Sign Up" bgColor="#FF7A59" btnSize="18px"/>
+                <NavLink to={'/signin'}>
+                    <Button name="Log In" bgColor="#2A6E8C" btnSize="18px"/>
+                </NavLink>
+
+                <NavLink to={'/signup'}>
+                    <Button name="Sign Up" bgColor="#FF7A59" btnSize="18px"/>
+                </NavLink>
             </div>
         </div>
     )

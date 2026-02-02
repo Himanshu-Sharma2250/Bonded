@@ -2,8 +2,13 @@ import { NavLink } from 'react-router-dom';
 import Searchbar from '../components/Searchbar'
 import { User, Users } from 'lucide-react'
 import CreateGroupModal from '../components/CreateGroupModal'
+import { useState } from 'react';
+import AllGroupsTab from '../components/AllGroupsTab';
+import MyGroupTab from '../components/MyGroupTab';
 
 const Groups = () => {
+    const [selectedTab, setSelectedTab] = useState('All Groups');
+
     const createGroupCards = () => {
         return <NavLink to={'/groups/group-id'} className='flex flex-col justify-between gap-2 border-2 px-2 py-1 min-h-56 w-72 rounded-xs cursor-pointer'>
             <div className='flex flex-col'>
@@ -66,9 +71,30 @@ const Groups = () => {
 
             <Searchbar />
 
+            {/* tab - seperate my group and all groups */}
+            <div className='flex gap-5 mt-3'>
+                <span 
+                    className={`cursor-pointer ${selectedTab === 'All Groups' ? 'text-[#2A6E8C] font-bold' : 'text-[#64748B] hover:text-[#475569]'}`}
+                    onClick={() => setSelectedTab("All Groups")}
+                >
+                    All Groups
+                </span>
+
+                <span 
+                    className={`cursor-pointer ${selectedTab === 'My Group' ? 'text-[#2A6E8C] font-bold' : 'text-[#64748B] hover:text-[#475569]'}`}
+                    onClick={() => setSelectedTab("My Group")}
+                >
+                    My Group
+                </span>
+            </div>
+
             {/* announcement hero */}
-            <main className='flex flex-wrap w-full py-4 gap-3'>
-                {createGroupCards()}
+            <main className='flex flex-wrap w-full py-1 gap-3'>
+                {selectedTab === "My Group" ? (
+                    <MyGroupTab />
+                ) : (
+                    <AllGroupsTab />
+                )}
             </main>
         </div>
     )

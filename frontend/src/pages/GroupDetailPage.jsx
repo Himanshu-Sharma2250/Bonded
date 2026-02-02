@@ -6,6 +6,7 @@ import GroupHistory from '../components/GroupHistory';
 import ApplyToGroupModal from '../components/ApplyToGroupModal';
 import { MoveLeft } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import GroupNotes from '../components/GroupNotes';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
@@ -63,6 +64,13 @@ const GroupDetailPage = () => {
                 </span>
 
                 <span 
+                    className={`text-xl cursor-pointer ${selectedTab === 'Notes' ? 'text-[#2A6E8C] font-bold border-b-2 border-b-[#FF7A59]' : 'text-[#64748B] hover:text-[#475569]'}`}
+                    onClick={() => setSelectedTab('Notes')}    
+                >
+                    Notes
+                </span>
+
+                <span 
                     className={`text-xl cursor-pointer ${selectedTab === 'History' ? 'text-[#2A6E8C] font-bold border-b-2 border-b-[#FF7A59]' : 'text-[#64748B] hover:text-[#475569]'}`}
                     onClick={() => setSelectedTab('History')}    
                 >
@@ -77,7 +85,11 @@ const GroupDetailPage = () => {
                 selectedTab === 'Members' ? (
                     <GroupMembers />
                 ) : (
-                    <GroupHistory />
+                    selectedTab === 'Notes' ? (
+                        <GroupNotes />
+                    ) : (
+                        <GroupHistory />
+                    )
                 )
             )}
         </div>

@@ -1,14 +1,10 @@
 import { Users } from 'lucide-react'
-import Button from '../components/Button'
-import { useState } from 'react';
-import ReceivedApplications from '../components/ReceivedApplications';
-import SentApplications from '../components/SentApplications';
+import React from 'react'
+import Button from './Button'
 
-const Applications = () => {
-    const [selectedTab, setSelectedTab] = useState('Received');
-
+const ReceivedApplications = () => {
     const createApplicationCards = () => {
-        return <div className='flex flex-col px-2 py-2 border-2 w-full h-50 justify-between'>
+        return <div className='flex flex-col px-2 py-2 border-2 w-full gap-3 justify-between'>
             {/* div 1 - contains user name and email and if applications is pending or rejected or approved */}
             <div className='flex items-center justify-between'>
                 {/* contains user profile and name and email */}
@@ -34,9 +30,7 @@ const Applications = () => {
 
                 {/* contains if applications pending or rejected or approved */}
                 <div>
-                    <span className='bg-[#E9F1F5] px-1 py-0.5 rounded-2xl'>
-                        pending
-                    </span>
+                    <Button name={'View Profile'} bgColor={'#2A6E8C'} btnSize={'16px'} />
                 </div>
             </div>
 
@@ -73,53 +67,18 @@ const Applications = () => {
             </div>
 
             {/* div 3 - contains withdraw button */}
-            <div>
-                <Button name="Withdraw" bgColor="#FF7A59" btnSize="18px" />
+            <div className='flex gap-3'>
+                <Button name="Accept" bgColor="#FF7A59" btnSize="15px" />
+                <Button name="Reject" bgColor="#FF7A59" btnSize="15px" />
             </div>
         </div>
     }
 
     return (
-        <div className='flex flex-col gap-1 '>
-            {/* header */}
-            <div className='flex flex-col gap-1 pb-1'>
-                <h1 className='text-3xl font-bold'>
-                    Applications
-                </h1>
-
-                <p>
-                    View all your group submitted join applications
-                </p>
-            </div>
-
-            {/* tab - sent and received applications */}
-            <div className='flex gap-5 mt-3'>
-                <span
-                    className={`cursor-pointer ${selectedTab === 'Received' ? 'text-[#2A6E8C] font-bold' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab('Received')}
-                >
-                    Received
-                </span>
-
-                <span
-                    className={`cursor-pointer ${selectedTab === 'Sent' ? 'text-[#2A6E8C] font-bold' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab('Sent')}
-                >
-                    Sent
-                </span>
-            </div>
-
-            {/* applications hero */}
-            <main className='flex flex-col w-full py-1 gap-3'>
-                {selectedTab === "Received" ? (
-                    <ReceivedApplications />
-                ) : (
-                    <SentApplications />
-                )}
-                                 
-            </main>
+        <div>
+            {createApplicationCards()}
         </div>
     )
 }
 
-export default Applications
+export default ReceivedApplications

@@ -23,6 +23,12 @@ function App() {
             <div className='h-screen w-screen'>
                 <Toaster />
                 <Routes>
+                    <Route path='/landing' element={<LandingPage />} />
+
+                    <Route path='/signup' element={<SignUpPage />} />
+
+                    <Route path='/signin' element={<SignInPage />} />
+
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Navigate to="/dashboard" />} />
                         <Route path="dashboard" element={<Dashboard />} />

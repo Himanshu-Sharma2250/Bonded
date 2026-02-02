@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 
 const LandingPage = () => {
     return (
-        <div>
+        <div className='flex flex-col h-screen overflow-y-auto hide-scrollbar'>
             <Navbar />
 
             {/* hero section */}

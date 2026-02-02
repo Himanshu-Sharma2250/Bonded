@@ -1,5 +1,7 @@
 import React from 'react'
 import Button from '../components/Button'
+import { NavLink } from 'react-router-dom'
+import { Eye } from 'lucide-react'
 
 const SignUpPage = () => {
     return (
@@ -33,7 +35,11 @@ const SignUpPage = () => {
                             Password
                         </span>
 
-                        <input type="password" className='border-2 h-10 px-2' name="password" id="password" placeholder='password' />
+                        <div className='w-full flex items-center justify-between border-2 pr-2'>
+                            <input type="password" className='border-0 h-10 px-2 w-[95%] outline-0' name="password" id="password" placeholder='password' />
+
+                             <Eye className='w-5 cursor-pointer'/>
+                        </div>
                     </label>
 
                     <div className='flex flex-col mt-6'>
@@ -41,7 +47,7 @@ const SignUpPage = () => {
 
                         <p className='text-[16px]'>
                             Already have an account? 
-                            <a href="#" className='text-[#FF7A59]'> sign in</a>
+                            <NavLink to={'/signin'} className='text-[#FF7A59]'> sign in</NavLink>
                         </p>
                     </div>
                 </form>
