@@ -44,6 +44,9 @@ const GroupDetailPage = () => {
                 {/* contains apply btn and dialog that pop up */}
                 <div>
                     <ApplyToGroupModal />
+
+                    {/* if the user is group leader */}
+                    {/* <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} /> */}
                 </div>
             </div>
 
