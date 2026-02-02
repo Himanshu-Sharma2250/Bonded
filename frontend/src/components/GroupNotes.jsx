@@ -1,5 +1,6 @@
 import { CirclePlus, EllipsisVertical } from 'lucide-react'
 import React from 'react'
+import CreateNoteModal from './CreateNoteModal'
 
 const GroupNotes = () => {
     const createNoteCards = () => {
@@ -40,7 +41,7 @@ const GroupNotes = () => {
 
             {/* this shows only if the user is leader of group */}
             <button className='fixed bottom-10 right-10 cursor-pointer'>
-                <CirclePlus className='w-10 h-10' />
+                <CreateNoteModal />
             </button>
         </div>
     )
