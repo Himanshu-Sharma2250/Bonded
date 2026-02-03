@@ -16,7 +16,7 @@ const CreateNoteModal = () => {
     return (
         <div>
             <Button 
-                name={<CirclePlus className='w-10 h-10' />}
+                name={<CirclePlus className='w-10 h-10 text-[#2A6E8C]' />}
                 txtColor={'#000000'}
                 btnSize='16px' 
                 onClick={openModal}
@@ -55,7 +55,7 @@ const CreateNoteModal = () => {
                     <label className='flex flex-col items-start text-sm font-medium'>
                         Description
                         <textarea 
-                            className='border-2 w-full border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            className='border-2 w-full border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-15' 
                             placeholder="Note's Description" 
                         />
                     </label>

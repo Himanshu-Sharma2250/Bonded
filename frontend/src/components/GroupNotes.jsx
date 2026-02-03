@@ -40,7 +40,7 @@ const GroupNotes = () => {
             </div>
 
             {/* this shows only if the user is leader of group */}
-            <button className='fixed bottom-10 right-10 cursor-pointer'>
+            <button className='fixed bottom-10 right-2 cursor-pointer'>
                 <CreateNoteModal />
             </button>
         </div>

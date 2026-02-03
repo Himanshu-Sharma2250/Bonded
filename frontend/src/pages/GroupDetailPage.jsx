@@ -7,6 +7,7 @@ import ApplyToGroupModal from '../components/ApplyToGroupModal';
 import { MoveLeft } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import GroupNotes from '../components/GroupNotes';
+import DeleteGroupPopUp from '../components/DeleteGroupPopUp';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
@@ -47,6 +48,7 @@ const GroupDetailPage = () => {
 
                     {/* if the user is group leader */}
                     {/* <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} /> */}
+                    {/* <DeleteGroupPopUp /> */}
                 </div>
             </div>
 

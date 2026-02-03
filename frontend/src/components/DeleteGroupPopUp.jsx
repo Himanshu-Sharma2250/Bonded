@@ -1,25 +1,21 @@
-import { useRef } from 'react'
+import React, { useRef } from 'react'
 import Button from './Button';
 
-const ApplyToGroupModal = () => {
+const DeleteGroupPopUp = () => {
+    // Create a reference to the dialog element
     const dialogRef = useRef(null);
-    
+
     const openModal = () => {
         dialogRef.current?.showModal();
     };
-    
+
     const closeModal = () => {
         dialogRef.current?.close();
     };
 
     return (
         <div>
-            <Button 
-                name='Apply' 
-                bgColor='#2A6E8C' 
-                btnSize='16px' 
-                onClick={openModal}
-            />
+            <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} onClick={openModal} />
 
             {/* IMPORTANT: Use 'open:flex' so it only becomes flex when open.
                The backdrop: class styles the dimmed background behind the modal.
@@ -30,7 +26,7 @@ const ApplyToGroupModal = () => {
             >
                 <div className='w-full flex items-center justify-center'>
                     <h1 className='text-2xl font-bold'>
-                        Want to join?
+                        Are you sure?
                     </h1>
                 </div>
 
@@ -43,12 +39,11 @@ const ApplyToGroupModal = () => {
                     }}
                 >
                     <label className='flex flex-col text-sm font-medium'>
-                        Why should we add you to our team?
-                        
-                        <textarea 
-                            name="reason" 
-                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-15' placeholder="Give us reason"
-                        ></textarea>
+                        <input 
+                            type="text" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Enter Group's Name to delete" 
+                        />
                     </label>
 
                     <div className='flex gap-2 justify-center items-center w-full mt-5'>
@@ -61,8 +56,8 @@ const ApplyToGroupModal = () => {
                             onClick={closeModal} 
                         />
                         <Button 
-                            name='Apply' 
-                            bgColor='#2A6E8C' 
+                            name='Delete' 
+                            bgColor='#FF7A59' 
                             btnSize='16px' 
                             type="submit" 
                         />
@@ -73,4 +68,4 @@ const ApplyToGroupModal = () => {
     )
 }
 
-export default ApplyToGroupModal
+export default DeleteGroupPopUp

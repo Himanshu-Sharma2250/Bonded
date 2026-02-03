@@ -1,6 +1,7 @@
 import { Users } from 'lucide-react'
 import React from 'react'
 import Button from './Button'
+import { NavLink } from 'react-router-dom'
 
 const ReceivedApplications = () => {
     const createApplicationCards = () => {
@@ -30,7 +31,9 @@ const ReceivedApplications = () => {
 
                 {/* contains if applications pending or rejected or approved */}
                 <div>
-                    <Button name={'View Profile'} bgColor={'#2A6E8C'} btnSize={'16px'} />
+                    <NavLink to={'/user/user-id'}>
+                        <Button name={'View Profile'} bgColor={'#2A6E8C'} btnSize={'16px'} />
+                    </NavLink>
                 </div>
             </div>
 

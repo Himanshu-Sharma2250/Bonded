@@ -35,7 +35,7 @@ const UserProfilePage = () => {
             <div className='flex gap-5 items-center'>
                 {/* back btn */}
                 <div className='flex items-center'>
-                    <NavLink to={'/groups/group-id'} className='cursor-pointer'>
+                    <NavLink to={'/groups/group-id'} viewTransition className='cursor-pointer'>
                         <MoveLeft className='w-6' />
                     </NavLink>
                 </div>
@@ -130,6 +130,115 @@ const UserProfilePage = () => {
 
                             <span className='w-145'>
                                 [date - time]
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* social info - bio, website, github, linkedln, hashnode, twitter, leetcode */}
+            <div className='flex flex-col gap-2'>
+                <h1 className='text-2xl font-bold'>
+                    Social Information
+                </h1>
+
+                <div className='flex flex-col gap-2 px-2 py-1 rounded-xs shadow'>
+                    {/* shows bio and website */}
+                    <div className='flex items-center'>
+                        {/* bio */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Bio
+                            </span>
+
+                            <span className='w-145'>
+                                [bio]
+                            </span>
+                        </div>
+
+                        {/* website */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Website
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* shows linkedln and github */}
+                    <div className='flex items-center'>
+                        {/* linkedln */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Linkedln
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+
+                        {/* github */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Github
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* shows twitter and hashnode */}
+                    <div className='flex items-center'>
+                        {/* twitter */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Twitter/X
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+
+                        {/* hashnode */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                hashnode
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* shows medium and leetcode */}
+                    <div className='flex items-center'>
+                        {/* medium */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Medium
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
+                            </span>
+                        </div>
+
+                        {/* leetcode */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Leetcode
+                            </span>
+
+                            <span className='w-145'>
+                                [link]
                             </span>
                         </div>
                     </div>
