@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { ApplicationStatus, availableApplicationStatus } from "../constant";
+import { ApplicationStatus, availableApplicationStatus } from "../constant.js";
 
 const applicationSchema = new Schema(
     {

@@ -1,4 +1,5 @@
 import express from "express";
+
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { userCreatedTeam, userDeletedTeam, userJoined, userJoinedTeam, userKickedOutOfTeam, userLeftTeam } from "../controllers/user_history.controller.js";
 
