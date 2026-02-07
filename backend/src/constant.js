@@ -41,3 +41,12 @@ export const UserAction = {
 }
 
 export const availableUserActions = Object.values(UserAction);
+
+export const ApplicationStatus = {
+    PENDING: "PENDING",
+    ACCEPTED: "ACCEPTED",
+    REJECTED: "REJECTED",
+    WITHDRAW: "WITHDRAW"
+}
+
+export const availableApplicationStatus = Object.values(ApplicationStatus);

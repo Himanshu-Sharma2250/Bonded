@@ -187,7 +187,8 @@ export const loginUser = async (req, res) => {
         const cookieOption = {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24,
-            secure: process.env.NODE_ENV === "production"
+            secure: true,
+            sameSite: 'none'
         }
 
         res.status(200)
@@ -234,7 +235,11 @@ export const logoutUser = async (req, res) => {
                 message: "User logged out successfully", 
             })
     } catch (error) {
-        
+        console.error("Error logging out user: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error logging out user"
+        })
     }
 }
 
