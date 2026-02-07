@@ -42,6 +42,18 @@ export const joinTeam = async (req, res) => {
             });
         }
 
+        const totalMembersOfTeam = await TeamMember.find({
+            teamId: teamId,
+            active: true
+        })
+
+        if (totalMembersOfTeam.length === 4) {
+            return res.status(400).json({
+                success: false,
+                message: 'Team is full.'
+            });
+        }
+
         const alreadyJoined = await TeamMember.findOne({
             userId: req.user._id,
             teamId: teamId

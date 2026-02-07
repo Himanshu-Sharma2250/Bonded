@@ -46,7 +46,7 @@ export const ApplicationStatus = {
     PENDING: "PENDING",
     ACCEPTED: "ACCEPTED",
     REJECTED: "REJECTED",
-    WITHDRAW: "WITHDRAW"
+    WITHDRAW: "WITHDRAWN"
 }
 
 export const availableApplicationStatus = Object.values(ApplicationStatus);
