@@ -1,8 +1,7 @@
 import { UserHistory } from "../models/user_history.model.js";
 import { userHistorySchema } from "../validators/history.validator.js";
 
-export const userJoined = async (req, res) => {
-    const {userId} = req.params;
+export const userCreatedTeam = async (req, res) => {
     const {data, error} = userHistorySchema.safeParse(req.body);
     
     if (error) {
@@ -16,49 +15,14 @@ export const userJoined = async (req, res) => {
 
     try {
         const history = await UserHistory.create({
-            userId: userId,
-            userAction: "JOINED",
-            reason: reason
+            userAction: "CREATED",
+            reason: reason,
+            userId: req.user._id
         })
     
         await history.save()
         
         res.status(201).json({
-            success: true,
-            message: "User joined history",
-            history
-        })
-        } catch (error) {
-            console.error("Error in creating user_joined history ", error);
-            res.status(500).json({
-                success: false,
-                message: "Error in creating user_joined history"
-            })
-        } 
-}
-
-export const userCreatedTeam = async (req, res) => {
-    const {userHistoryId} = req.params;
-    const {data, error} = userHistorySchema.safeParse(req.body);
-    
-    if (error) {
-        return res.status(400).json({
-            success: false,
-            message: "Error in req body"
-        })
-    }
-    
-    const {reason} = data;
-
-    try {
-        const history = await UserHistory.findByIdAndUpdate(userHistoryId, {
-            userAction: "CREATED",
-            reason: reason
-        }, {new: true})
-    
-        await history.save()
-        
-        res.status(200).json({
             success: true,
             message: "User created team history",
             history
@@ -73,7 +37,6 @@ export const userCreatedTeam = async (req, res) => {
 }
 
 export const userJoinedTeam = async (req, res) => {
-    const {userHistoryId} = req.params;
     const {data, error} = userHistorySchema.safeParse(req.body);
     
     if (error) {
@@ -86,16 +49,17 @@ export const userJoinedTeam = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await UserHistory.findByIdAndUpdate(userHistoryId, {
+        const history = await UserHistory.create({
             userAction: "JOINED",
-            reason: reason
-        }, {new: true})
+            reason: reason,
+            userId: req.user._id
+        })
     
         await history.save()
         
-        res.status(200).json({
+        res.status(201).json({
             success: true,
-            message: "User joined team history",
+            message: "User joined team",
             history
         })
         } catch (error) {
@@ -108,7 +72,6 @@ export const userJoinedTeam = async (req, res) => {
 }
 
 export const userLeftTeam = async (req, res) => {
-    const {userHistoryId} = req.params;
     const {data, error} = userHistorySchema.safeParse(req.body);
     
     if (error) {
@@ -121,16 +84,17 @@ export const userLeftTeam = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await UserHistory.findByIdAndUpdate(userHistoryId, {
+        const history = await UserHistory.create({
             userAction: "LEFT",
-            reason: reason
-        }, {new: true})
+            reason: reason,
+            userId: req.user._id
+        })
     
         await history.save()
         
-        res.status(200).json({
+        res.status(201).json({
             success: true,
-            message: "User left team history",
+            message: "User left team",
             history
         })
         } catch (error) {
@@ -143,7 +107,6 @@ export const userLeftTeam = async (req, res) => {
 }
 
 export const userKickedOutOfTeam = async (req, res) => {
-    const {userHistoryId} = req.params;
     const {data, error} = userHistorySchema.safeParse(req.body);
     
     if (error) {
@@ -156,16 +119,17 @@ export const userKickedOutOfTeam = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await UserHistory.findByIdAndUpdate(userHistoryId, {
+        const history = await UserHistory.create({
             userAction: "KICKED_OUT",
-            reason: reason
-        }, {new: true})
+            reason: reason,
+            userId: req.user._id
+        })
     
         await history.save()
         
-        res.status(200).json({
+        res.status(201).json({
             success: true,
-            message: "User kicked out of team history",
+            message: "User kicked out of team",
             history
         })
         } catch (error) {
@@ -178,7 +142,6 @@ export const userKickedOutOfTeam = async (req, res) => {
 }
 
 export const userDeletedTeam = async (req, res) => {
-    const {userHistoryId} = req.params;
     const {data, error} = userHistorySchema.safeParse(req.body);
     
     if (error) {
@@ -191,14 +154,15 @@ export const userDeletedTeam = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await UserHistory.findByIdAndUpdate(userHistoryId, {
+        const history = await UserHistory.create({
             userAction: "DELETED",
-            reason: reason
-        }, {new: true})
+            reason: reason,
+            userId: req.user._id
+        })
     
         await history.save()
         
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             message: "User deleted team history",
             history
@@ -210,4 +174,31 @@ export const userDeletedTeam = async (req, res) => {
                 message: "Error in creating user_delete_team history"
             })
         } 
+}
+
+export const getUserHistories = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const histories = await UserHistory.findById(userId);
+
+        if (!histories) {
+            return res.status(400).json({
+                success: false,
+                message: "No history present"
+            })
+        }
+
+        res.status(200).json({
+            success: false,
+            message: "User history fetched successfully",
+            histories
+        })
+    } catch (error) {
+        console.log("Error fetching user histories: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching user histories"
+        })
+    }
 }

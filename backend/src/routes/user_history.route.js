@@ -5,11 +5,11 @@ import { userCreatedTeam, userDeletedTeam, userJoined, userJoinedTeam, userKicke
 
 const userHistoryRouter = express.Router();
 
-userHistoryRouter.post("/user-joined/:userId", verifyJWT, userJoined);
-userHistoryRouter.patch("/user-joined-team/:userHistoryId", verifyJWT, userJoinedTeam);
-userHistoryRouter.patch("/user-created-team/:userHistoryId", verifyJWT, userCreatedTeam);
-userHistoryRouter.patch("/user-left-team/:userHistoryId", verifyJWT, userLeftTeam);
-userHistoryRouter.patch("/user-kicked-out-team/:userHistoryId", verifyJWT, userKickedOutOfTeam);
-userHistoryRouter.patch("/user-delete-team/:userHistoryId", verifyJWT, userDeletedTeam);
+userHistoryRouter.get("/", verifyJWT, userJoined);
+userHistoryRouter.post("/user-joined-team", verifyJWT, userJoinedTeam);
+userHistoryRouter.post("/user-created-team", verifyJWT, userCreatedTeam);
+userHistoryRouter.post("/user-left-team", verifyJWT, userLeftTeam);
+userHistoryRouter.post("/user-kicked-out-team", verifyJWT, userKickedOutOfTeam);
+userHistoryRouter.post("/user-delete-team", verifyJWT, userDeletedTeam);
 
 export default userHistoryRouter;

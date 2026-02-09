@@ -482,7 +482,8 @@ export const refreshAccessToken = async (req, res) => {
         const cookieOption = {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24,
-            secure: process.env.NODE_ENV === "production"
+            secure: process.env.NODE_ENV === "production",
+            sameSite: 'none'
         }
 
         res.cookie("AccessToken", accessToken, cookieOption)
