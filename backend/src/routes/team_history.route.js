@@ -1,13 +1,14 @@
 import express from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { teamCreated, teamDeleted, teamMemberJoined, teamMemberKickedOut, teamMemberLeft } from "../controllers/team_history.controller.js";
+import { getAllHistory, teamCreated, teamDeleted, teamMemberJoined, teamMemberKickedOut, teamMemberLeft } from "../controllers/team_history.controller.js";
 
 const teamHistoryRouter = express.Router();
 
 teamHistoryRouter.post("/create-team/:teamId", verifyJWT, teamCreated);
-teamHistoryRouter.patch("/member-left/:teamHistoryId", verifyJWT, teamMemberLeft);
-teamHistoryRouter.patch("/member-kicked-out/:teamHistoryId", verifyJWT, teamMemberKickedOut);
-teamHistoryRouter.patch("/member-joined/:teamHistoryId", verifyJWT, teamMemberJoined);
-teamHistoryRouter.patch("/team-delete/:teamHistoryId", verifyJWT, teamDeleted);
+teamHistoryRouter.post("/member-left/:teamId", verifyJWT, teamMemberLeft);
+teamHistoryRouter.post("/member-kicked-out/:teamId", verifyJWT, teamMemberKickedOut);
+teamHistoryRouter.post("/member-joined/:teamId", verifyJWT, teamMemberJoined);
+teamHistoryRouter.post("/team-delete/:teamId", verifyJWT, teamDeleted);
+teamHistoryRouter.get("/history/:teamId", verifyJWT, getAllHistory);
 
 export default teamHistoryRouter;

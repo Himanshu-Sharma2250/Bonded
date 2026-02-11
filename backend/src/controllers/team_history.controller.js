@@ -40,7 +40,7 @@ export const teamCreated = async (req, res) => {
 
 // member left
 export const teamMemberLeft = async (req, res) => {
-    const {teamHistoryId} = req.params;
+    const {teamId} = req.params;
     const {data, error} = teamHistorySchema.safeParse(req.body);
 
     if (error) {
@@ -53,30 +53,31 @@ export const teamMemberLeft = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await TeamHistory.findByIdAndUpdate(teamHistoryId, {
+        const history = await TeamHistory.create({
             teamAction: "LEFT",
-            reason: reason
-        }, {new: true})
+            reason: reason,
+            teamId: teamId
+        })
 
         await history.save()
 
         res.status(201).json({
             success: true,
-            message: "Team history updated",
+            message: "Team history created",
             history
         })
     } catch (error) {
-        console.error("Error in updating team history ", error);
+        console.error("Error in member left team history ", error);
         res.status(500).json({
             success: false,
-            message: "Error in updating team history"
+            message: "Error in member left team history"
         })
     }
 }
 
 // member kicked out
 export const teamMemberKickedOut = async (req, res) => {
-    const {teamHistoryId} = req.params;
+    const {teamId} = req.params;
     const {data, error} = teamHistorySchema.safeParse(req.body);
 
     if (error) {
@@ -89,30 +90,31 @@ export const teamMemberKickedOut = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await TeamHistory.findByIdAndUpdate(teamHistoryId, {
+        const history = await TeamHistory.create({
             teamAction: "KICKED_OUT",
-            reason: reason
-        }, {new: true})
+            reason: reason,
+            teamId: teamId
+        })
 
         await history.save()
 
         res.status(201).json({
             success: true,
-            message: "Team history updated",
+            message: "Team history created",
             history
         })
     } catch (error) {
-        console.error("Error in updating team history ", error);
+        console.error("Error in member kick out of team history ", error);
         res.status(500).json({
             success: false,
-            message: "Error in updating team history"
+            message: "Error in member kick out of team history"
         })
     }
 }
 
 // member joined
 export const teamMemberJoined = async (req, res) => {
-    const {teamHistoryId} = req.params;
+    const {teamId} = req.params;
     const {data, error} = teamHistorySchema.safeParse(req.body);
 
     if (error) {
@@ -125,30 +127,31 @@ export const teamMemberJoined = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await TeamHistory.findByIdAndUpdate(teamHistoryId, {
+        const history = await TeamHistory.create({
             teamAction: "JOINED",
-            reason: reason
+            reason: reason,
+            teamId: teamId
         }, {new: true})
 
         await history.save()
 
         res.status(201).json({
             success: true,
-            message: "Team history updated",
+            message: "Team history created",
             history
         })
     } catch (error) {
-        console.error("Error in updating team history ", error);
+        console.error("Error in member joined team history ", error);
         res.status(500).json({
             success: false,
-            message: "Error in updating team history"
+            message: "Error in member joined team history"
         })
     }
 }
 
 // team deleted
 export const teamDeleted = async (req, res) => {
-    const {teamHistoryId} = req.params;
+    const {teamId} = req.params;
     const {data, error} = teamHistorySchema.safeParse(req.body);
 
     if (error) {
@@ -161,23 +164,54 @@ export const teamDeleted = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await TeamHistory.findByIdAndUpdate(teamHistoryId, {
+        const history = await TeamHistory.create({
             teamAction: "DELETED",
-            reason: reason
+            reason: reason,
+            teamId: teamId
         }, {new: true})
 
         await history.save()
 
         res.status(201).json({
             success: true,
-            message: "Team history updated",
+            message: "Team history created",
             history
         })
     } catch (error) {
-        console.error("Error in updating team history ", error);
+        console.error("Error in delete team history ", error);
         res.status(500).json({
             success: false,
-            message: "Error in updating team history"
+            message: "Error in delete team history"
+        })
+    }
+}
+
+// get all history
+export const getAllHistory = async (req, res) => {
+    const {teamId} = req.params;
+
+    try {
+        const history = await TeamHistory.find({
+            teamId: teamId
+        })
+
+        if (!history) {
+            return res.status(404).json({
+                success: false,
+                message: "History not found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "History fetched",
+            history
+        })
+    } catch (error) {
+        console.error("Error fetching history: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching history"
         })
     }
 }
