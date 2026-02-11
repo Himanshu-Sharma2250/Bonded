@@ -4,6 +4,7 @@ import { axiosInstance } from "../lib/axios";
 export const useAuthStore = create((set) => ({
     user: null,
     loading: false,
+    isEditing: false,
 
     signUp: async (signUpData) => {
         set({loading: true});
@@ -100,5 +101,16 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    
+    editProfile: async (data) => {
+        set({isEditing: true});
+
+        try {
+            const res = await axiosInstance.patch("/auth/edit", data);
+            set({user: res.data.user});
+        } catch (error) {
+            console.error("Error updating profile: ", error)
+        } finally {
+            set({isEditing: false});
+        }
+    }
 }))
