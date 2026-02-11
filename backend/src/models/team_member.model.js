@@ -24,9 +24,9 @@ const teamMemberSchema = new Schema({
         type: String,
         required: true
     },
-    githubLink: {
-        type: String
-    },
+    // githubLink: {
+    //     type: String
+    // },
     teamRole: {
         type: String,
         enum: availableTeamRoles,

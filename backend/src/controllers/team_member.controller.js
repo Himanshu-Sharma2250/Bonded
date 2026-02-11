@@ -14,7 +14,7 @@ export const joinTeam = async (req, res) => {
         })
     }
 
-    const {name, email, reasonToJoin, githubLink} = data;
+    const {name, email, reasonToJoin} = data;
 
     try {
         // checking if user is a member of another team
@@ -292,7 +292,7 @@ export const createOwner = async (req, res) => {
         })
     }
 
-    const {name, email, reasonToJoin, githubLink} = data;
+    const {name, email, reasonToJoin} = data;
 
     try {
         // check if user is owner
@@ -314,7 +314,6 @@ export const createOwner = async (req, res) => {
             name: name,
             email: email,
             reasonToJoin: reasonToJoin,
-            githubLink: githubLink,
             teamRole: 'LEADER'
         })
 

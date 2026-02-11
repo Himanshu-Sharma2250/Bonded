@@ -13,6 +13,10 @@ const userSchema = new Schema(
             lowercase: true,
             unique: true
         },
+        fullName: {
+            type: String,
+            lowercase: true,
+        },
         email: {
             type: String,
             required: true,
@@ -46,6 +50,30 @@ const userSchema = new Schema(
         },
         emailVerificationExpiry: {
             type: Date,
+        },
+        bio: {
+            type: String
+        },
+        website: {
+            type: String
+        },
+        linkedln: {
+            type: String
+        },
+        github: {
+            type: String
+        },
+        twitter: {
+            type: String
+        },
+        hashnode: {
+            type: String
+        },
+        medium: {
+            type: String
+        },
+        leetcode: {
+            type: String
         }
     }, 
     { timestamps: true }

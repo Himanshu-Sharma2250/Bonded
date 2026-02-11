@@ -1,14 +1,14 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
+import bcrypt from "bcryptjs";
 
 dotenv.config({
     path: "./.env"
 })
 
-import { forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswordSchema } from "../validators/auth.validator.js"
+import { editProfileSchema, forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswordSchema } from "../validators/auth.validator.js"
 import { emailVerificationMailgenContent, forgotPasswordMailgenContent, sendEmail } from "../utils/mail.js";
-import bcrypt from "bcryptjs";
 import { User } from "../models/user.model.js";
 
 export const registerUser = async (req, res) => {
@@ -500,5 +500,54 @@ export const refreshAccessToken = async (req, res) => {
             success: false,
             message: "Error refreshing access token"
         })
+    }
+}
+
+export const editProfile = async (req, res) => {
+    const {data, error} = editProfileSchema.safeParse(req.body);
+
+    if (error) {
+        console.error("Error in safeParse: ", error);
+        return res.status(400).json({
+            success: false,
+            message: "Error in safeParse of zod"
+        })
+    }
+
+    const {bio, fullName, github, hashnode, leetcode, linkedln, medium, name, twitter, website} = data;
+    const userId = req.user._id;
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+            bio,
+            website,
+            fullName,
+            medium,
+            leetcode,
+            twitter,
+            name,
+            hashnode,
+            github,
+            linkedln
+        })
+
+        if (!updatedUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Failed to update user"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "User updated successfully",
+            user: updatedUser
+        })
+    } catch (error) {
+        console.error("Error updating user profile: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error updating user profile"
+        })        
     }
 }

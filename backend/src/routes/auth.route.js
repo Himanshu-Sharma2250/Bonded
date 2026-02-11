@@ -1,7 +1,7 @@
 import express from "express";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { forgotPassword, getProfile, loginUser, logoutUser, refreshAccessToken, registerUser, resendEmailVerification, resetForgottenPassword, verifyEmail } from "../controllers/auth.controller.js";
+import { editProfile, forgotPassword, getProfile, loginUser, logoutUser, refreshAccessToken, registerUser, resendEmailVerification, resetForgottenPassword, verifyEmail } from "../controllers/auth.controller.js";
 
 const authRouter = express.Router();
 
@@ -14,5 +14,6 @@ authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/reset-password/:token", resetForgottenPassword);
 authRouter.post("/refresh-token", refreshAccessToken);
 authRouter.post("/resend-email-verification", resendEmailVerification);
+authRouter.patch("/edit", verifyJWT, editProfile);
 
 export default authRouter;

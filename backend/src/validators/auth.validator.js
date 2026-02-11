@@ -39,3 +39,16 @@ export const resetPasswordSchema = z.object({
         .min(8, "Length of password should be atleast 8 characters")
         .max(13, "Length of password must not exceed 13 characters")
 })
+
+export const editProfileSchema = z.object({
+    fullName: z.string().trim(),
+    name: z.string().trim(),
+    bio: z.string().trim(),
+    website: z.string().trim(),
+    linkedln: z.string().trim(),
+    github: z.string().trim(),
+    twitter: z.string().trim(),
+    hashnode: z.string().trim(),
+    medium: z.string().trim(),
+    leetcode: z.string().trim(),
+})
