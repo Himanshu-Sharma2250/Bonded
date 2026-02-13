@@ -1,8 +1,26 @@
 import React, { useRef } from 'react'
 import Button from './Button'
+import { useForm } from 'react-hook-form';
+import { useTeamStore } from '../store/useTeamStore';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+
+const createTeamSchema = z.object({
+    name: z.string().trim(),
+    description: z.string().trim(),
+    totalMembers: z.coerce.number(),
+    techUsed: z.string().trim()
+})
 
 const CreateGroupModal = () => {
-    // Create a reference to the dialog element
+    const {register, handleSubmit} = useForm({
+        resolver: zodResolver(createTeamSchema)
+    })
+
+    const {createTeam, loading} = useTeamStore();
+
+    // reference to the dialog element
     const dialogRef = useRef(null);
 
     const openModal = () => {
@@ -12,6 +30,11 @@ const CreateGroupModal = () => {
     const closeModal = () => {
         dialogRef.current?.close();
     };
+
+    const onCreateTeam = async (data) => {
+        createTeam(data);
+        console.log(data)
+    }
 
     return (
         <div>
@@ -35,30 +58,47 @@ const CreateGroupModal = () => {
 
                 <form 
                     className='flex flex-col gap-3' 
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        // Add your form submission logic here
-                        closeModal();
-                    }}
+                    onSubmit={handleSubmit(onCreateTeam)}
                 >
                     <label className='flex flex-col text-sm font-medium'>
                         Name
-                        <input type="text" className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' placeholder="Group's Name" />
+                        <input 
+                            type="text" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Group's Name" 
+                            {...register("name")}
+                        />
                     </label>
                     
                     <label className='flex flex-col text-sm font-medium'>
                         Description
-                        <input type="text" className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' placeholder="Group's Description" />
+                        <input 
+                            type="text" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Group's Description" 
+                            {...register("description")}
+                        />
                     </label>
 
                     <label className='flex flex-col text-sm font-medium'>
                         Total Members
-                        <input type="number" className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' placeholder="0" />
+                        <input 
+                            type="number" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="0" 
+                            {...register("totalMembers")}
+                            required
+                        />
                     </label>
 
                     <label className='flex flex-col text-sm font-medium'>
                         Tech Stack Using
-                        <input type="text" className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' placeholder="Group's Tech Stack" />
+                        <input 
+                            type="text" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Group's Tech Stack" 
+                            {...register("techUsed")}
+                        />
                     </label>
 
                     <div className='flex gap-2 justify-center items-center w-full mt-5'>
@@ -71,7 +111,7 @@ const CreateGroupModal = () => {
                             onClick={closeModal} 
                         />
                         <Button 
-                            name='Create' 
+                            name={loading ? (<Loader2 className='w-4 animate-spin' />) : ("Create")}
                             bgColor='#2A6E8C' 
                             btnSize='16px' 
                             type="submit" 

@@ -13,7 +13,7 @@ export const useApplicationStore = create((set) => ({
         set({isApplying: true});
 
         try {
-            await axiosInstance.post(`/application/${teamId}/apply`);
+            await axiosInstance.post(`/application/${teamId}/apply`, data);
         } catch (error) {
             console.error("Error applying for team: ", error);
         } finally {

@@ -1,7 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import EditProfileModal from '../components/EditProfileModal'
+import { useAuthStore } from '../store/useAuthStore'
 
 const MyProfile = () => {
+    const {loading, profile, user} = useAuthStore();
+
+    useEffect(() => {
+        async function getProfile() {
+            await profile();
+        }
+        getProfile();
+    }, [])
+
+
+    console.log("user is ", user)
+
     const createHistories = () => {
         return <div className='flex items-center justify-between px-2 py-1 shadow-gray-800 shadow-xs rounded-xs'>
             {/* history's title and reason */}
@@ -42,6 +55,7 @@ const MyProfile = () => {
                 </span>
             </div>
 
+            {/* shows user profile and role and edit profile button */}
             <div className='flex justify-between items-center'>
                 {/* shows user profile , name and role */}
                 <div className='flex gap-2 items-center'>
@@ -55,21 +69,21 @@ const MyProfile = () => {
                     {/* page header */}
                     <div className='flex flex-col'>
                         <h1 className='text-xl '>
-                            User Name
+                            {user.name}
                         </h1>
 
                         <span className='text-gray-400 text-[14px]'>
-                            @email
+                           @{user.email.slice(0, -10)}
                         </span>
 
                         <span className='text-gray-400 text-[13px]'>
-                            email.com
+                            {user.email}
                         </span>
                     </div>
                 </div>
 
                 <div>
-                    <EditProfileModal />
+                    <EditProfileModal initialValue={user} />
                 </div>
             </div>
 
@@ -89,7 +103,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [Full name]
+                                {user.name}
                             </span>
                         </div>
 
@@ -100,7 +114,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [User name]
+                                @{user.email.slice(0, -10)}
                             </span>
                         </div>
                     </div>
@@ -114,7 +128,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [email]
+                                {user.email}
                             </span>
                         </div>
 
@@ -125,7 +139,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                USER
+                                {user.role}
                             </span>
                         </div>
                     </div>
@@ -148,7 +162,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [bio]
+                                {user.bio || "NA"}
                             </span>
                         </div>
 
@@ -159,7 +173,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [link]
+                                {user.website || "NA"}
                             </span>
                         </div>
                     </div>
@@ -169,11 +183,11 @@ const MyProfile = () => {
                         {/* linkedln */}
                         <div className='flex flex-col gap-1'>
                             <span className='text-xs text-gray-600 w-145'>
-                                Linkedln
+                                Linkedin
                             </span>
 
                             <span className='w-145'>
-                                [link]
+                                {user.linkedln || "NA"}
                             </span>
                         </div>
 
@@ -184,7 +198,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [link]
+                                {user.github || "NA"}
                             </span>
                         </div>
                     </div>
@@ -198,7 +212,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [link]
+                                {user.twitter || "NA"}
                             </span>
                         </div>
 
@@ -209,7 +223,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [link]
+                                {user.hashnode || "NA"}
                             </span>
                         </div>
                     </div>
@@ -223,7 +237,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [link]
+                                {user.medium || "NA"}
                             </span>
                         </div>
 
@@ -234,7 +248,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                [link]
+                                {user.leetcode || "NA"}
                             </span>
                         </div>
                     </div>

@@ -10,9 +10,11 @@ export const useAuthStore = create((set) => ({
         set({loading: true});
 
         try {
-            await axiosInstance.post("/auth/register", signUpData);
+            const res = await axiosInstance.post("/auth/register", signUpData);
+            return {res}
         } catch (error) {
             console.error("Error registering user: ", error);
+            return error
         } finally {
             set({loading: false});
         }
@@ -30,10 +32,11 @@ export const useAuthStore = create((set) => ({
         set({loading: true});
 
         try {
-            const res = await axiosInstance.post("/auth/login", signUpData);
+            const res = await axiosInstance.post("/auth/login", loginData);
             const data = res.data;
 
             set({user: data.user});
+            return data.message
         } catch (error) {
             console.error("Error during user login: ", error);
         } finally {
@@ -43,9 +46,9 @@ export const useAuthStore = create((set) => ({
 
     profile: async () => {
         try {
-            await axiosInstance.get(`/auth/profile`);
+            const res = await axiosInstance.get(`/auth/profile`);
             
-            return true;
+            set({user: res.data.user})
         } catch (error) {
             console.error("Error accessing user's profile: ", error);
             return false;

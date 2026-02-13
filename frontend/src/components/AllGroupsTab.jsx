@@ -1,29 +1,40 @@
-import { User, Users } from 'lucide-react'
-import React from 'react'
+import { Loader2, User, Users } from 'lucide-react'
+import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useTeamStore } from '../store/useTeamStore'
 
 const AllGroupsTab = () => {
-    const createGroupCards = () => {
-        return <NavLink to={'/groups/group-id'} className='flex flex-col justify-between gap-2 border-2 px-2 py-1 min-h-56 w-72 rounded-xs cursor-pointer'>
+    const {loading, getAllTeams, teams} = useTeamStore();
+
+    useEffect(() => {
+        function fetchTeams() {
+            getAllTeams();
+        }
+        fetchTeams();
+    }, [])
+
+    console.log("teams : ", teams)
+
+    const createGroupCards = (team) => {
+        console.log("team : ", team)
+        return <NavLink to={'/groups/group-id'} key={team._id} className='flex flex-col justify-between gap-2 border-2 px-2 py-1 min-h-56 w-72 rounded-xs cursor-pointer'>
             <div className='flex flex-col'>
                 <h1 className='text-xl'>
-                    Group Name
+                    {team.name}
                 </h1>
 
                 <p>
-                    Groups descriptions
+                    {team.description}
                 </p>
             </div>
 
             <div className='flex flex-col'>
                 <div className='flex gap-1'>
-                    <span className='px-0.5 rounded-xl bg-gray-100'>
-                        tag1
-                    </span>
-                                
-                    <span className='px-0.5 rounded-xl bg-gray-100'>
-                        tag2
-                    </span>
+                    {team.techUsed?.map((tag, i) => {
+                        return <span className='px-0.5 rounded-xl bg-gray-100' key={i}>
+                            {tag}
+                        </span>
+                    })}
                 </div>
 
                 <span className='flex gap-1 items-center'>
@@ -33,19 +44,25 @@ const AllGroupsTab = () => {
 
                 <span className='flex gap-1 items-center'>
                     <Users className='w-3.5' />
-                    [number] members
+                    {team.totalMembers - 1} members
                 </span>
 
                 <span>
-                    active or not
+                    {team.isDeleted ? "Not Active" : "Active"}
                 </span>
             </div>
         </NavLink>
     }
 
+    if (loading) {
+        return <div className='m-auto'>
+            <Loader2 className='w-5 animate-spin' />
+        </div>
+    }
+
     return (
         <div>
-            {createGroupCards()}
+            {teams?.map((team) => createGroupCards(team))}
         </div>
     )
 }
