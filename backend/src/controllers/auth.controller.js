@@ -529,7 +529,7 @@ export const editProfile = async (req, res) => {
             hashnode,
             github,
             linkedln
-        })
+        }, {new: true})
 
         if (!updatedUser) {
             return res.status(400).json({

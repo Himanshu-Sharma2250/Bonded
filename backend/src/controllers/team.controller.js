@@ -12,7 +12,18 @@ export const createTeam = async (req, res) => {
         })
     }
 
-    const {name, description, totalMembers} = data;
+    const {name, description, totalMembers, techUsed} = data;
+    const techs = [];
+    let tag = "";
+
+    for (let i = 0; i < techUsed.length; i++) {
+        let c = techUsed[i];
+        tag = tag + c;
+        if (c === ' ' || i === techUsed.length-1) {
+            techs.push(tag);
+            tag = ''
+        }
+    }
 
     try {
         const existingTeam = await Team.findOne({
@@ -32,7 +43,8 @@ export const createTeam = async (req, res) => {
             name: name,
             description: description,
             totalMembers: totalMembers,
-            isDeleted: false
+            isDeleted: false,
+            techUsed: techs
         })
 
         await team.save();
@@ -146,5 +158,35 @@ export const deleteTeam = async (req, res) => {
             success: false,
             message: "Error deleting team"
         })
+    }
+}
+
+// get my team
+export const getMyTeam = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const myTeam = await Team.findOne({
+            userId: userId
+        });
+
+        if (!myTeam) {
+            return res.status(404).json({
+                success: false,
+                message: "Create one"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "My group fetched",
+            team: myTeam
+        })
+    } catch (error) {
+        console.error("Error fetching my team: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching my team"
+        })        
     }
 }

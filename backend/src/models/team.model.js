@@ -19,6 +19,9 @@ const teamSchema = new Schema({
         type: Number,
         required: true
     },
+    techUsed: [{
+        type: String
+    }],
     isDeleted: {
         type: Boolean,
         default: false
