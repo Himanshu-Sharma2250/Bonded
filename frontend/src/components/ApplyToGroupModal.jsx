@@ -1,7 +1,24 @@
 import { useRef } from 'react'
 import Button from './Button';
+import z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTeamMemberStore } from '../store/useTeamMemberStore';
+import { Loader2 } from 'lucide-react';
 
-const ApplyToGroupModal = () => {
+const applySchema = z.object({
+    name: z.string().trim(),
+    email: z.email("Enter valid email"),
+    reasonToJoin: z.string().trim()
+})
+
+const ApplyToGroupModal = ({teamId}) => {
+    const {register, handleSubmit} = useForm({
+        resolver: zodResolver(applySchema)
+    });
+
+    const {teamJoin, isJoining} = useTeamMemberStore();
+
     const dialogRef = useRef(null);
     
     const openModal = () => {
@@ -11,6 +28,11 @@ const ApplyToGroupModal = () => {
     const closeModal = () => {
         dialogRef.current?.close();
     };
+
+    const onApplyToJoin = async function(data) {
+        teamJoin(teamId, data);
+        closeModal();
+    }
 
     return (
         <div>
@@ -35,19 +57,41 @@ const ApplyToGroupModal = () => {
                 </div>
 
                 <form 
-                    className='flex flex-col gap-3' 
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        // Add your form submission logic here
-                        closeModal();
-                    }}
+                    className='flex flex-col gap-4' 
+                    onSubmit={handleSubmit(onApplyToJoin)}
                 >
+                    <label className='flex flex-col text-sm font-medium'>
+                        Name
+                        
+                        <input 
+                            type='text'
+                            name="name" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Enter your name"
+                            {...register("name")}
+                        />
+                    </label>
+                    
+                    <label className='flex flex-col text-sm font-medium'>
+                        Email
+                        
+                        <input
+                            type="text"
+                            name="email" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Enter your email"
+                            {...register("email")}
+                        />
+                    </label>
+
                     <label className='flex flex-col text-sm font-medium'>
                         Why should we add you to our team?
                         
                         <textarea 
                             name="reason" 
-                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-15' placeholder="Give us reason"
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-15' 
+                            placeholder="Give us reason"
+                            {...register("reasonToJoin")}
                         ></textarea>
                     </label>
 
@@ -61,7 +105,7 @@ const ApplyToGroupModal = () => {
                             onClick={closeModal} 
                         />
                         <Button 
-                            name='Apply' 
+                            name={isJoining ? (<Loader2 className='w-4 animate-spin' />) : ("Apply")}
                             bgColor='#2A6E8C' 
                             btnSize='16px' 
                             type="submit" 

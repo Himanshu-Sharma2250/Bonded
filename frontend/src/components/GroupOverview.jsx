@@ -1,6 +1,6 @@
 import React from 'react'
 
-const GroupOverview = () => {
+const GroupOverview = ({team}) => {
     return (
         <div className='border-2 px-2 flex flex-col gap-5 rounded-xs py-3'>
             {/* div 1 - about group's creation (reason) */}
@@ -10,7 +10,7 @@ const GroupOverview = () => {
                 </h1>
 
                 <p>
-                    Group's description
+                    {team?.description}
                 </p>
             </div>
 
@@ -21,13 +21,11 @@ const GroupOverview = () => {
                 </h1>
 
                 <div className='flex gap-2'>
-                    <span className='px-1 rounded-xs bg-blue-300'>
-                        tag1
-                    </span>
-
-                    <span className='px-1 rounded-xs bg-blue-300'>
-                        tag2
-                    </span>
+                    {team?.techUsed.map((tag) => {
+                        return <span className='px-1 rounded-xs bg-blue-300'>
+                            {tag}
+                        </span>
+                    })}
                 </div>
             </div>
 
@@ -56,7 +54,7 @@ const GroupOverview = () => {
                         </span>
 
                         <span>
-                            [Number]
+                            {team?.totalMembers-1}
                         </span>
                     </div>
 
@@ -67,7 +65,7 @@ const GroupOverview = () => {
                         </span>
 
                         <span>
-                            [date - time]
+                            {team?.createdAt || "data not loaded"}
                         </span>
                     </div>
 
@@ -78,7 +76,7 @@ const GroupOverview = () => {
                         </span>
 
                         <span>
-                            [id]
+                            {team?._id}
                         </span>
                     </div>
                 </div>

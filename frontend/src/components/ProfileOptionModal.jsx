@@ -1,9 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { useRef } from 'react';
 import { User, Moon, Sun } from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore';
 
 const ProfileOptionModal = ({isCollapsed}) => {
     const dialogRef = useRef(null);
+    const {user} = useAuthStore();
     
     const openModal = () => {
         dialogRef.current?.showModal();
@@ -22,13 +24,13 @@ const ProfileOptionModal = ({isCollapsed}) => {
 
             <dialog 
                 ref={dialogRef} 
-                className='open:flex flex-col gap-2 w-48 p-2 rounded-sm absolute -bottom-101 -left-330 bg-[#F8FAFC] shadow-xl m-auto backdrop:bg-black/60'
+                className='open:flex flex-col gap-2 min-w-48 p-2 rounded-sm absolute -bottom-101 -left-330 bg-[#F8FAFC] shadow-xl m-auto backdrop:bg-black/60'
             >
                 <span className='flex justify-between items-start relative'>
                     <span className='hover:bg-gray-300 px-2 flex flex-col w-full'>
                         Signed in as 
                         <span className='font-bold'>
-                            [user email]
+                            {user.email}
                         </span>
                     </span>
                     

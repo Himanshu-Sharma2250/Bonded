@@ -62,18 +62,18 @@ const MyProfile = () => {
                     {/* user profile image */}
                     <div className='flex items-center'>
                         <span className='p-5 bg-cyan-800'>
-                            AS
+                            {user.fullName.toUpperCase().slice(0,1)}
                         </span>
                     </div>
 
                     {/* page header */}
                     <div className='flex flex-col'>
                         <h1 className='text-xl '>
-                            {user.name}
+                            {user.fullName}
                         </h1>
 
                         <span className='text-gray-400 text-[14px]'>
-                           @{user.email.slice(0, -10)}
+                           {user.name}
                         </span>
 
                         <span className='text-gray-400 text-[13px]'>
@@ -103,7 +103,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                {user.name}
+                                {user.fullName}
                             </span>
                         </div>
 
@@ -114,7 +114,7 @@ const MyProfile = () => {
                             </span>
 
                             <span className='w-145'>
-                                @{user.email.slice(0, -10)}
+                                {user.name}
                             </span>
                         </div>
                     </div>

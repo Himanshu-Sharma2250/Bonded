@@ -5,6 +5,7 @@ import { useTeamStore } from '../store/useTeamStore';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useTeamMemberStore } from '../store/useTeamMemberStore';
 
 const createTeamSchema = z.object({
     name: z.string().trim(),
@@ -18,7 +19,8 @@ const CreateGroupModal = () => {
         resolver: zodResolver(createTeamSchema)
     })
 
-    const {createTeam, loading} = useTeamStore();
+    const {createTeam, loading, team} = useTeamStore();
+    const {createTeamOwner} = useTeamMemberStore();
 
     // reference to the dialog element
     const dialogRef = useRef(null);
@@ -34,6 +36,7 @@ const CreateGroupModal = () => {
     const onCreateTeam = async (data) => {
         createTeam(data);
         console.log(data)
+        createTeamOwner(team._id)
     }
 
     return (

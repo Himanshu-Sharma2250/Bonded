@@ -51,8 +51,8 @@ function App() {
                         <Route path="groups" element={<Groups />} />
                         <Route path="announcements" element={<Announcement />} />
                         <Route path="applications" element={<Applications />} />
-                        <Route path="/groups/group-id" element={<GroupDetailPage />} />
-                        <Route path="/user/user-id" element={<UserProfilePage />} />
+                        <Route path="/groups/:teamId" element={<GroupDetailPage />} />
+                        <Route path="/user/:userId" element={<UserProfilePage />} />
                         <Route path="/profile" element={<MyProfile />} />
                     </Route>
                 </Routes>

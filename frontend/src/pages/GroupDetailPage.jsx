@@ -1,16 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import GroupOverview from '../components/GroupOverview';
 import GroupMembers from '../components/GroupMembers';
 import GroupHistory from '../components/GroupHistory';
 import ApplyToGroupModal from '../components/ApplyToGroupModal';
-import { MoveLeft } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { Loader2, MoveLeft } from 'lucide-react';
+import { NavLink, useParams } from 'react-router-dom';
 import GroupNotes from '../components/GroupNotes';
 import DeleteGroupPopUp from '../components/DeleteGroupPopUp';
+import { useTeamStore } from '../store/useTeamStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { useTeamMemberStore } from '../store/useTeamMemberStore';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
+    const {teamId} = useParams()
+    const {team, loading, getTeam} = useTeamStore();
+    const {user} = useAuthStore();
+    const {getTeamMember, member} = useTeamMemberStore();
+
+    useEffect(() => {
+        function fetchTeam() {
+            getTeam(teamId)
+            getTeamMember(teamId, user._id)
+        }
+        fetchTeam();
+    }, [])
+
+    if (loading) {
+        return <div className='m-auto'>
+            <Loader2 className='w-5 animate-spin' />
+        </div>
+    }
 
     return (
         <div className='pb-1 flex flex-col gap-1'>
@@ -25,26 +46,27 @@ const GroupDetailPage = () => {
             <div className='flex justify-between items-center py-2 px-3 '>
                 {/* contains group info */}
                 <div className='flex gap-1 items-center'>
-                    <div>
+                    <div className='flex items-center justify-center'>
                         <span className='p-4 bg-cyan-600 rounded-xs'>
-                            GN
+                            {team?.name?.toUpperCase().slice(0,1)}
                         </span>
                     </div>
 
                     <div className='flex flex-col'>
                         <h1 className='text-2xl'>
-                            Group Name
+                            {team?.name}
                         </h1>
 
                         <span>
-                            [number] members
+                            {team?.totalMembers} members
                         </span>
                     </div>
                 </div>
 
                 {/* contains apply btn and dialog that pop up */}
                 <div>
-                    <ApplyToGroupModal />
+                    {member?.teamRole === "MEMBER" ? (<ApplyToGroupModal teamId={teamId} />) : (<DeleteGroupPopUp/>)}
+                    {/* <ApplyToGroupModal teamId={teamId} /> */}
 
                     {/* if the user is group leader */}
                     {/* <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} /> */}
@@ -85,15 +107,15 @@ const GroupDetailPage = () => {
 
             {/* div 2 - shows the respective detail of above navigation btns */}
             {selectedTab === 'Overview' ? (
-                <GroupOverview />
+                <GroupOverview team={team} />
             ) : (
                 selectedTab === 'Members' ? (
-                    <GroupMembers />
+                    <GroupMembers teamId={team?._id} />
                 ) : (
                     selectedTab === 'Notes' ? (
-                        <GroupNotes />
+                        <GroupNotes teamId={team?._id} />
                     ) : (
-                        <GroupHistory />
+                        <GroupHistory teamId={team?._id} />
                     )
                 )
             )}
