@@ -1,8 +1,11 @@
 import { CirclePlus, EllipsisVertical } from 'lucide-react'
 import React from 'react'
 import CreateNoteModal from './CreateNoteModal'
+import { useNoteStore } from '../store/useNoteStore'
 
-const GroupNotes = () => {
+const GroupNotes = ({team}) => {
+    const {} = useNoteStore();
+
     const createNoteCards = () => {
         return <div className='flex flex-col px-2 py-1 border-2 gap-2'>
             {/* shows title, date and options if Group Leader */}

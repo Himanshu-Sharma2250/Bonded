@@ -1,13 +1,11 @@
-import React, { useRef } from 'react'
-import Button from './Button';
+import React from 'react'
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
-import { useTeamStore } from '../store/useTeamStore';
 
-const DeleteGroupPopUp = ({teamId}) => {
-    const {deleteTeam} = useTeamStore();
+const LeaveGroupModal = ({teamId}) => {
+    const {teamLeft, isLefting} = useTeamMemberStore();
 
     const dialogRef = useRef(null);
-
+    
     const openModal = () => {
         dialogRef.current?.showModal();
     };
@@ -18,7 +16,7 @@ const DeleteGroupPopUp = ({teamId}) => {
 
     return (
         <div>
-            <Button name={'Delete Group'} bgColor={'#FF7A59'} btnSize={'16px'} onClick={openModal} />
+            <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} onClick={openModal} />
 
             {/* IMPORTANT: Use 'open:flex' so it only becomes flex when open.
                The backdrop: class styles the dimmed background behind the modal.
@@ -35,9 +33,11 @@ const DeleteGroupPopUp = ({teamId}) => {
 
                 <form 
                     className='flex flex-col gap-3' 
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                         e.preventDefault();
-                        deleteTeam(teamId);
+
+                        teamLeft(teamId);
+                        
                         closeModal();
                     }}
                 >
@@ -45,7 +45,7 @@ const DeleteGroupPopUp = ({teamId}) => {
                         <input 
                             type="text" 
                             className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
-                            placeholder="Enter Group's Name to delete" 
+                            placeholder="Enter Group's Name to leave" 
                         />
                     </label>
 
@@ -59,7 +59,7 @@ const DeleteGroupPopUp = ({teamId}) => {
                             onClick={closeModal} 
                         />
                         <Button 
-                            name='Delete' 
+                            name='Leave' 
                             bgColor='#FF7A59' 
                             btnSize='16px' 
                             type="submit" 
@@ -71,4 +71,4 @@ const DeleteGroupPopUp = ({teamId}) => {
     )
 }
 
-export default DeleteGroupPopUp
+export default LeaveGroupModal

@@ -11,6 +11,7 @@ import DeleteGroupPopUp from '../components/DeleteGroupPopUp';
 import { useTeamStore } from '../store/useTeamStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
+import LeaveGroupModal from '../components/LeaveGroupModal';
 
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
@@ -65,8 +66,9 @@ const GroupDetailPage = () => {
 
                 {/* contains apply btn and dialog that pop up */}
                 <div>
-                    {member?.teamRole === "MEMBER" ? (<ApplyToGroupModal teamId={teamId} />) : (<DeleteGroupPopUp/>)}
+                    {member?.teamRole === "MEMBER" ? (<LeaveGroupModal teamId={teamId} />) : (<DeleteGroupPopUp teamId={teamId} />)}
                     {/* <ApplyToGroupModal teamId={teamId} /> */}
+                    
 
                     {/* if the user is group leader */}
                     {/* <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} /> */}
@@ -113,7 +115,7 @@ const GroupDetailPage = () => {
                     <GroupMembers teamId={team?._id} />
                 ) : (
                     selectedTab === 'Notes' ? (
-                        <GroupNotes teamId={team?._id} />
+                        <GroupNotes team={team} />
                     ) : (
                         <GroupHistory teamId={team?._id} />
                     )
