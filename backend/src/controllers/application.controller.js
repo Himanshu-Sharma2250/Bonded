@@ -1,16 +1,29 @@
 import { Application } from "../models/application.model.js";
+import { Team } from "../models/team.model.js";
 import { TeamMember } from "../models/team_member.model.js";
 
 // create application
 export const createApplication = async (req, res) => {
     try {
-        const {message} = req.body;
+        const {name, email, reasonToJoin} = req.body;
         const {teamId} = req.params;
 
-        if (!message) {
+        if (!reasonToJoin) {
             return res.status(400).json({
                 success: false,
                 message: "Message is required"
+            })
+        }
+
+        // check if team is active or not
+        const team = await Team.findById(teamId, {
+            isDeleted: false
+        });
+
+        if (!team) {
+            return res.status(400).json({
+                success: false,
+                message: "No team exist"
             })
         }
 
@@ -33,8 +46,10 @@ export const createApplication = async (req, res) => {
         const application = await Application.create({
             userId: userId,
             teamId: teamId,
-            message: message,
-            decidedBy: teamLeaderId
+            reasonToJoin: reasonToJoin,
+            decidedBy: teamLeaderId,
+            name: name,
+            email: email
         })
 
         if (!application) {
@@ -165,7 +180,8 @@ export const withdrawApplication = async (req, res) => {
 export const getAllApplication = async (req, res) => {
     try {
         const applications = await Application.find({
-            userId: req.user._id
+            userId: req.user._id,
+            status: "PENDING"
         })
 
         if (!applications) {

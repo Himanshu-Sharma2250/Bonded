@@ -13,7 +13,15 @@ const applicationSchema = new Schema(
             ref: "Team",
             required: true
         },
-        message: {
+        name: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        reasonToJoin: {
             type: String,
             required: true
         },

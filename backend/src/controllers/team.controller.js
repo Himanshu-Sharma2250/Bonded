@@ -167,7 +167,8 @@ export const getMyTeam = async (req, res) => {
 
     try {
         const myTeam = await Team.findOne({
-            userId: userId
+            userId: userId,
+            isDeleted: false
         });
 
         if (!myTeam) {
