@@ -3,12 +3,11 @@ import Button from './Button';
 import z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTeamMemberStore } from '../store/useTeamMemberStore';
 import { Loader2 } from 'lucide-react';
+import { useApplicationStore } from '../store/useApplicationStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 const applySchema = z.object({
-    name: z.string().trim(),
-    email: z.email("Enter valid email"),
     reasonToJoin: z.string().trim()
 })
 
@@ -17,7 +16,8 @@ const ApplyToGroupModal = ({teamId}) => {
         resolver: zodResolver(applySchema)
     });
 
-    const {teamJoin, isJoining} = useTeamMemberStore();
+    const {applyApplication} = useApplicationStore();
+    const {user} = useAuthStore();
 
     const dialogRef = useRef(null);
     
@@ -29,8 +29,9 @@ const ApplyToGroupModal = ({teamId}) => {
         dialogRef.current?.close();
     };
 
+    // when user apply, it will call application api 
     const onApplyToJoin = async function(data) {
-        teamJoin(teamId, data);
+        applyApplication(teamId, {name: user.name, email: user.email, reasonToJoin: data.reasonToJoin});
         closeModal();
     }
 
@@ -60,30 +61,6 @@ const ApplyToGroupModal = ({teamId}) => {
                     className='flex flex-col gap-4' 
                     onSubmit={handleSubmit(onApplyToJoin)}
                 >
-                    <label className='flex flex-col text-sm font-medium'>
-                        Name
-                        
-                        <input 
-                            type='text'
-                            name="name" 
-                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
-                            placeholder="Enter your name"
-                            {...register("name")}
-                        />
-                    </label>
-                    
-                    <label className='flex flex-col text-sm font-medium'>
-                        Email
-                        
-                        <input
-                            type="text"
-                            name="email" 
-                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
-                            placeholder="Enter your email"
-                            {...register("email")}
-                        />
-                    </label>
-
                     <label className='flex flex-col text-sm font-medium'>
                         Why should we add you to our team?
                         

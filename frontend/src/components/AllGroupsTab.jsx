@@ -59,7 +59,13 @@ const AllGroupsTab = () => {
 
     return (
         <div>
-            {teams?.map((team) => createGroupCards(team))}
+            {teams.length == 0 ? (
+                <span className='text-2xl m-auto'>
+                    No teams found
+                </span>
+            ) : (
+                teams?.map((team) => createGroupCards(team))
+            )}
         </div>
     )
 }

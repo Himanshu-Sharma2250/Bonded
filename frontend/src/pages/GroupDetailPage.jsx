@@ -115,7 +115,7 @@ const GroupDetailPage = () => {
                     <GroupMembers teamId={team?._id} />
                 ) : (
                     selectedTab === 'Notes' ? (
-                        <GroupNotes team={team} />
+                        <GroupNotes teamId={team?._id} />
                     ) : (
                         <GroupHistory teamId={team?._id} />
                     )
