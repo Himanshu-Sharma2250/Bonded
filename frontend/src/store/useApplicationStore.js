@@ -3,6 +3,7 @@ import { axiosInstance } from "../lib/axios";
 
 export const useApplicationStore = create((set) => ({
     applications: [],
+    receivedApplications: [],
     isApplying: false,
     isAccepting: false,
     isRejecting: false,
@@ -27,6 +28,19 @@ export const useApplicationStore = create((set) => ({
         try {
             const res = await axiosInstance.get(`/application/all-applications`);
             set({applications: res.data.applications});
+        } catch (error) {
+            console.error("Error fetching applications: ", error);
+        } finally {
+            set({isGetting: false});
+        }
+    },
+
+    getAllReceivedApplications: async () => {
+        set({isGetting: true});
+
+        try {
+            const res = await axiosInstance.get(`/application/all-received-applications`);
+            set({receivedApplications: res.data.applications});
         } catch (error) {
             console.error("Error fetching applications: ", error);
         } finally {

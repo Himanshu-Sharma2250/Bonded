@@ -46,6 +46,7 @@ const ReceivedApplications = () => {
     }
 
     const receivedApplications = applications.filter((application) => application.decidedBy === user._id);
+    console.log("recieved app", applications)
 
     const createApplicationCards = (application) => {
         return <div className='flex flex-col px-2 py-2 border-2 w-full gap-3 justify-between'>
