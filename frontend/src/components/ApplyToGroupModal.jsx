@@ -82,7 +82,7 @@ const ApplyToGroupModal = ({teamId}) => {
                             onClick={closeModal} 
                         />
                         <Button 
-                            name={isJoining ? (<Loader2 className='w-4 animate-spin' />) : ("Apply")}
+                            name={"Apply"}
                             bgColor='#2A6E8C' 
                             btnSize='16px' 
                             type="submit" 

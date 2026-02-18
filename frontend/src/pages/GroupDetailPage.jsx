@@ -67,13 +67,13 @@ const GroupDetailPage = () => {
 
                 {/* contains apply btn and dialog that pop up */}
                 <div>
-                    {member?.teamRole === "MEMBER" ? (<LeaveGroupModal teamId={teamId} />) : (<DeleteGroupPopUp teamId={teamId} />)}
-                    {/* <ApplyToGroupModal teamId={teamId} /> */}
-                    
-
-                    {/* if the user is group leader */}
-                    {/* <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} /> */}
-                    {/* <DeleteGroupPopUp /> */}
+                    {member === null ? (
+                        // not a member
+                        <ApplyToGroupModal teamId={teamId} />
+                    ) : (
+                        // is a member
+                        member?.teamRole === "MEMBER" ? (<LeaveGroupModal teamId={teamId} />) : (<DeleteGroupPopUp teamId={teamId} />)
+                    )}
                 </div>
             </div>
 
