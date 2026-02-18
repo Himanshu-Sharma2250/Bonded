@@ -3,15 +3,15 @@ import React from 'react'
 import Button from './Button'
 import { NavLink } from 'react-router-dom'
 import { useEffect } from 'react'
-import { useTeamStore } from '../store/useTeamStore'
 import { useApplicationStore } from '../store/useApplicationStore'
 import { useAuthStore } from '../store/useAuthStore'
 import toast from 'react-hot-toast'
+import { useTeamMemberStore } from '../store/useTeamMemberStore'
 
 const ReceivedApplications = () => {
     const {getApplications, isGetting, applications, acceptApplication, rejectApplication} = useApplicationStore();
-    const {getTeam, team} = useTeamStore();
     const {user} = useAuthStore();
+    const {teamJoin} = useTeamMemberStore();
 
     useEffect(() => {
         function fetchApplications() {
@@ -26,10 +26,11 @@ const ReceivedApplications = () => {
         </div>
     }
 
-    const onAcceptApplication = (applicationId) => {
+    const onAcceptApplication = (application) => {
         try {
-            acceptApplication(applicationId)
+            acceptApplication(application?._id)
             toast.success("Application accepted")
+            teamJoin(application?.teamId, {name: application?.name, email: application?.email, reasonToJoin: application?.reasonToJoin})
         } catch (error) {
             toast.success("Application accept failed")
         }
@@ -113,8 +114,8 @@ const ReceivedApplications = () => {
 
             {/* div 3 - contains withdraw button */}
             <div className='flex gap-3'>
-                <Button name="Accept" bgColor="#FF7A59" btnSize="15px" />
-                <Button name="Reject" bgColor="#FF7A59" btnSize="15px" />
+                <Button name="Accept" bgColor="#FF7A59" btnSize="15px" onClick={() => onAcceptApplication(application)} />
+                <Button name="Reject" bgColor="#FF7A59" btnSize="15px" onClick={() => onRejectApplication(application?._id)} />
             </div>
         </div>
     }
