@@ -16,7 +16,8 @@ export const createApplication = async (req, res) => {
         }
 
         // check if team is active or not
-        const team = await Team.findById(teamId, {
+        const team = await Team.findOne({
+            _id: teamId,
             isDeleted: false
         });
 
@@ -28,7 +29,7 @@ export const createApplication = async (req, res) => {
         }
 
         // get the leader of team
-        const teamLeader = await TeamMember.find({
+        const teamLeader = await TeamMember.findOne({
             teamId: teamId,
             teamRole: 'LEADER'
         })
@@ -36,7 +37,7 @@ export const createApplication = async (req, res) => {
         if (!teamLeader) {
             return res.status(400).json({
                 success: false,
-                message: "There is no team"
+                message: "Team Leader not found"
             })
         }
 

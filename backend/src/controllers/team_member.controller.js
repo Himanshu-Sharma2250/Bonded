@@ -294,9 +294,21 @@ export const createOwner = async (req, res) => {
     const {name, email} = data;
 
     try {
-        // check if user is owner
+        // check if user is not the member of another active team
+        const existingActiveMembership = await TeamMember.findOne({ userId, active: true });
+
+        if (existingActiveMembership) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "User is already a member of another team" 
+            });
+        }
+
+        // check if user is the own who created the team
         const isOwner = await Team.findOne({
-            userId: userId
+            userId: userId,
+            _id: teamId,
+            isDeleted: false
         })
 
         if (!isOwner) {
@@ -305,14 +317,23 @@ export const createOwner = async (req, res) => {
                 message: "User not owner"
             })
         }
-        console.log("checked if isOwner")
+
+        // check if user is team member of the target team
+        const existingMember = await TeamMember.findOne({ userId, teamId });
+
+        if (existingMember) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "User is already a member of this team" 
+            });
+        }
 
         const owner = await TeamMember.create({
             userId: userId,
             teamId: teamId,
             name: name,
             email: email,
-            reasonToJoin: "",
+            reasonToJoin: "Team Owner",
             teamRole: 'LEADER'
         })
 

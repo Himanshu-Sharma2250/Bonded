@@ -37,7 +37,7 @@ const applicationSchema = new Schema(
         },
         appliedAt: {
             type: Date,
-            default: Date.now()
+            default: Date.now
         },
         decidedAt: {
             type: Date
