@@ -26,19 +26,19 @@ const ReceivedApplications = () => {
         </div>
     }
 
-    const onAcceptApplication = (application) => {
+    const onAcceptApplication = async (application) => {
         try {
-            acceptApplication(application?._id)
+            await acceptApplication(application?._id)
             toast.success("Application accepted")
-            teamJoin(application?.teamId, {name: application?.name, email: application?.email, reasonToJoin: application?.reasonToJoin})
+            await teamJoin(application?.teamId, {name: application?.name, email: application?.email, reasonToJoin: application?.reasonToJoin})
         } catch (error) {
             toast.success("Application accept failed")
         }
     }
 
-    const onRejectApplication = (applicationId) => {
+    const onRejectApplication = async (applicationId) => {
         try {
-            rejectApplication(applicationId);
+            await rejectApplication(applicationId);
             toast.success("Application rejeced");
         } catch (error) {
             toast.error("Application rejected failed")
