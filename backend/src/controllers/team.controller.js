@@ -1,4 +1,5 @@
 import { Team } from "../models/team.model.js";
+import { TeamMember } from "../models/team_member.model.js";
 import { createTeamSchema } from "../validators/team.validator.js";
 
 // create team
@@ -35,6 +36,19 @@ export const createTeam = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "You already created a team"
+            })
+        }
+
+        // check if user is active team member of other team
+        const activeTeamMemberOfOtherTeam = await TeamMember.findOne({
+            userId: req.user._id,
+            active: true
+        })
+
+        if (activeTeamMemberOfOtherTeam) {
+            return res.status(400).json({
+                success: false,
+                message: "Already joined another team"
             })
         }
 
@@ -166,28 +180,47 @@ export const getMyTeam = async (req, res) => {
     const userId = req.user._id;
 
     try {
+        // 1. Check if user is the owner of a non-deleted team
         const myTeam = await Team.findOne({
             userId: userId,
             isDeleted: false
         });
 
-        if (!myTeam) {
-            return res.status(404).json({
-                success: false,
-                message: "Create one"
-            })
+        if (myTeam) {
+            return res.status(200).json({
+                success: true,
+                message: "My team fetched (owner)",
+                team: myTeam
+            });
         }
 
-        res.status(200).json({
-            success: true,
-            message: "My group fetched",
-            team: myTeam
-        })
+        // 2. If not owner, check if user is an active member of any team
+        const membership = await TeamMember.findOne({
+            userId: userId,
+            active: true
+        }).populate({
+            path: 'teamId',
+            match: { isDeleted: false } // only include if team is not deleted
+        });
+
+        if (membership && membership.teamId) {
+            return res.status(200).json({
+                success: true,
+                message: "My group fetched (member)",
+                team: membership.teamId
+            });
+        }
+
+        // 3. No team found
+        return res.status(404).json({
+            success: false,
+            message: "No team found"
+        });
     } catch (error) {
         console.error("Error fetching my team: ", error);
         res.status(500).json({
             success: false,
             message: "Error fetching my team"
-        })        
+        });
     }
-}
+};
