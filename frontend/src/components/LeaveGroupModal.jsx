@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
+import Button from './Button';
 
 const LeaveGroupModal = ({teamId}) => {
     const {teamLeft, isLefting} = useTeamMemberStore();

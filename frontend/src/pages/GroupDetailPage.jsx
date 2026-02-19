@@ -33,7 +33,7 @@ const GroupDetailPage = () => {
             <Loader2 className='w-5 animate-spin' />
         </div>
     }
-    console.log("members: ", member)
+    console.log("member: ", member)
 
     return (
         <div className='pb-1 flex flex-col gap-1'>

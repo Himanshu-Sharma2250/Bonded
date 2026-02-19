@@ -9,12 +9,15 @@ export const useTeamMemberStore = create((set) => ({
     isLefting: false,
 
     teamJoin: async (teamId, data) => {
+        console.log("team join called with data: ", data)
         set({isJoining: true});
 
         try {
-            await axiosInstance.post(`/team/${teamId}/join`, data);
+            const res = await axiosInstance.post(`/team/${teamId}/join`, data);
+            console.log("Joined success: ", res.data)
         } catch (error) {
-            console.log("Error joining team: ", error);
+            console.error("Error joining team: ", error);
+            throw error;
         } finally {
             set({isJoining: false});
         }
@@ -26,7 +29,7 @@ export const useTeamMemberStore = create((set) => ({
         try {
             await axiosInstance.patch(`/team/${teamId}/left`);
         } catch (error) {
-            console.log("Error lefting team: ", error);
+            console.error("Error lefting team: ", error);
         } finally {
             set({isLefting: false});
         }
@@ -38,7 +41,7 @@ export const useTeamMemberStore = create((set) => ({
         try {
             await axiosInstance.patch(`/team/${teamId}/kick-out`);
         } catch (error) {
-            console.log("Error during kick out member from team: ", error);
+            console.error("Error during kick out member from team: ", error);
         } finally {
             set({isLefting: false});
         }
@@ -51,7 +54,7 @@ export const useTeamMemberStore = create((set) => ({
             const res = await axiosInstance.get(`/team/${teamId}/member/${userId}`);
             set({member: res.data.teamMember})
         } catch (error) {
-            console.log("Error fetching member: ", error);
+            console.error("Error fetching member: ", error);
         } finally {
             set({isGetting: false});
         }
@@ -64,19 +67,22 @@ export const useTeamMemberStore = create((set) => ({
             const res = await axiosInstance.get(`/team/${teamId}/members`);
             set({members: res.data.teamMembers})
         } catch (error) {
-            console.log("Error fetching team members: ", error);
+            console.error("Error fetching team members: ", error);
         } finally {
             set({isGetting: false});
         }
     },
 
     createTeamOwner: async (teamId, data) => {
+        console.log("createTeamOwner called with:", teamId, data);
         set({isJoining: true});
 
         try {
-            await axiosInstance.post(`/team/${teamId}/owner`, data);
+            const res = await axiosInstance.post(`/team/${teamId}/owner`, data);
+            console.log("createTeamOwner success:", res.data); 
         } catch (error) {
-            console.log("Error creating team owner: ", error);
+            console.error("Error creating team owner: ", error);
+            throw error;
         } finally {
             set({isJoining: false});
         }

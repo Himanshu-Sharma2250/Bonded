@@ -118,7 +118,7 @@ const SentApplications = () => {
     }
 
     return (
-        <div>
+        <div className='flex flex-col gap-2'>
             {applications.length === 0 ? (
                 "No sent application"
             ) : (

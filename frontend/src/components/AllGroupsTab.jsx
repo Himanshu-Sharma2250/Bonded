@@ -58,7 +58,7 @@ const AllGroupsTab = () => {
     }
 
     return (
-        <div>
+        <div className='flex gap-2'>
             {teams.length === 0 ? (
                 <span className='text-2xl m-auto'>
                     No teams found

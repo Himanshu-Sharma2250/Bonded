@@ -32,7 +32,7 @@ const ReceivedApplications = () => {
             toast.success("Application accepted")
             await teamJoin(application?.teamId, {name: application?.name, email: application?.email, reasonToJoin: application?.reasonToJoin})
         } catch (error) {
-            toast.success("Application accept failed")
+            toast.error("Application accept failed")
         }
     }
 
@@ -131,7 +131,7 @@ const ReceivedApplications = () => {
     }
 
     return (
-        <div>
+        <div className='flex flex-col gap-2'>
             {receivedApplications.length == 0 ? (
                 <span>
                     No application received

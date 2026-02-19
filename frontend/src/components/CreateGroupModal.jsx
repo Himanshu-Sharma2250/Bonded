@@ -39,6 +39,7 @@ const CreateGroupModal = () => {
         try {
             const newTeam = await createTeam(data); 
             if (newTeam?._id) {
+                console.log("creating owner")
                 await createTeamOwner(newTeam._id, {
                     name: user?.name,
                     email: user?.email,
