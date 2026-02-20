@@ -8,8 +8,8 @@ const noteRouter = express.Router();
 
 noteRouter.post("/create/:teamId", verifyJWT, checkTeamRole, createNote);
 noteRouter.patch("/edit/:noteId", verifyJWT, checkTeamRole, editNote);
-noteRouter.get("/get-private-notes/:teamId", verifyJWT, checkTeamRole, getAllPrivateNotes);
-noteRouter.get("/get-public-notes/:teamId", verifyJWT, checkTeamRole, getAllPublicNotes);
+noteRouter.get("/get-private-notes/:teamId", verifyJWT, getAllPrivateNotes);
+noteRouter.get("/get-public-notes/:teamId", verifyJWT, getAllPublicNotes);
 noteRouter.delete("/delete/:noteId", verifyJWT, checkTeamRole, deleteNote);
 
 export default noteRouter;
