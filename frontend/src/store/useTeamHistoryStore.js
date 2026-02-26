@@ -5,11 +5,11 @@ export const useTeamHistoryStore = create((set) => ({
     history: [],
     loading: false,
 
-    createTeamHistory: async (teamId, data) => {
+    createTeamHistory: async (teamId) => {
         set({loading: true})
 
         try {
-            await axiosInstance.post(`/teamHistory/create-team/${teamId}`, data);
+            await axiosInstance.post(`/teamHistory/create-team/${teamId}`);
         } catch (error) {
             console.error("Error in createTeam history: ", error);
         } finally {
@@ -73,8 +73,9 @@ export const useTeamHistoryStore = create((set) => ({
             set({history: res.data.history})
         } catch (error) {
             console.error("Error in fetching team history: ", error);
+            set({history: []})
         } finally {
-            set({loading: true})
+            set({loading: false})
         }
     }
 }))

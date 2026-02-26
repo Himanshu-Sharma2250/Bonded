@@ -1,9 +1,22 @@
 import React, { useRef } from 'react'
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
 import Button from './Button';
+import { useForm } from 'react-hook-form';
+import toast from "react-hot-toast";
+import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 const LeaveGroupModal = ({teamId}) => {
+    const {register, reset, handleSubmit} = useForm({
+        defaultValues: {
+            reason: "",
+            memberName: ""
+        }
+    });
+
     const {teamLeft, isLefting} = useTeamMemberStore();
+    const {memberLeftHistory} = useTeamHistoryStore();
+    const {user} = useAuthStore();
 
     const dialogRef = useRef(null);
     
@@ -13,15 +26,24 @@ const LeaveGroupModal = ({teamId}) => {
 
     const closeModal = () => {
         dialogRef.current?.close();
+        reset();
     };
+
+    const handleLeft = async (data) => {
+        try {
+            await teamLeft(teamId);
+            await memberLeftHistory(teamId, {reason: data.reason, memberName: user?.fullName});
+            toast.success("Team Left successfully");
+            closeModal();
+        } catch (error) {
+            toast.error("Error lefting team");
+        }
+    }
 
     return (
         <div>
             <Button name={'Leave Group'} bgColor={'#FF7A59'} btnSize={'16px'} onClick={openModal} />
 
-            {/* IMPORTANT: Use 'open:flex' so it only becomes flex when open.
-               The backdrop: class styles the dimmed background behind the modal.
-            */}
             <dialog 
                 ref={dialogRef} 
                 className='open:flex flex-col gap-8 w-90 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60'
@@ -34,19 +56,24 @@ const LeaveGroupModal = ({teamId}) => {
 
                 <form 
                     className='flex flex-col gap-3' 
-                    onSubmit={async (e) => {
-                        e.preventDefault();
-
-                        teamLeft(teamId);
-                        
-                        closeModal();
-                    }}
+                    onSubmit={handleSubmit(handleLeft)}
                 >
                     <label className='flex flex-col text-sm font-medium'>
                         <input 
                             type="text" 
                             className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
                             placeholder="Enter Group's Name to leave" 
+                            required
+                        />
+                    </label>
+                    
+                    <label className='flex flex-col text-sm font-medium'>
+                        <input 
+                            type="text" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Reason to left" 
+                            {...register("reason")}
+                            required
                         />
                     </label>
 

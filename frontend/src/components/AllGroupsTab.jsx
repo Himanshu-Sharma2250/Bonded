@@ -11,7 +11,7 @@ const AllGroupsTab = () => {
             getAllTeams();
         }
         fetchTeams();
-    }, [])
+    }, [getAllTeams])
 
     const createGroupCards = (team) => {
         return <NavLink to={`/groups/${team?._id}`} key={team._id} className='flex flex-col justify-between gap-2 border-2 px-2 py-1 min-h-56 w-72 rounded-xs cursor-pointer'>

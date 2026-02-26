@@ -3,6 +3,7 @@ import { axiosInstance } from "../lib/axios";
 
 export const useAuthStore = create((set) => ({
     user: null,
+    otherUser: null,
     loading: false,
     isEditing: false,
 
@@ -114,6 +115,21 @@ export const useAuthStore = create((set) => ({
             console.error("Error updating profile: ", error)
         } finally {
             set({isEditing: false});
+        }
+    },
+
+    getUserProfile: async (userId) => {
+        set({loading: true});
+
+        try {
+            const res = await axiosInstance.get(`/auth/get-profile/${userId}`);
+            set({otherUser: res.data.user});
+        } catch (error) {
+            console.error("Error getting other user's profile ", error);
+            set({otherUser: null});
+            throw error
+        } finally {
+            set({loading: false})
         }
     }
 }))

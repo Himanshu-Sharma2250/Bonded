@@ -2,9 +2,15 @@ import React, { useRef } from 'react'
 import Button from './Button';
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
 import { useTeamStore } from '../store/useTeamStore';
+import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 const DeleteGroupPopUp = ({teamId}) => {
     const {deleteTeam} = useTeamStore();
+    const {teamDeleteHistory} = useTeamHistoryStore();
+
+    const {register, handleSubmit} = useForm();
 
     const dialogRef = useRef(null);
 
@@ -16,13 +22,20 @@ const DeleteGroupPopUp = ({teamId}) => {
         dialogRef.current?.close();
     };
 
+    const handleDelete = async (data) => {
+        try {
+            await deleteTeam(teamId);
+            await teamDeleteHistory(teamId, data);
+            toast.success("Team Deleted");
+        } catch (error) {
+            toast.error("Error deleting Team");
+        }
+    }
+
     return (
         <div>
             <Button name={'Delete Group'} bgColor={'#FF7A59'} btnSize={'16px'} onClick={openModal} />
 
-            {/* IMPORTANT: Use 'open:flex' so it only becomes flex when open.
-               The backdrop: class styles the dimmed background behind the modal.
-            */}
             <dialog 
                 ref={dialogRef} 
                 className='open:flex flex-col gap-8 w-90 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60'
@@ -35,17 +48,24 @@ const DeleteGroupPopUp = ({teamId}) => {
 
                 <form 
                     className='flex flex-col gap-3' 
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        deleteTeam(teamId);
-                        closeModal();
-                    }}
+                    onSubmit={(e) => {handleSubmit(handleDelete)}}
                 >
                     <label className='flex flex-col text-sm font-medium'>
                         <input 
                             type="text" 
                             className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
                             placeholder="Enter Group's Name to delete" 
+                            required
+                        />
+                    </label>
+                    
+                    <label className='flex flex-col text-sm font-medium'>
+                        <input 
+                            type="text" 
+                            className='border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10' 
+                            placeholder="Reason to delete team"
+                            required 
+                            {...register("reason")}
                         />
                     </label>
 

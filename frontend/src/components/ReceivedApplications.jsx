@@ -7,11 +7,13 @@ import { useApplicationStore } from '../store/useApplicationStore'
 import { useAuthStore } from '../store/useAuthStore'
 import toast from 'react-hot-toast'
 import { useTeamMemberStore } from '../store/useTeamMemberStore'
+import { useTeamHistoryStore } from '../store/useTeamHistoryStore'
 
 const ReceivedApplications = () => {
     const {getAllReceivedApplications, isGetting, receivedApplications, acceptApplication, rejectApplication, isAccepting, isRejecting} = useApplicationStore();
     const {user} = useAuthStore();
     const {teamJoin} = useTeamMemberStore();
+    const {memberJoinedHistory} = useTeamHistoryStore();
 
     useEffect(() => {
         function fetchApplications() {
@@ -31,6 +33,7 @@ const ReceivedApplications = () => {
             await acceptApplication(application?._id)
             toast.success("Application accepted")
             await teamJoin(application?.teamId, {name: application?.name, email: application?.email, reasonToJoin: application?.reasonToJoin})
+            await memberJoinedHistory(application?.teamId, {memberName: application?.name})
         } catch (error) {
             toast.error("Application accept failed")
         }
