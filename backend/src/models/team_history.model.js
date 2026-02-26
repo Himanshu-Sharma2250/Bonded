@@ -13,7 +13,11 @@ const teamHistorySchema = new Schema({
         default: TeamAction.CREATED,
         required: true
     },
-    reason: {
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
         type: String
     }
 }, { timestamps: true })

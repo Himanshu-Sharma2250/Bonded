@@ -1,28 +1,40 @@
+import { Team } from "../models/team.model.js";
 import { TeamHistory } from "../models/team_history.model.js";
-import { teamHistorySchema } from "../validators/history.validator.js";
+import { teamDeleteHistorySchema, teamHistorySchema, teamJoinedHistorySchema } from "../validators/history.validator.js";
 
 // create team
 export const teamCreated = async (req, res) => {
     const {teamId} = req.params;
-    const {data, error} = teamHistorySchema.safeParse(req.body);
-
-    if (error) {
-        return res.status(400).json({
-            success: false,
-            message: "Error in req body"
-        })
-    }
-
-    const {reason} = data;
 
     try {
+        // check if create history is present or not
+        const existingHistory = await TeamHistory.findOne({
+            teamId: teamId,
+            teamAction: "CREATED"
+        })
+
+        if (existingHistory) {
+            return res.status(400).json({
+                success: false,
+                message: "Team Create History already exists"
+            })
+        }
+
+        const team = await Team.findById(teamId);
+
+        if (!team) {
+            return res.status(404).json({
+                success: false,
+                message: "Team not found"
+            })
+        }
+
         const history = await TeamHistory.create({
             teamId: teamId,
             teamAction: "CREATED",
-            reason: reason
+            title: "Team Created",
+            description: `${team.name} is created`
         })
-
-        await history.save()
 
         res.status(201).json({
             success: true,
@@ -50,16 +62,15 @@ export const teamMemberLeft = async (req, res) => {
         })
     }
 
-    const {reason} = data;
+    const {reason, memberName} = data;
 
     try {
         const history = await TeamHistory.create({
+            teamId: teamId,
             teamAction: "LEFT",
-            reason: reason,
-            teamId: teamId
+            title: "Team Member Left",
+            description: `${memberName} left the team because "${reason}"`
         })
-
-        await history.save()
 
         res.status(201).json({
             success: true,
@@ -87,16 +98,15 @@ export const teamMemberKickedOut = async (req, res) => {
         })
     }
 
-    const {reason} = data;
+    const {reason, memberName} = data;
 
     try {
         const history = await TeamHistory.create({
+            teamId: teamId,
             teamAction: "KICKED_OUT",
-            reason: reason,
-            teamId: teamId
+            title: "Team Member Kicked Out",
+            description: `${memberName} kicked out of team because "${reason}"`
         })
-
-        await history.save()
 
         res.status(201).json({
             success: true,
@@ -115,7 +125,7 @@ export const teamMemberKickedOut = async (req, res) => {
 // member joined
 export const teamMemberJoined = async (req, res) => {
     const {teamId} = req.params;
-    const {data, error} = teamHistorySchema.safeParse(req.body);
+    const {data, error} = teamJoinedHistorySchema.safeParse(req.body);
 
     if (error) {
         return res.status(400).json({
@@ -124,14 +134,15 @@ export const teamMemberJoined = async (req, res) => {
         })
     }
 
-    const {reason} = data;
+    const {memberName} = data;
 
     try {
         const history = await TeamHistory.create({
+            teamId: teamId,
             teamAction: "JOINED",
-            reason: reason,
-            teamId: teamId
-        }, {new: true})
+            title: "New Member Joined",
+            description: `${memberName} joined team`
+        })
 
         await history.save()
 
@@ -152,7 +163,7 @@ export const teamMemberJoined = async (req, res) => {
 // team deleted
 export const teamDeleted = async (req, res) => {
     const {teamId} = req.params;
-    const {data, error} = teamHistorySchema.safeParse(req.body);
+    const {data, error} = teamDeleteHistorySchema.safeParse(req.body);
 
     if (error) {
         return res.status(400).json({
@@ -164,13 +175,25 @@ export const teamDeleted = async (req, res) => {
     const {reason} = data;
 
     try {
-        const history = await TeamHistory.create({
-            teamAction: "DELETED",
-            reason: reason,
-            teamId: teamId
-        }, {new: true})
+        // check if create history is present or not
+        const existingHistory = await TeamHistory.findOne({
+            teamId: teamId,
+            teamAction: "DELETED"
+        })
 
-        await history.save()
+        if (existingHistory) {
+            return res.status(400).json({
+                success: false,
+                message: "Team Create History already exists"
+            })
+        }
+
+        const history = await TeamHistory.create({
+            teamId: teamId,
+            teamAction: "DELETED",
+            title: "Team Deleted",
+            description: `Team is deleted because "${reason}"`
+        })
 
         res.status(201).json({
             success: true,
