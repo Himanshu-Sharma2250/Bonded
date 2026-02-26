@@ -13,6 +13,16 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
 import LeaveGroupModal from '../components/LeaveGroupModal';
 
+const getAvatarColor = (name) => {
+    if (!name) return '#6b7280'; // fallback gray
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash % 360);
+    return `hsl(${hue}, 80%, 60%)`;
+};
+
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
     const {teamId} = useParams()
@@ -39,17 +49,17 @@ const GroupDetailPage = () => {
             {/* this div contains back button */}
             <div className='flex justify-start items-center px-2 h-12'>
                 <NavLink to={'/groups'} className='cursor-pointer'>
-                    <MoveLeft className='w-6' />
+                    <MoveLeft className="w-6 text-[#64748B] hover:text-[#2A6E8C] transition-colors" />
                 </NavLink>
             </div>
 
             {/* div 1 - shows group info like group image, name, members number and button to apply */}
             <div className='flex justify-between items-center py-2 px-3 '>
                 {/* contains group info */}
-                <div className='flex gap-1 items-center'>
+                <div className='flex gap-3 items-center'>
                     <div className='flex items-center justify-center'>
-                        <span className='p-4 bg-cyan-600 rounded-xs'>
-                            {team?.name?.toUpperCase().slice(0,1)}
+                        <span className='p-4 bg-cyan-600 rounded-xs' style={{ backgroundColor: getAvatarColor(team?.name) }}>
+                            {team?.name?.toUpperCase().slice(0, 1) || 'G'}
                         </span>
                     </div>
 
@@ -73,50 +83,29 @@ const GroupDetailPage = () => {
             </div>
 
             {/* div 2 - shows the btns to navigate between Group Overview - Members - Group History */}
-            <div className='flex gap-5 py-2 px-2'>
-                <span 
-                    className={`text-xl cursor-pointer ${selectedTab === 'Overview' ? 'text-[#2A6E8C] font-bold border-b-2 border-b-[#FF7A59]' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab('Overview')}    
-                >
-                    Overview
-                </span>
-
-                <span 
-                    className={`text-xl cursor-pointer ${selectedTab === 'Members' ? 'text-[#2A6E8C] font-bold border-b-2 border-b-[#FF7A59]' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab('Members')}    
-                >
-                    Members
-                </span>
-
-                <span 
-                    className={`text-xl cursor-pointer ${selectedTab === 'Notes' ? 'text-[#2A6E8C] font-bold border-b-2 border-b-[#FF7A59]' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab('Notes')}    
-                >
-                    Notes
-                </span>
-
-                <span 
-                    className={`text-xl cursor-pointer ${selectedTab === 'History' ? 'text-[#2A6E8C] font-bold border-b-2 border-b-[#FF7A59]' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab('History')}    
-                >
-                    Group History
-                </span>
+            <div className="flex gap-5 py-2 px-2 border-b border-[#CBD5E1]">
+                {['Overview', 'Members', 'Notes', 'History'].map((tab) => (
+                    <span
+                        key={tab}
+                        className={`text-lg cursor-pointer pb-1 transition-colors ${
+                            selectedTab === tab
+                                ? 'text-[#2A6E8C] font-semibold border-b-2 border-[#FF7A59]'
+                                : 'text-[#64748B] hover:text-[#475569]'
+                        }`}
+                        onClick={() => setSelectedTab(tab)}
+                    >
+                        {tab === 'History' ? 'Group History' : tab}
+                    </span>
+                ))}
             </div>
 
             {/* div 2 - shows the respective detail of above navigation btns */}
-            {selectedTab === 'Overview' ? (
-                <GroupOverview team={team} members={members} />
-            ) : (
-                selectedTab === 'Members' ? (
-                    <GroupMembers members={members} loading={isGetting} />
-                ) : (
-                    selectedTab === 'Notes' ? (
-                        <GroupNotes teamId={team?._id} />
-                    ) : (
-                        <GroupHistory teamId={team?._id} />
-                    )
-                )
-            )}
+            <div className="px-2">
+                {selectedTab === 'Overview' && <GroupOverview team={team} members={members} />}
+                {selectedTab === 'Members' && <GroupMembers members={members} loading={isGetting} />}
+                {selectedTab === 'Notes' && <GroupNotes teamId={team?._id} />}
+                {selectedTab === 'History' && <GroupHistory teamId={team?._id} />}
+            </div>
         </div>
     )
 }
