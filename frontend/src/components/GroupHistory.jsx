@@ -73,7 +73,7 @@ const GroupHistory = ({teamId}) => {
     console.log("history: ", history)
 
     return (
-        <div className='flex flex-col px-5 py-4 gap-2 border-2 rounded-xs border-gray-600'>
+        <div className="px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC]">
             {/* histories */}
             {!history || history.length === 0 ? (
                 <div className="text-center py-10">

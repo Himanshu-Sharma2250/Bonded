@@ -45,7 +45,7 @@ const GroupNotes = ({ teamId }) => {
     }
 
     return (
-        <div className="px-2 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] relative min-h-50">
+        <div className="px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] relative min-h-50">
             {sortedNotes.length === 0 ? (
                 <div className="text-center py-10">
                     {!member ? (
