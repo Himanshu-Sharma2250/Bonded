@@ -43,7 +43,7 @@ const AllGroupsTab = () => {
                         {/* Header with avatar and name */}
                         <div className="flex items-start gap-3">
                             <div
-                                className="w-12 h-12 rounded-md flex items-center justify-center text-white font-bold text-xl flex-shrink-0"
+                                className="w-12 h-12 rounded-md flex items-center justify-center text-white font-bold text-xl shrink-0"
                                 style={{ backgroundColor: getAvatarColor(team.name) }}
                             >
                                 {team.name?.charAt(0).toUpperCase()}

@@ -2,7 +2,7 @@ import {create} from "zustand";
 import { axiosInstance } from "../lib/axios";
 
 export const useUserHistoryStore = create((set) => ({
-    userHistories: [],
+    userHistory: [],
     loading: false,
 
     getUserHistories: async () => {
@@ -11,27 +11,30 @@ export const useUserHistoryStore = create((set) => ({
         try {
             const res = await axiosInstance.get("/userHistory");
             
-            set({userHistories: res.data.histories});
+            set({userHistory: res.data.histories});
         } catch (error) {
             console.error("Error fetching user histories: ", error);
+            set({userHistory: []});
         } finally {
             set({loading: false});
         }
     },
 
-    userJoinedTeam: async (data) => {
+    userJoinedTeam: async () => {
         try {
-            await axiosInstance.post("/userHistory/user-joined-team", data);
+            await axiosInstance.post("/userHistory/user-joined-team");
         } catch (error) {
             console.error("Error creating user history(joined team): ", error);
+            throw error;
         }
     },
 
-    userCreatedTeam: async (data) => {
+    userCreatedTeam: async () => {
         try {
-            await axiosInstance.post("/userHistory/user-created-team", data);
+            await axiosInstance.post("/userHistory/user-created-team");
         } catch (error) {
             console.error("Error creating user history(create team): ", error);
+            throw error;
         }
     },
 
@@ -40,6 +43,7 @@ export const useUserHistoryStore = create((set) => ({
             await axiosInstance.post("/userHistory/user-left-team", data);
         } catch (error) {
             console.error("Error creating user history(left team): ", error);
+            throw error;
         }
     },
 
@@ -48,6 +52,7 @@ export const useUserHistoryStore = create((set) => ({
             await axiosInstance.post("/userHistory/user-kicked-out-team", data);
         } catch (error) {
             console.error("Error creating user history(kicked out team): ", error);
+            throw error;
         }
     },
 
@@ -56,6 +61,7 @@ export const useUserHistoryStore = create((set) => ({
             await axiosInstance.post("/userHistory/user-delete-team", data);
         } catch (error) {
             console.error("Error creating user history(delete team): ", error);
+            throw error;
         }
     },
 }))
