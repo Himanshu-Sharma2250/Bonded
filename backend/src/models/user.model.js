@@ -89,10 +89,10 @@ userSchema.pre("save", async function () {
 userSchema.methods.generateAccessToken = function() {
     return jwt.sign(
         {
-        _id: this._id,
-        name: this.name,
-        email: this.email,
-        role: this.role
+            _id: this._id,
+            name: this.name,
+            email: this.email,
+            role: this.role
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: 1000 * 60 * 60 }

@@ -13,8 +13,12 @@ const userHistorySchema = new Schema({
         default: UserAction.JOINED,
         required: true
     },
-    reason: {
+    title: {
         type: String,
+        required: true
+    },
+    description: {
+        type: String
     }
 }, { timestamps: true })
 
