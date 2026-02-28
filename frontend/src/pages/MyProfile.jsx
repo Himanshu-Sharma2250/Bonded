@@ -1,46 +1,78 @@
 import React, { useEffect } from 'react'
 import EditProfileModal from '../components/EditProfileModal'
 import { useAuthStore } from '../store/useAuthStore'
+import { useUserHistoryStore } from '../store/useUserHistoryStore';
+import { Loader2 } from 'lucide-react';
+
+const actionColorMap = {
+    CREATED: '#10b981',   // green
+    JOINED: '#3b82f6',    // blue
+    LEFT: '#ef4444',      // red
+    KICKED_OUT: '#f97316', // orange
+    DELETED: '#6b7280',   // gray
+};
+
+const getAvatarColor = (name) => {
+    if (!name) return '#6b7280';
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash % 360);
+    return `hsl(${hue}, 80%, 60%)`;
+};
 
 const MyProfile = () => {
-    const {loading, profile, user} = useAuthStore();
+    const {profile, user} = useAuthStore();
+    const {loading, getUserHistories, userHistory} = useUserHistoryStore();
 
     useEffect(() => {
         async function getProfile() {
             await profile();
+            await getUserHistories();
         }
         getProfile();
-    }, [])
+    }, [getUserHistories, profile])
 
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+        });
+    };
 
-    console.log("user is ", user)
+    const createHistoryCard = (historyItem) => {
+        const dotColor = actionColorMap[historyItem.userAction] || '#64748B';
 
-    const createHistories = () => {
-        return <div className='flex items-center justify-between px-2 py-1 shadow-gray-800 shadow-xs rounded-xs'>
-            {/* history's title and reason */}
-            <div className='flex gap-2 items-center'>
-                <span className='text-4xl text-fuchsia-700'>
-                    •
-                </span>
-
-                <div className='flex flex-col'>
-                    <span className='font-bold'>
-                        History Title
-                    </span>
-
-                    <span className='text-sm text-gray-700'>
-                        History Reason
+        return (
+            <div
+                key={historyItem._id}
+                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
+            >
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        {/* Colored dot */}
+                        <span
+                            className="w-2.5 h-2.5 rounded-full inline-block"
+                            style={{ backgroundColor: dotColor }}
+                        />
+                        <h3 className="text-lg font-semibold text-[#0F172A]">
+                            {historyItem.title}
+                        </h3>
+                    </div>
+                    <span className="text-xs text-[#64748B]">
+                        {formatDate(historyItem.createdAt)}
                     </span>
                 </div>
+                <p className="mt-2 text-sm text-[#334155]">
+                    {historyItem.description}
+                </p>
             </div>
-
-            <div>
-                <span className='text-sm text-gray-700'>
-                    [date - time]
-                </span>
-            </div>
-        </div>
-    }
+        );
+    };
 
     return (
         <div className='py-2 flex flex-col gap-10'>
@@ -58,11 +90,11 @@ const MyProfile = () => {
             {/* shows user profile and role and edit profile button */}
             <div className='flex justify-between items-center'>
                 {/* shows user profile , name and role */}
-                <div className='flex gap-2 items-center'>
+                <div className='flex gap-3 items-center'>
                     {/* user profile image */}
                     <div className='flex items-center'>
-                        <span className='p-5 bg-cyan-800'>
-                            {user?.fullName?.toUpperCase().slice(0,1)}
+                        <span className='p-5 bg-cyan-800' style={{ backgroundColor: getAvatarColor(user?.name) }}>
+                            {user?.fullName?.toUpperCase().slice(0,1) || U}
                         </span>
                     </div>
 
@@ -256,13 +288,22 @@ const MyProfile = () => {
             </div>
 
             {/* user history */}
-            <div className='flex flex-col gap-2'>
-                <h1 className='text-2xl font-bold'>
-                    User History
-                </h1>
-
-                <div className='flex flex-col px-5 py-4 gap-2  shadow rounded-xs border-gray-600'>
-                    {createHistories()}
+            <div className="flex flex-col gap-2">
+                <h1 className="text-2xl font-bold">User History</h1>
+                <div className="px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC]">
+                    {loading ? (
+                        <div className="flex justify-center items-center py-10">
+                            <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+                        </div>
+                    ) : !userHistory || userHistory.length === 0 ? (
+                        <div className="text-center py-10">
+                            <span className="text-lg text-[#64748B]">No History</span>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-3">
+                            {userHistory.map(createHistoryCard)}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
