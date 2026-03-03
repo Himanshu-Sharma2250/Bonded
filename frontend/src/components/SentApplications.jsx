@@ -1,43 +1,50 @@
-import { Loader2, Users } from 'lucide-react'
-import toast from 'react-hot-toast'
-import Button from './Button'
-import { useApplicationStore } from '../store/useApplicationStore'
-import { useEffect, useState } from 'react'
-import { useTeamStore } from '../store/useTeamStore'
+import { Loader2, Users } from 'lucide-react';
+import toast from 'react-hot-toast';
+import Button from './Button';
+import { useApplicationStore } from '../store/useApplicationStore';
+import { useEffect, useState } from 'react';
+import { useTeamStore } from '../store/useTeamStore';
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
+};
+
+// Map application status to badge colors
+const statusColorMap = {
+    PENDING: { bg: '#E9F1F5', text: '#2A6E8C' },
+    ACCEPTED: { bg: '#10b98120', text: '#10b981' },
+    REJECTED: { bg: '#ef444420', text: '#ef4444' },
+    WITHDRAWN: { bg: '#64748B20', text: '#64748B' },
+};
 
 const SentApplications = () => {
     const [teamsMap, setTeamsMap] = useState({});
-    const {getApplications, isGetting, applications, withdrawApplication} = useApplicationStore();
-    const {getTeam} = useTeamStore();
+    const { getApplications, isGetting, applications, withdrawApplication } = useApplicationStore();
+    const { getTeam } = useTeamStore();
 
     useEffect(() => {
-        function fetchApplications() {
-            getApplications();
-        }
-        fetchApplications();
-    }, [])
+        getApplications();
+    }, [getApplications]);
 
     useEffect(() => {
         const fetchTeamsForApplications = async () => {
-        // Get unique team IDs from applications (ignore empty or undefined)
-        const teamIds = [...new Set(applications.map(app => app.teamId).filter(Boolean))];
-            
-        if (teamIds.length === 0) return;
+            const teamIds = [...new Set(applications.map((app) => app.teamId).filter(Boolean))];
+            if (teamIds.length === 0) return;
 
-        // Fetch each team in parallel
-        try {
-            const teamPromises = teamIds.map(id =>
-                getTeam(id)
-            );
-            const teamsData = await Promise.all(teamPromises);
-
-            // Build a map from teamId to team data
-            const newTeamsMap = teamsData.reduce((acc, team) => {
-                acc[team._id] = team;
-                return acc;
-            }, {});
-
-            setTeamsMap(newTeamsMap);
+            try {
+                const teamPromises = teamIds.map((id) => getTeam(id));
+                const teamsData = await Promise.all(teamPromises);
+                const newTeamsMap = teamsData.reduce((acc, team) => {
+                    acc[team._id] = team;
+                    return acc;
+                }, {});
+                setTeamsMap(newTeamsMap);
             } catch (error) {
                 console.error('Error fetching teams:', error);
                 toast.error('Could not load group details');
@@ -47,85 +54,85 @@ const SentApplications = () => {
         if (applications.length > 0) {
             fetchTeamsForApplications();
         }
-    }, [applications]); // runs when applications change
+    }, [applications, getTeam]);
 
     if (isGetting) {
-        return <div className='m-auto'>
-            <Loader2 className='w-5 animate-spin' />
-        </div>
+        return (
+            <div className="flex justify-center items-center py-10">
+                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+            </div>
+        );
     }
 
-    const onWithdraw = (applicationId) => {
+    const onWithdraw = async (applicationId) => {
         try {
-            withdrawApplication(applicationId)
-            toast.success("Application Withdraw")
+            await withdrawApplication(applicationId);
+            toast.success('Application withdrawn');
         } catch (error) {
-            toast.error("Application Withdrawal failed")            
+            toast.error('Application withdrawal failed');
         }
-    }
+    };
 
     const createApplicationCards = (application) => {
         const team = teamsMap[application?.teamId];
+        const statusStyle = statusColorMap[application?.status] || { bg: '#E2E8F0', text: '#475569' };
 
-        return <div className='flex flex-col px-2 py-2 border-2 w-full gap-3 justify-between' key={application?._id}>
-            {/* div 1 - contains group name and if applications is pending or rejected or approved */}
-            <div className='flex items-center justify-between'>
-                {/* contains group name */}
-                <div className='flex items-center gap-1'>
-                    <Users className='w-4.5'/>
-
-                    <span className='font-bold text-[1.1rem]'>
-                        Group: 
-                    </span>
-
-                    <span>
-                        {team?.name}
-                    </span>
-                </div>
-
-                {/* contains if applications pending or rejected or approved */}
-                <div>
-                    <span className='bg-[#E9F1F5] px-1 py-0.5 rounded-2xl'>
+        return (
+            <div
+                key={application._id}
+                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
+            >
+                {/* Header: group name and status badge */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                        <Users className="w-4 h-4 text-[#64748B]" />
+                        <h3 className="text-lg font-semibold text-[#0F172A]">
+                            {team?.name || 'Unknown Group'}
+                        </h3>
+                    </div>
+                    <span
+                        className="px-2 py-0.5 text-xs font-medium rounded-full"
+                        style={{ backgroundColor: statusStyle.bg, color: statusStyle.text }}
+                    >
                         {application?.status}
                     </span>
                 </div>
+
+                {/* Reason and applied date */}
+                <div className="mt-2 space-y-1 text-sm">
+                    <div className="flex gap-1">
+                        <span className="font-medium text-[#0F172A]">Reason:</span>
+                        <span className="text-[#334155]">{application?.reasonToJoin}</span>
+                    </div>
+                    <div className="text-xs text-[#64748B]">
+                        Applied on: {formatDate(application?.appliedAt)}
+                    </div>
+                </div>
+
+                {/* Withdraw button (only if status is PENDING) */}
+                {application?.status === 'PENDING' && (
+                    <div className="mt-4">
+                        <Button
+                            name="Withdraw"
+                            bgColor="#ef4444"
+                            btnSize="14px"
+                            onClick={() => onWithdraw(application._id)}
+                        />
+                    </div>
+                )}
             </div>
-
-            {/* div 2 - contains groups name and reason to join and application date and time */}
-            <div className='flex flex-col'>
-                {/* contains reason */}
-                <span className='flex gap-1 items-center'>
-                    <span className='font-bold text-[1.1rem]'>
-                        Reason: 
-                    </span>
-
-                    <span>
-                        {application?.reasonToJoin}
-                    </span>
-                </span>
-
-                {/* contains application date and time */}
-                <span className=' font-extralight text-[12px] text-gray-800'>
-                    Applied on: {application?.appliedAt}
-                </span>
-            </div>
-
-            {/* div 3 - contains withdraw button */}
-            <div>
-                <Button name="Withdraw" bgColor="#FF7A59" btnSize="15px" onClick={() => onWithdraw(application?._id)} />
-            </div>
-        </div>
-    }
+        );
+    };
 
     return (
-        <div className='flex flex-col gap-2'>
+        <div className="flex flex-col gap-3 px-2 py-4">
             {applications.length === 0 ? (
-                "No sent application"
+                <div className="text-center py-10 text-[#64748B]">No sent applications</div>
             ) : (
-                applications.map((application) => createApplicationCards(application))
+                applications.map(createApplicationCards)
             )}
         </div>
-    )
-}
+    );
+};
 
-export default SentApplications
+export default SentApplications;

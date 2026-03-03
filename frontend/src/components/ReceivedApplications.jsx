@@ -1,152 +1,148 @@
-import { Loader2, Users } from 'lucide-react'
-import React from 'react'
-import Button from './Button'
-import { NavLink } from 'react-router-dom'
-import { useEffect } from 'react'
-import { useApplicationStore } from '../store/useApplicationStore'
-import { useAuthStore } from '../store/useAuthStore'
-import toast from 'react-hot-toast'
-import { useTeamMemberStore } from '../store/useTeamMemberStore'
-import { useTeamHistoryStore } from '../store/useTeamHistoryStore'
-import { useUserHistoryStore } from '../store/useUserHistoryStore'
+import { Loader2, Users } from 'lucide-react';
+import React, { useEffect } from 'react';
+import Button from './Button';
+import { NavLink } from 'react-router-dom';
+import { useApplicationStore } from '../store/useApplicationStore';
+import { useAuthStore } from '../store/useAuthStore';
+import toast from 'react-hot-toast';
+import { useTeamMemberStore } from '../store/useTeamMemberStore';
+import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useUserHistoryStore } from '../store/useUserHistoryStore';
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
+};
 
 const ReceivedApplications = () => {
-    const {getAllReceivedApplications, isGetting, receivedApplications, acceptApplication, rejectApplication, isAccepting, isRejecting} = useApplicationStore();
-    const {user} = useAuthStore();
-    const {teamJoin} = useTeamMemberStore();
-    const {memberJoinedHistory} = useTeamHistoryStore();
-    const {userJoinedTeam} = useUserHistoryStore();
+    const {
+        getAllReceivedApplications,
+        isGetting,
+        receivedApplications,
+        acceptApplication,
+        rejectApplication,
+        isAccepting,
+        isRejecting,
+    } = useApplicationStore();
+    const { user } = useAuthStore();
+    const { teamJoin } = useTeamMemberStore();
+    const { memberJoinedHistory } = useTeamHistoryStore();
+    const { userJoinedTeam } = useUserHistoryStore();
 
     useEffect(() => {
-        function fetchApplications() {
-            getAllReceivedApplications();
-        }
-        fetchApplications();
-    }, [])
-        
+        getAllReceivedApplications();
+    }, [getAllReceivedApplications]);
+
     if (isGetting) {
-        return <div className='m-auto'>
-            <Loader2 className='w-5 animate-spin' />
-        </div>
+        return (
+            <div className="flex justify-center items-center py-10">
+                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+            </div>
+        );
     }
 
     const onAcceptApplication = async (application) => {
         try {
-            await acceptApplication(application?._id)
-            toast.success("Application accepted")
-            await teamJoin(application?.teamId, {name: application?.name, email: application?.email, reasonToJoin: application?.reasonToJoin})
-            await memberJoinedHistory(application?.teamId, {memberName: application?.name})
+            await acceptApplication(application?._id);
+            toast.success('Application accepted');
+            await teamJoin(application?.teamId, {
+                name: application?.name,
+                email: application?.email,
+                reasonToJoin: application?.reasonToJoin,
+            });
+            await memberJoinedHistory(application?.teamId, { memberName: application?.name });
             await userJoinedTeam();
         } catch (error) {
-            toast.error("Application accept failed")
+            toast.error('Application accept failed');
         }
-    }
+    };
 
     const onRejectApplication = async (applicationId) => {
         try {
             await rejectApplication(applicationId);
-            toast.success("Application rejeced");
+            toast.success('Application rejected');
         } catch (error) {
-            toast.error("Application rejected failed")
+            toast.error('Application rejection failed');
         }
-    }
+    };
 
-    console.log("received app: ", receivedApplications)
-
-    const createApplicationCards = (application) => {
-        return <div className='flex flex-col px-2 py-2 border-2 w-full gap-3 justify-between'>
-            {/* div 1 - contains user name and email and if applications is pending or rejected or approved */}
-            <div className='flex items-center justify-between'>
-                {/* contains user profile and name and email */}
-                <div className='flex items-center gap-3'>
-                    {/* profile photo */}
+    const createApplicationCards = (application) => (
+        <div
+            key={application._id}
+            className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
+        >
+            {/* Applicant info and view profile button */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    {/* Avatar with dynamic color */}
                     <div>
-                        <span className='border-2 rounded-xs p-2'>
-                            {application?.name.toUpperCase().slice(0,1)}
+                        <span
+                            className="w-10 h-10 rounded-md flex items-center justify-center text-white font-bold"
+                            style={{ backgroundColor: `hsl(${application?.name?.length * 30 % 360}, 70%, 60%)` }}
+                        >
+                            {application?.name?.charAt(0).toUpperCase()}
                         </span>
                     </div>
-
-                    {/* user name and email */}
-                    <div className='flex flex-col'>
-                        <h1 className='text-xl'>
-                            {application?.name}
-                        </h1>
-
-                        <span className='text-[11px]'>
-                            {application?.email}
-                        </span>
+                    <div className="flex flex-col">
+                        <h3 className="text-lg font-semibold text-[#0F172A]">{application?.name}</h3>
+                        <span className="text-sm text-[#64748B]">{application?.email}</span>
                     </div>
                 </div>
+                <NavLink to={`/user/${application?.userId}`}>
+                    <Button name="View Profile" btnSize="14px" bgColor="#2A6E8C" />
+                </NavLink>
+            </div>
 
-                {/* contains if applications pending or rejected or approved */}
-                <div>
-                    <NavLink to={'/user/user-id'}>
-                        <Button name={'View Profile'} bgColor={'#2A6E8C'} btnSize={'16px'} />
-                    </NavLink>
+            {/* Group and reason details */}
+            <div className="mt-3 space-y-1 text-sm">
+                <div className="flex items-center gap-1 text-[#334155]">
+                    <Users className="w-4 h-4 text-[#64748B]" />
+                    <span className="font-medium text-[#0F172A]">Group:</span>
+                    <span className="text-[#334155]">{application?.teamId?.name || 'Unknown'}</span>
+                </div>
+                <div className="flex gap-1">
+                    <span className="font-medium text-[#0F172A]">Reason:</span>
+                    <span className="text-[#334155]">{application?.reasonToJoin}</span>
+                </div>
+                <div className="text-xs text-[#64748B]">
+                    Applied on: {formatDate(application?.appliedAt)}
                 </div>
             </div>
 
-            {/* div 2 - contains groups name and reason to join and application date and time */}
-            <div className='flex flex-col'>
-                {/* contains group name */}
-                <span className='flex gap-1 items-center'>
-                    <Users className='w-4.5'/>
-
-                    <span className='font-bold text-[1.1rem]'>
-                        Group: 
-                    </span>
-
-                    <span>
-                        Group Name
-                    </span>
-                </span>
-
-                {/* contains reason */}
-                <span className='flex gap-1 items-center'>
-                    <span className='font-bold text-[1.1rem]'>
-                        Reason: 
-                    </span>
-
-                    <span>
-                        {application?.reasonToJoin}
-                    </span>
-                </span>
-
-                {/* contains application date and time */}
-                <span className=' font-extralight text-[12px] text-gray-800'>
-                    Applied on: {application?.appliedAt}
-                </span>
-            </div>
-
-            {/* div 3 - contains withdraw button */}
-            <div className='flex gap-3'>
-                <Button 
-                    name={isAccepting ? (<Loader2 className='w-4 animate-spin' />) : ("Accept")}
-                    bgColor="#FF7A59" 
-                    btnSize="15px" 
-                    onClick={() => onAcceptApplication(application)} 
+            {/* Accept/Reject buttons */}
+            <div className="flex gap-2 mt-4">
+                <Button
+                    name={isAccepting ? <Loader2 className="w-4 animate-spin" /> : 'Accept'}
+                    bgColor="#10b981"
+                    btnSize="14px"
+                    onClick={() => onAcceptApplication(application)}
+                    disabled={isAccepting}
                 />
-                <Button 
-                    name={isRejecting ? (<Loader2 className='w-4 animate-spin' />) : ("Reject")}
-                    bgColor="#FF7A59" 
-                    btnSize="15px" 
-                    onClick={() => onRejectApplication(application?._id)} 
+                <Button
+                    name={isRejecting ? <Loader2 className="w-4 animate-spin" /> : 'Reject'}
+                    bgColor="#ef4444"
+                    btnSize="14px"
+                    onClick={() => onRejectApplication(application._id)}
+                    disabled={isRejecting}
                 />
             </div>
         </div>
-    }
+    );
 
     return (
-        <div className='flex flex-col gap-2'>
-            {receivedApplications.length == 0 ? (
-                <span>
-                    No application received
-                </span>
+        <div className="flex flex-col gap-3 px-2 py-4">
+            {receivedApplications.length === 0 ? (
+                <div className="text-center py-10 text-[#64748B]">No applications received</div>
             ) : (
-                receivedApplications.map((application) => createApplicationCards(application))
+                receivedApplications.map(createApplicationCards)
             )}
         </div>
-    )
-}
+    );
+};
 
-export default ReceivedApplications
+export default ReceivedApplications;

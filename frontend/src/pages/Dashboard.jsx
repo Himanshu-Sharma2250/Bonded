@@ -1,6 +1,6 @@
 import { Megaphone, Users } from 'lucide-react'
 import { useTeamStore } from '../store/useTeamStore'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useApplicationStore } from '../store/useApplicationStore';
 
 const Dashboard = () => {
