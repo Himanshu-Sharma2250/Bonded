@@ -58,8 +58,8 @@ const GroupMembers = ({ teamId, teamRole, members, loading }) => {
                 </div>
             </div>
             <div>
+                {teamRole === 'LEADER' && <KickOutModal teamId={teamId} />}
                 <NavLink to={`/user/${member?.userId}`}>
-                    {teamRole === 'LEADER' && <KickOutModal teamId={teamId} />}
                     {teamRole === 'MEMBER' && <Button name="View Profile" btnSize="14px" bgColor="#2A6E8C" />}
                 </NavLink>
             </div>

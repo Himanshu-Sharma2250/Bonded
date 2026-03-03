@@ -1,6 +1,22 @@
 import { Megaphone, Users } from 'lucide-react'
+import { useTeamStore } from '../store/useTeamStore'
+import { useEffect, useState } from 'react';
+import { useApplicationStore } from '../store/useApplicationStore';
 
 const Dashboard = () => {
+    const {teams, getAllTeams, myTeam, team} = useTeamStore();
+    const {applications, getApplications, getAllReceivedApplications, receivedApplications} = useApplicationStore();
+
+    useEffect(() => {
+        async function fetchData() {
+            await getAllTeams();
+            await myTeam();
+            await getApplications();
+            await getAllReceivedApplications();
+        }
+        fetchData();
+    }, [getAllTeams, getApplications])
+
     return (
         <div className='flex-1 flex-col gap-1'>
             {/* header */}
@@ -27,12 +43,12 @@ const Dashboard = () => {
                     </div>
 
                     <span className='text-4xl font-bold'>
-                        number
+                        {team === null ? '0' : '1'}
                     </span>
 
                     <div className='flex flex-col'>
-                        <span className='text-[15px]'>[number] Joined</span>
-                        <span className='text-[15px]'>[number] Available</span>
+                        <span className='text-[15px]'>{team === null ? '0' : '1'} Joined</span>
+                        <span className='text-[15px]'>{teams?.length || 0} Available</span>
                     </div>
                 </div>
 
@@ -47,12 +63,12 @@ const Dashboard = () => {
                     </div>
 
                     <span className='text-4xl font-bold'>
-                        number
+                        {receivedApplications?.length || 0}
                     </span>
 
                     <div className='flex flex-col'>
-                        <span className='text-[15px]'>[number] Joined</span>
-                        <span className='text-[15px]'>[number] Applied</span>
+                        <span className='text-[15px]'>{receivedApplications?.length || 0} Received</span>
+                        <span className='text-[15px]'>{applications?.length || 0} Applied</span>
                     </div>
                 </div>
             </main>
