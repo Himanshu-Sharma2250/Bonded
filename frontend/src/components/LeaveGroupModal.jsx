@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import toast from "react-hot-toast";
 import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { useUserHistoryStore } from '../store/useUserHistoryStore';
 
 const LeaveGroupModal = ({teamId}) => {
     const {register, reset, handleSubmit} = useForm({
@@ -16,6 +17,7 @@ const LeaveGroupModal = ({teamId}) => {
 
     const {teamLeft, isLefting} = useTeamMemberStore();
     const {memberLeftHistory} = useTeamHistoryStore();
+    const {userLeftTeam} = useUserHistoryStore();
     const {user} = useAuthStore();
 
     const dialogRef = useRef(null);
@@ -33,6 +35,7 @@ const LeaveGroupModal = ({teamId}) => {
         try {
             await teamLeft(teamId);
             await memberLeftHistory(teamId, {reason: data.reason, memberName: user?.fullName});
+            await userLeftTeam({reason: data.reason});
             toast.success("Team Left successfully");
             closeModal();
         } catch (error) {

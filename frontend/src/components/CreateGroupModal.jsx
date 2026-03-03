@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useUserHistoryStore } from '../store/useUserHistoryStore';
 
 const createTeamSchema = z.object({
     name: z.string().trim(),
@@ -25,6 +26,7 @@ const CreateGroupModal = () => {
     const {createTeamOwner} = useTeamMemberStore();
     const {user} = useAuthStore();
     const {createTeamHistory} = useTeamHistoryStore();
+    const {userCreatedTeam} = useUserHistoryStore();
 
     // reference to the dialog element
     const dialogRef = useRef(null);
@@ -47,6 +49,7 @@ const CreateGroupModal = () => {
                     email: user?.email,
                 });
                 await createTeamHistory(newTeam?._id);
+                await userCreatedTeam();
                 toast.success("Group created successfully!");
                 closeModal();
             }

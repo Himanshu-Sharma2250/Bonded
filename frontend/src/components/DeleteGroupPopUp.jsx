@@ -5,10 +5,12 @@ import { useTeamStore } from '../store/useTeamStore';
 import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useUserHistoryStore } from '../store/useUserHistoryStore';
 
 const DeleteGroupPopUp = ({teamId}) => {
     const {deleteTeam} = useTeamStore();
     const {teamDeleteHistory} = useTeamHistoryStore();
+    const {userDeletedTeam} = useUserHistoryStore();
 
     const {register, handleSubmit} = useForm();
 
@@ -26,6 +28,7 @@ const DeleteGroupPopUp = ({teamId}) => {
         try {
             await deleteTeam(teamId);
             await teamDeleteHistory(teamId, data);
+            await userDeletedTeam({reason: data.reason});
             toast.success("Team Deleted");
         } catch (error) {
             toast.error("Error deleting Team");
