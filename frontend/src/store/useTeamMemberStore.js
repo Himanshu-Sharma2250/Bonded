@@ -40,8 +40,10 @@ export const useTeamMemberStore = create((set) => ({
 
         try {
             await axiosInstance.patch(`/team/${teamId}/kick-out`);
+            return true;
         } catch (error) {
             console.error("Error during kick out member from team: ", error);
+            return false;
         } finally {
             set({isLefting: false});
         }
