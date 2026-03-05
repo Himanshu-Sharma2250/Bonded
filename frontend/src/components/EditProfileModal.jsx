@@ -21,7 +21,19 @@ const editProfileSchema = z.object({
 
 const EditProfileModal = ({initialValue}) => {
     const {register, handleSubmit, formState: {errors}} = useForm({
-        resolver: zodResolver(editProfileSchema)
+        resolver: zodResolver(editProfileSchema),
+        defaultValues: {
+            fullName: initialValue.fullName || "",
+            name: initialValue.name || "",
+            bio: initialValue.bio || "",
+            github: initialValue.github || "",
+            hashnode: initialValue.hashnode || "",
+            leetcode: initialValue.leetcode || "",
+            linkedln: initialValue.linkedln || "",
+            medium: initialValue.medium || "",
+            twitter: initialValue.twitter || "",
+            website:initialValue.website || ""
+        }
     })
 
     const {editProfile, isEditing, user} = useAuthStore();
@@ -75,7 +87,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="fullname" 
-                                value={initialValue.fullName}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="Full Name"
                                 {...register("fullName")}
@@ -88,7 +99,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="username" 
-                                value={initialValue.name}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="Username"
                                 {...register("name")}
@@ -103,7 +113,6 @@ const EditProfileModal = ({initialValue}) => {
                                 
                             <textarea 
                                 name="bio" 
-                                value={initialValue.bio}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="Tell us about yourself"
                                 {...register("bio")}
@@ -116,7 +125,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="website" 
-                                value={initialValue.website}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="www.yoursite.com"
                                 {...register("website")}
@@ -131,7 +139,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="leetcode" 
-                                value={initialValue.leetcode}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="www.leetcode.com"
                                 {...register("leetcode")}
@@ -144,7 +151,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="github" 
-                                value={initialValue.github}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="www.github.com/username"
                                 {...register("github")}
@@ -159,7 +165,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="Linkedln" 
-                                value={initialValue.linkedln}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="www.linkedln.com/username"
                                 {...register("linkedln")}
@@ -172,7 +177,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="Twitter/X" 
-                                value={initialValue.twitter}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="www.x.com/username"
                                 {...register("twitter")}
@@ -187,7 +191,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="Hashnode" 
-                                value={initialValue.hashnode}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="www.hashnode.com/username"
                                 {...register("hashnode")}
@@ -200,7 +203,6 @@ const EditProfileModal = ({initialValue}) => {
                             <input 
                                 type='text'
                                 name="Medium" 
-                                value={initialValue.medium}
                                 className='border-2 border-[#CBD5E1] w-70 focus:outline-[#2A6E8C] rounded-xs px-1 h-10'
                                 placeholder="www.medium.com/username"
                                 {...register("medium")}

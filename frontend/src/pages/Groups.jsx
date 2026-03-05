@@ -1,13 +1,36 @@
-import { NavLink } from 'react-router-dom';
 import Searchbar from '../components/Searchbar'
-import { User, Users } from 'lucide-react'
 import CreateGroupModal from '../components/CreateGroupModal'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AllGroupsTab from '../components/AllGroupsTab';
 import MyGroupTab from '../components/MyGroupTab';
+import { useTeamStore } from '../store/useTeamStore';
 
 const Groups = () => {
     const [selectedTab, setSelectedTab] = useState('All Groups');
+    const { loading, getAllTeams, teams } = useTeamStore();
+    const [filteredTeams, setFilteredTeams] = useState([]);
+
+    useEffect(() => {
+        getAllTeams();
+    }, [getAllTeams]);
+
+    useEffect(() => {
+        setFilteredTeams(teams); // initially show all
+    }, [teams]);
+
+    const handleSearch = (searchTerm) => {
+        if (!searchTerm.trim()) {
+            setFilteredTeams(teams);
+            return;
+        }
+        const lowerTerm = searchTerm.toLowerCase();
+        const filtered = teams.filter((group) =>
+            group.name.toLowerCase().includes(lowerTerm) ||
+            group.description.toLowerCase().includes(lowerTerm) ||
+            group.techUsed?.some(tag => tag.toLowerCase().includes(lowerTerm))
+        );
+        setFilteredTeams(filtered);
+    };
 
     return (
         <div className='flex flex-col gap-1'>
@@ -29,7 +52,7 @@ const Groups = () => {
                 </div>
             </div>
 
-            <Searchbar />
+            <Searchbar onSearch={handleSearch} />
 
             {/* tab - seperate my group and all groups */}
             <div className='flex gap-5 mt-3'>
@@ -53,7 +76,7 @@ const Groups = () => {
                 {selectedTab === "My Group" ? (
                     <MyGroupTab />
                 ) : (
-                    <AllGroupsTab />
+                    <AllGroupsTab teams={filteredTeams} loading={loading} />
                 )}
             </main>
         </div>

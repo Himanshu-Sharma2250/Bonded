@@ -14,12 +14,7 @@ const getAvatarColor = (name) => {
     return `hsl(${hue}, 70%, 60%)`;
 };
 
-const AllGroupsTab = () => {
-    const { loading, getAllTeams, teams } = useTeamStore();
-
-    useEffect(() => {
-        getAllTeams();
-    }, [getAllTeams]);
+const AllGroupsTab = ({teams, loading}) => {
 
     if (loading) {
         return (
