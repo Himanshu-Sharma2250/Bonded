@@ -67,13 +67,12 @@ export const joinTeam = async (req, res) => {
         const alreadyJoined = await TeamMember.findOne({
             userId: req.user._id,
             teamId: teamId,
-            active: true
         })
 
         if (alreadyJoined) {
             return res.status(400).json({
                 success: false,
-                message: "You already joined a team"
+                message: "You already joined a team (used to be part of team)"
             })
         }
 
