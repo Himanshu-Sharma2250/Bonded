@@ -15,7 +15,6 @@ const getAvatarColor = (name) => {
 };
 
 const AllGroupsTab = ({teams, loading}) => {
-    console.log("teams ", teams)
     if (loading) {
         return (
             <div className="flex justify-center items-center py-20 w-full h-full">

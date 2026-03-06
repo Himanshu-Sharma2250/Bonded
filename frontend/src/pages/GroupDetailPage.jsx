@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import Button from '../components/Button'
+import { useEffect, useState } from 'react';
+import { Loader2, MoveLeft } from 'lucide-react';
+import { NavLink, useParams } from 'react-router-dom';
 import GroupOverview from '../components/GroupOverview';
 import GroupMembers from '../components/GroupMembers';
 import GroupHistory from '../components/GroupHistory';
-import ApplyToGroupModal from '../components/ApplyToGroupModal';
-import { Loader2, MoveLeft } from 'lucide-react';
-import { NavLink, useParams } from 'react-router-dom';
 import GroupNotes from '../components/GroupNotes';
+import ApplyToGroupModal from '../components/ApplyToGroupModal';
 import DeleteGroupPopUp from '../components/DeleteGroupPopUp';
+import LeaveGroupModal from '../components/LeaveGroupModal';
 import { useTeamStore } from '../store/useTeamStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
-import LeaveGroupModal from '../components/LeaveGroupModal';
 
 const getAvatarColor = (name) => {
-    if (!name) return '#6b7280'; // fallback gray
+    if (!name) return '#6b7280'; 
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -28,28 +27,33 @@ const GroupDetailPage = () => {
     const {teamId} = useParams()
     const {team, loading, getTeam} = useTeamStore();
     const {user} = useAuthStore();
-    const {getTeamMember, member, getTeamMembers, members, isGetting} = useTeamMemberStore();
+    const { getTeamMember, member, isGetting } = useTeamMemberStore();
 
     useEffect(() => {
         if (user?._id && teamId) {
             getTeam(teamId);
             getTeamMember(teamId, user._id);
-            getTeamMembers(teamId);
         }
     }, [teamId, user?._id]);
 
-    if (loading) {
-        return <div className='m-auto'>
-            <Loader2 className='w-5 animate-spin' />
-        </div>
+    if (loading || isGetting) {
+        return (
+            <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+            </div>
+        );
     }
 
     return (
         <div className='pb-1 flex flex-col gap-1'>
             {/* this div contains back button */}
             <div className='flex justify-start items-center px-2 h-12'>
-                <NavLink to={'/groups'} className='cursor-pointer'>
-                    <MoveLeft className="w-6 text-[#64748B] hover:text-[#2A6E8C] transition-colors" />
+                <NavLink
+                    to="/groups"
+                    className="cursor-pointer border-2 px-2 py-1 rounded-xs flex items-center gap-2 hover:gap-3 hover:ease-out text-[#64748B] hover:text-[#2A6E8C] transition-colors"
+                >
+                    <MoveLeft className="w-6" />
+                    <span>Back</span>
                 </NavLink>
             </div>
 
@@ -89,7 +93,7 @@ const GroupDetailPage = () => {
                         key={tab}
                         className={`text-lg cursor-pointer pb-1 transition-colors ${
                             selectedTab === tab
-                                ? 'text-[#2A6E8C] font-semibold border-b-2 border-[#FF7A59]'
+                                ? 'text-[#2A6E8C] font-semibold border-[#FF7A59]'
                                 : 'text-[#64748B] hover:text-[#475569]'
                         }`}
                         onClick={() => setSelectedTab(tab)}
@@ -101,9 +105,18 @@ const GroupDetailPage = () => {
 
             {/* div 2 - shows the respective detail of above navigation btns */}
             <div className="px-2">
-                {selectedTab === 'Overview' && <GroupOverview team={team} members={members} />}
-                {selectedTab === 'Members' && <GroupMembers teamId={team?._id} teamRole={member?.teamRole} members={members} loading={isGetting} />}
-                {selectedTab === 'Notes' && <GroupNotes teamId={team?._id} />}
+                {selectedTab === 'Overview' && (
+                    <GroupOverview team={team} members={team?.members || []} />
+                )}
+                {selectedTab === 'Members' && (
+                    <GroupMembers
+                        teamId={team?._id}
+                        teamRole={member?.teamRole}
+                        members={team?.members || []}
+                        loading={isGetting}
+                    />
+                )}
+                {selectedTab === 'Notes' && <GroupNotes teamId={teamId} member={member} />}
                 {selectedTab === 'History' && <GroupHistory teamId={team?._id} />}
             </div>
         </div>

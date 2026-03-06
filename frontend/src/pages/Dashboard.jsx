@@ -133,7 +133,7 @@ const Dashboard = () => {
                                     className="w-10 h-10 rounded-md flex items-center justify-center text-white font-bold"
                                     style={{ backgroundColor: `hsl(${team.name.length * 30 % 360}, 70%, 60%)` }}
                                 >
-                                    {team.name.charAt(0).toUpperCase()}
+                                    {team.name.charAt(0).toUpperCase() || 'T'}
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-[#0F172A]">{team.name}</h3>

@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import CreateNoteModal from './CreateNoteModal';
 import NoteCard from './NoteCard';
 import { useNoteStore } from '../store/useNoteStore';
-import { useTeamMemberStore } from '../store/useTeamMemberStore';
 import { useAuthStore } from '../store/useAuthStore';
 
-const GroupNotes = ({ teamId }) => {
+const GroupNotes = ({ teamId, member }) => {
     const {
         getPublicNotes,
         getPrivateNotes,
@@ -14,12 +13,10 @@ const GroupNotes = ({ teamId }) => {
         privateNotes,
         publicNotes,
     } = useNoteStore();
-    const { getTeamMember, member, isGetting: isGettingMember } = useTeamMemberStore();
     const { user } = useAuthStore();
 
     useEffect(() => {
         if (user?._id) {
-            getTeamMember(teamId, user._id);
             getPublicNotes(teamId);
             getPrivateNotes(teamId);
         }
@@ -32,11 +29,8 @@ const GroupNotes = ({ teamId }) => {
     const sortedNotes = [...notesToShow].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const isLeader = member?.teamRole === 'LEADER';
-    console.log('member:', member);
-    console.log('publicNotes:', publicNotes);
-    console.log('privateNotes:', privateNotes);
 
-    if (isGettingNotes || isGettingMember) {
+    if (isGettingNotes) {
         return (
             <div className="flex justify-center items-center py-10">
                 <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
