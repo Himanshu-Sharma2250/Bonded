@@ -61,7 +61,7 @@ const CheckEmailPage = () => {
                 {/* Link to login */}
                 <div className="text-center">
                     <NavLink
-                        to="/login"
+                        to="/signin"
                         className="inline-flex items-center gap-1 text-sm text-[#64748B] hover:text-[#2A6E8C] transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />

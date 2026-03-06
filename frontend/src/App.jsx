@@ -18,6 +18,7 @@ import Layout from './components/Layout'
 import { useAuthStore } from './store/useAuthStore'
 import { Loader2 } from 'lucide-react'
 import CheckEmailPage from './pages/CheckEmailPage'
+import VerifyEmailPage from './pages/VerifyEmailPage'
 
 function App() {
     const {loading, profile, user} = useAuthStore();
@@ -48,6 +49,8 @@ function App() {
                     <Route path='/signup' element={<SignUpPage />} />
 
                     <Route path='/verify-email' element={!user?.isVerified ? <CheckEmailPage /> : <Navigate to="/" />} />
+
+                    <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 
                     <Route path='/signin' element={user ? <Navigate to="/" /> : <SignInPage />} />
 

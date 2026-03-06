@@ -1,12 +1,10 @@
 import { useForm } from "react-hook-form"
 import Button from '../components/Button'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Loader } from 'lucide-react'
 import z from "zod"
 import {zodResolver} from "@hookform/resolvers/zod"
 import { useAuthStore } from '../store/useAuthStore'
-import toast from "react-hot-toast"
-import { useRef } from "react"
 import { useState } from "react"
 
 const signUpSchema = z.object({
@@ -21,10 +19,11 @@ const SignUpPage = () => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         resolver: zodResolver(signUpSchema)
     });
+    const navigate = useNavigate();
 
     const onSignUp = async (data) => {
         const res = await signUp(data);
-        console.log(res)
+        navigate('/verify-email');
     }
 
     return (
