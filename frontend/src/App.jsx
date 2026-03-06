@@ -19,6 +19,7 @@ import { useAuthStore } from './store/useAuthStore'
 import { Loader2 } from 'lucide-react'
 import CheckEmailPage from './pages/CheckEmailPage'
 import VerifyEmailPage from './pages/VerifyEmailPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 
 function App() {
     const {loading, profile, user} = useAuthStore();
@@ -51,6 +52,8 @@ function App() {
                     <Route path='/verify-email' element={!user?.isVerified ? <CheckEmailPage /> : <Navigate to="/" />} />
 
                     <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
                     <Route path='/signin' element={user ? <Navigate to="/" /> : <SignInPage />} />
 
