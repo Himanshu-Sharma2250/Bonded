@@ -1,6 +1,6 @@
 import { Loader } from 'lucide-react';
 import Button from '../components/Button';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '../store/useAuthStore';
@@ -12,7 +12,6 @@ const forgotPasswordSchema = z.object({
 });
 
 const ForgotPasswordPage = () => {
-    const navigate = useNavigate();
     const { forgotPassword, loading } = useAuthStore();
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(forgotPasswordSchema),
@@ -61,7 +60,7 @@ const ForgotPasswordPage = () => {
 
                     <p className='text-sm text-center text-[#64748B] mt-4'>
                         Remember your password?{' '}
-                        <NavLink to='/login' className='text-[#FF7A59] hover:underline'>
+                        <NavLink to='/signin' className='text-[#FF7A59] hover:underline'>
                             Log in
                         </NavLink>
                     </p>

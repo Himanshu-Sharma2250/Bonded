@@ -15,7 +15,7 @@ const getAvatarColor = (name) => {
 };
 
 const AllGroupsTab = ({teams, loading}) => {
-
+    console.log("teams ", teams)
     if (loading) {
         return (
             <div className="flex justify-center items-center py-20 w-full h-full">
@@ -68,7 +68,7 @@ const AllGroupsTab = ({teams, loading}) => {
                         <div className="flex flex-col gap-2 mt-4 text-xs text-[#64748B]">
                             <span className="flex items-center gap-1">
                                 <User className="w-3.5 h-3.5" />
-                                Team Leader
+                                {team.members?.find(m => m.teamRole === "LEADER")?.name || "Unknown"}
                             </span>
                             <span className="flex items-center gap-1">
                                 <Users className="w-3.5 h-3.5" />

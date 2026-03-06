@@ -25,10 +25,10 @@ const SideMenu = ({isCollapsed, setIsCollapsed}) => {
                     {!isCollapsed && <h1 className='text-2xl'>Dashboard</h1>}
                 </NavLink>
 
-                <NavLink to="/announcements" className={linkStyle}>
+                {/* <NavLink to="/announcements" className={linkStyle}>
                     <Megaphone className='w-5' />
                     {!isCollapsed && <h1 className='text-2xl'>Announcements</h1>}
-                </NavLink>
+                </NavLink> */}
                 
                 <NavLink to="/groups" className={linkStyle}>
                     <Users className='w-5' />
