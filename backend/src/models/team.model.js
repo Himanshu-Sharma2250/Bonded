@@ -26,7 +26,18 @@ const teamSchema = new Schema({
         type: Boolean,
         default: false
     }
-}, { timestamps: true });
+}, { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+teamSchema.virtual('members', {
+    ref: 'TeamMember',          // The model to use
+    localField: '_id',          // Find TeamMember where `localField`
+    foreignField: 'teamId',     // equals `foreignField`
+    justOne: false,             // Returns an array of members
+});
 
 teamSchema.index(
     {userId: 1},

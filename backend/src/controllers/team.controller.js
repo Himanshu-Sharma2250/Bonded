@@ -94,7 +94,7 @@ export const getTeam = async (req, res) => {
     const {teamId} = req.params;
 
     try {
-        const team = await Team.findById(teamId);
+        const team = await Team.findById(teamId).populate('members');
 
         if (!team) {
             return res.status(404).json({
@@ -122,7 +122,7 @@ export const getAllTeams = async (req, res) => {
     try {
         const teams = await Team.find({
             isDeleted: false
-        })
+        }).populate('members')
 
         if (!teams) {
             return res.status(400).json({

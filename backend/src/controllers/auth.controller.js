@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
     }
 
     const {name, email, password} = data;
-    const username = name.slice(0, -10);
+    const username = email.slice(0, -10);
 
     try {
         // find if the user already exist or not 
@@ -57,7 +57,7 @@ export const registerUser = async (req, res) => {
             subject: "Verify Your Email",
             mailgenContent: emailVerificationMailgenContent(
                 user.name,
-                `${process.env.BASE_URL}/api/v1/auth/verify-email/${unHashedToken}`
+                `${process.env.FRONTEND_BASE_URL}/verify-email/${unHashedToken}`
             )
         });
 
