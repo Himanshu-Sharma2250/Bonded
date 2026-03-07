@@ -52,7 +52,7 @@ export const useMyTeam = () => {
                 const {data} = await axiosInstance.get("/team/my-team");
                 return data.team;
             } catch (error) {
-                if (error.message?.status === 404) return null;
+                if (error.response?.status === 404) return null;
                 throw error;
             }
         }

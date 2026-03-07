@@ -6,8 +6,13 @@ export const useSentApplications = () => {
     return useQuery({
         queryKey: ['sentApplications'],
         queryFn: async () => {
-            const { data } = await axiosInstance.get('/application/all-applications');
-            return data.applications;
+            try {
+                const { data } = await axiosInstance.get('/application/all-applications');
+                return data.applications;
+            } catch (error) {
+                if (error.response?.status === 404) return null;
+                throw error;
+            }
         },
     });
 };
@@ -17,8 +22,13 @@ export const useReceivedApplications = () => {
     return useQuery({
         queryKey: ['receivedApplications'],
         queryFn: async () => {
-            const { data } = await axiosInstance.get('/application/all-received-applications');
-            return data.applications; 
+            try {
+                const { data } = await axiosInstance.get('/application/all-received-applications');
+                return data.applications; 
+            } catch (error) {
+                if (error.response?.status === 404) return null;
+                throw error;
+            }
         },
     });
 };

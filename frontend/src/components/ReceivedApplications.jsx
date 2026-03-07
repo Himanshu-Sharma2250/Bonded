@@ -1,13 +1,15 @@
 import { Loader2, Users } from 'lucide-react';
-import React, { useEffect } from 'react';
 import Button from './Button';
 import { NavLink } from 'react-router-dom';
-import { useApplicationStore } from '../store/useApplicationStore';
-import { useAuthStore } from '../store/useAuthStore';
-import toast from 'react-hot-toast';
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
 import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
 import { useUserHistoryStore } from '../store/useUserHistoryStore';
+import toast from 'react-hot-toast';
+import {
+    useReceivedApplications,
+    useAcceptApplication,
+    useRejectApplication,
+} from '../hooks/useApplicationQueries';
 
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -22,36 +24,19 @@ const formatDate = (dateString) => {
 };
 
 const ReceivedApplications = () => {
-    const {
-        getAllReceivedApplications,
-        isGetting,
-        receivedApplications,
-        acceptApplication,
-        rejectApplication,
-        isAccepting,
-        isRejecting,
-    } = useApplicationStore();
-    const { user } = useAuthStore();
+    const { data: receivedApplications = [], isLoading, error } = useReceivedApplications();
+    const acceptMutation = useAcceptApplication();
+    const rejectMutation = useRejectApplication();
+
     const { teamJoin } = useTeamMemberStore();
     const { memberJoinedHistory } = useTeamHistoryStore();
     const { userJoinedTeam } = useUserHistoryStore();
 
-    useEffect(() => {
-        getAllReceivedApplications();
-    }, [getAllReceivedApplications]);
-
-    if (isGetting) {
-        return (
-            <div className="flex justify-center items-center py-10">
-                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
-            </div>
-        );
-    }
-
     const onAcceptApplication = async (application) => {
         try {
-            await acceptApplication(application?._id);
+            await acceptMutation.mutateAsync(application._id);
             toast.success('Application accepted');
+            // After accept, add user to team and record history
             await teamJoin(application?.teamId, {
                 name: application?.name,
                 email: application?.email,
@@ -66,12 +51,34 @@ const ReceivedApplications = () => {
 
     const onRejectApplication = async (applicationId) => {
         try {
-            await rejectApplication(applicationId);
+            await rejectMutation.mutateAsync(applicationId);
             toast.success('Application rejected');
         } catch (error) {
             toast.error('Application rejection failed');
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center py-10">
+                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center py-10 text-red-500">
+                Failed to load received applications.
+            </div>
+        );
+    }
+
+    if (receivedApplications.length === 0) {
+        return (
+            <div className="text-center py-10 text-[#64748B]">No applications received</div>
+        );
+    }
 
     const createApplicationCards = (application) => (
         <div
@@ -119,18 +126,18 @@ const ReceivedApplications = () => {
             {/* Accept/Reject buttons */}
             <div className="flex gap-2 mt-4">
                 <Button
-                    name={isAccepting ? <Loader2 className="w-4 animate-spin" /> : 'Accept'}
+                    name={acceptMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Accept'}
                     bgColor="#10b981"
                     btnSize="14px"
                     onClick={() => onAcceptApplication(application)}
-                    disabled={isAccepting}
+                    disabled={acceptMutation.isPending || rejectMutation.isPending}
                 />
                 <Button
-                    name={isRejecting ? <Loader2 className="w-4 animate-spin" /> : 'Reject'}
+                    name={rejectMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Reject'}
                     bgColor="#ef4444"
                     btnSize="14px"
                     onClick={() => onRejectApplication(application._id)}
-                    disabled={isRejecting}
+                    disabled={acceptMutation.isPending || rejectMutation.isPending}
                 />
             </div>
         </div>
@@ -138,11 +145,7 @@ const ReceivedApplications = () => {
 
     return (
         <div className="flex flex-col gap-3 px-2 py-4">
-            {receivedApplications.length === 0 ? (
-                <div className="text-center py-10 text-[#64748B]">No applications received</div>
-            ) : (
-                receivedApplications.map(createApplicationCards)
-            )}
+            {receivedApplications.map(createApplicationCards)}
         </div>
     );
 };

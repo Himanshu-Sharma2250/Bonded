@@ -1,9 +1,9 @@
 import { Loader2, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from './Button';
-import { useApplicationStore } from '../store/useApplicationStore';
-import { useEffect, useState } from 'react';
-import { useTeamStore } from '../store/useTeamStore';
+import { useSentApplications, useWithdrawApplication } from '../hooks/useApplicationQueries';
+import { useQueries } from '@tanstack/react-query';
+import { axiosInstance } from '../lib/axios';
 
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -26,39 +26,45 @@ const statusColorMap = {
 };
 
 const SentApplications = () => {
-    const [teamsMap, setTeamsMap] = useState({});
-    const { getApplications, isGetting, applications, withdrawApplication } = useApplicationStore();
-    const { getTeam } = useTeamStore();
+    const { data: applications = [], isLoading: appsLoading, error: appsError } = useSentApplications();
+    const withdrawMutation = useWithdrawApplication();
 
-    useEffect(() => {
-        getApplications();
-    }, [getApplications]);
+    // Get unique team IDs from applications
+    const teamIds = [...new Set(applications.map((app) => app.teamId).filter(Boolean))];
 
-    useEffect(() => {
-        const fetchTeamsForApplications = async () => {
-            const teamIds = [...new Set(applications.map((app) => app.teamId).filter(Boolean))];
-            if (teamIds.length === 0) return;
+    // Fetch each team using useQueries
+    const teamQueries = useQueries({
+        queries: teamIds.map((id) => ({
+            queryKey: ['team', id],
+            queryFn: async () => {
+                const { data } = await axiosInstance.get(`/team/get-team/${id}`);
+                return data.team;
+            },
+            staleTime: 5 * 60 * 1000, // optional
+        })),
+    });
 
-            try {
-                const teamPromises = teamIds.map((id) => getTeam(id));
-                const teamsData = await Promise.all(teamPromises);
-                const newTeamsMap = teamsData.reduce((acc, team) => {
-                    acc[team._id] = team;
-                    return acc;
-                }, {});
-                setTeamsMap(newTeamsMap);
-            } catch (error) {
-                console.error('Error fetching teams:', error);
-                toast.error('Could not load group details');
-            }
-        };
-
-        if (applications.length > 0) {
-            fetchTeamsForApplications();
+    // Build a map from teamId to team data
+    const teamsMap = {};
+    teamQueries.forEach((query, index) => {
+        if (query.data) {
+            teamsMap[teamIds[index]] = query.data;
         }
-    }, [applications, getTeam]);
+    });
 
-    if (isGetting) {
+    // Check if any team query is still loading
+    const anyTeamLoading = teamQueries.some((q) => q.isLoading);
+
+    const onWithdraw = async (applicationId) => {
+        try {
+            await withdrawMutation.mutateAsync(applicationId);
+            toast.success('Application withdrawn');
+        } catch (error) {
+            toast.error('Application withdrawal failed');
+        }
+    };
+
+    if (appsLoading || anyTeamLoading) {
         return (
             <div className="flex justify-center items-center py-10">
                 <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
@@ -66,18 +72,23 @@ const SentApplications = () => {
         );
     }
 
-    const onWithdraw = async (applicationId) => {
-        try {
-            await withdrawApplication(applicationId);
-            toast.success('Application withdrawn');
-        } catch (error) {
-            toast.error('Application withdrawal failed');
-        }
-    };
+    if (appsError) {
+        return (
+            <div className="text-center py-10 text-red-500">
+                Failed to load sent applications.
+            </div>
+        );
+    }
+
+    if (applications.length === 0) {
+        return (
+            <div className="text-center py-10 text-[#64748B]">No sent applications</div>
+        );
+    }
 
     const createApplicationCards = (application) => {
-        const team = teamsMap[application?.teamId];
-        const statusStyle = statusColorMap[application?.status] || { bg: '#E2E8F0', text: '#475569' };
+        const team = teamsMap[application.teamId];
+        const statusStyle = statusColorMap[application.status] || { bg: '#E2E8F0', text: '#475569' };
 
         return (
             <div
@@ -96,7 +107,7 @@ const SentApplications = () => {
                         className="px-2 py-0.5 text-xs font-medium rounded-full"
                         style={{ backgroundColor: statusStyle.bg, color: statusStyle.text }}
                     >
-                        {application?.status}
+                        {application.status}
                     </span>
                 </div>
 
@@ -104,21 +115,22 @@ const SentApplications = () => {
                 <div className="mt-2 space-y-1 text-sm">
                     <div className="flex gap-1">
                         <span className="font-medium text-[#0F172A]">Reason:</span>
-                        <span className="text-[#334155]">{application?.reasonToJoin}</span>
+                        <span className="text-[#334155]">{application.reasonToJoin}</span>
                     </div>
                     <div className="text-xs text-[#64748B]">
-                        Applied on: {formatDate(application?.appliedAt)}
+                        Applied on: {formatDate(application.appliedAt)}
                     </div>
                 </div>
 
                 {/* Withdraw button (only if status is PENDING) */}
-                {application?.status === 'PENDING' && (
+                {application.status === 'PENDING' && (
                     <div className="mt-4">
                         <Button
-                            name="Withdraw"
+                            name={withdrawMutation.isPending ? 'Withdrawing...' : 'Withdraw'}
                             bgColor="#ef4444"
                             btnSize="14px"
                             onClick={() => onWithdraw(application._id)}
+                            disabled={withdrawMutation.isPending}
                         />
                     </div>
                 )}
@@ -128,11 +140,7 @@ const SentApplications = () => {
 
     return (
         <div className="flex flex-col gap-3 px-2 py-4">
-            {applications.length === 0 ? (
-                <div className="text-center py-10 text-[#64748B]">No sent applications</div>
-            ) : (
-                applications.map(createApplicationCards)
-            )}
+            {applications.map(createApplicationCards)}
         </div>
     );
 };
