@@ -1,7 +1,5 @@
 import { Loader2, User, Users } from 'lucide-react';
-import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useTeamStore } from '../store/useTeamStore';
 import { useMyTeam } from '../hooks/useTeamQueries';
 
 const getAvatarColor = (name) => {
@@ -15,8 +13,7 @@ const getAvatarColor = (name) => {
 };
 
 const MyGroupTab = () => {
-    // const { loading, team, myTeam } = useTeamStore();
-    const { data: team, isLoading, error } = useMyTeam();
+    const { data: team, isLoading } = useMyTeam();
 
     if (isLoading) {
         return (
@@ -65,7 +62,7 @@ const MyGroupTab = () => {
                 <div className="flex flex-col gap-2 mt-4 text-xs text-[#64748B]">
                     <span className="flex items-center gap-1">
                         <User className="w-3.5 h-3.5" />
-                        Team Leader
+                        {team?.members?.find(m => m.teamRole === "LEADER")?.name || "Unknown"}
                     </span>
                     <span className="flex items-center gap-1">
                         <Users className="w-3.5 h-3.5" />

@@ -1,39 +1,28 @@
-import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import CreateNoteModal from './CreateNoteModal';
 import NoteCard from './NoteCard';
-import { useNoteStore } from '../store/useNoteStore';
-import { useAuthStore } from '../store/useAuthStore';
+import { usePrivateNotes, usePublicNotes } from '../hooks/useNoteQueries';
 
 const GroupNotes = ({ teamId, member }) => {
-    const {
-        getPublicNotes,
-        getPrivateNotes,
-        isGettingNotes,
-        privateNotes,
-        publicNotes,
-    } = useNoteStore();
-    const { user } = useAuthStore();
+    const { data: privateNotes = [], isLoading: loadingPrivate, error: privateError } = usePrivateNotes(teamId);
+    const { data: publicNotes = [], isLoading: loadingPublic, error: publicError } = usePublicNotes(teamId);
 
-    useEffect(() => {
-        if (user?._id) {
-            getPublicNotes(teamId);
-            getPrivateNotes(teamId);
-        }
-    }, [teamId, user?._id]); 
-
-    // Combine notes: members see all, non-members see only public
     const notesToShow = member ? [...publicNotes, ...privateNotes] : publicNotes;
-
-    // Sort by newest first
     const sortedNotes = [...notesToShow].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
     const isLeader = member?.teamRole === 'LEADER';
 
-    if (isGettingNotes) {
+    if (loadingPrivate || loadingPublic) {
         return (
             <div className="flex justify-center items-center py-10">
                 <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+            </div>
+        );
+    }
+
+    if (privateError || publicError) {
+        return (
+            <div className="text-center text-red-500 py-10">
+                Failed to load notes. Please try again later.
             </div>
         );
     }
@@ -47,20 +36,13 @@ const GroupNotes = ({ teamId, member }) => {
                             You are not a member. Only public notes would appear here, but there are none.
                         </span>
                     ) : (
-                        <span className="text-lg text-[#64748B]">
-                            No notes yet. Create your first note!
-                        </span>
+                        <span className="text-lg text-[#64748B]">No notes yet. Create your first note!</span>
                     )}
                 </div>
             ) : (
                 <div className="flex flex-col gap-3">
                     {sortedNotes.map((note) => (
-                        <NoteCard
-                            key={note._id}
-                            note={note}
-                            teamId={teamId}
-                            isLeader={isLeader}
-                        />
+                        <NoteCard key={note._id} note={note} teamId={teamId} isLeader={isLeader} />
                     ))}
                 </div>
             )}

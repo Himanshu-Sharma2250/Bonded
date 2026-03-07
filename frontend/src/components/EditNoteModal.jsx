@@ -2,8 +2,9 @@ import { useRef, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import toast from 'react-hot-toast';
 import Button from './Button';
-import { useNoteStore } from '../store/useNoteStore';
+import { useEditNote } from '../hooks/useNoteQueries';
 
 const editNoteSchema = z.object({
     title: z.string().min(1, 'Title is required'),
@@ -13,7 +14,7 @@ const editNoteSchema = z.object({
 
 const EditNoteModal = ({ note, teamId, onClose }) => {
     const dialogRef = useRef(null);
-    const { editNote, isEditingNote, getPublicNotes, getPrivateNotes } = useNoteStore();
+    const editNote = useEditNote();
 
     const {
         register,
@@ -34,10 +35,13 @@ const EditNoteModal = ({ note, teamId, onClose }) => {
     }, []);
 
     const onSubmit = async (data) => {
-        await editNote(data, note._id);
-        await getPublicNotes(teamId);
-        await getPrivateNotes(teamId);
-        onClose();
+        try {
+            await editNote.mutateAsync({ noteId: note._id, noteData: data, teamId });
+            toast.success('Note updated');
+            onClose();
+        } catch (error) {
+            toast.error('Failed to update note');
+        }
     };
 
     const handleClose = () => {
@@ -119,11 +123,11 @@ const EditNoteModal = ({ note, teamId, onClose }) => {
                         onClick={handleClose}
                     />
                     <Button
-                        name={isEditingNote ? 'Saving...' : 'Save'}
+                        name={editNote.isPending ? 'Saving...' : 'Save'}
                         bgColor="#2A6E8C"
                         btnSize="16px"
                         type="submit"
-                        disabled={isEditingNote}
+                        disabled={editNote.isPending}
                     />
                 </div>
             </form>

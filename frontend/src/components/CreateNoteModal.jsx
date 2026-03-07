@@ -2,10 +2,10 @@ import { useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import Button from './Button';
 import { CirclePlus } from 'lucide-react';
-import { useNoteStore } from '../store/useNoteStore';
+import { useCreateNote } from '../hooks/useNoteQueries';
 
 const noteSchema = z.object({
     title: z.string().min(1, 'Title is required'),
@@ -15,7 +15,7 @@ const noteSchema = z.object({
 
 const CreateNoteModal = ({ teamId }) => {
     const dialogRef = useRef(null);
-    const { createNote, isCreatingNote, getPublicNotes, getPrivateNotes } = useNoteStore();
+    const createNote = useCreateNote();
 
     const {
         register,
@@ -28,7 +28,7 @@ const CreateNoteModal = ({ teamId }) => {
         defaultValues: {
             title: '',
             description: '',
-            isPrivate: false, 
+            isPrivate: false,
         },
     });
 
@@ -38,14 +38,13 @@ const CreateNoteModal = ({ teamId }) => {
 
     const closeModal = () => {
         dialogRef.current?.close();
-        reset(); 
+        reset();
     };
 
     const onSubmit = async (data) => {
         try {
-            await createNote(data, teamId);
-            await getPublicNotes(teamId);
-            await getPrivateNotes(teamId);
+            await createNote.mutateAsync({ teamId, noteData: data });
+            toast.success('Note created successfully');
             closeModal();
         } catch (error) {
             console.error('Failed to create note:', error);
@@ -71,7 +70,6 @@ const CreateNoteModal = ({ teamId }) => {
                 </div>
 
                 <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
-                    {/* Title */}
                     <label className="flex flex-col items-start text-sm font-medium">
                         Title
                         <input
@@ -83,13 +81,10 @@ const CreateNoteModal = ({ teamId }) => {
                             {...register('title')}
                         />
                         {errors.title && (
-                            <span className="text-red-500 text-xs mt-1">
-                                {errors.title.message}
-                            </span>
+                            <span className="text-red-500 text-xs mt-1">{errors.title.message}</span>
                         )}
                     </label>
 
-                    {/* Description */}
                     <label className="flex flex-col items-start text-sm font-medium">
                         Description
                         <textarea
@@ -100,13 +95,10 @@ const CreateNoteModal = ({ teamId }) => {
                             {...register('description')}
                         />
                         {errors.description && (
-                            <span className="text-red-500 text-xs mt-1">
-                                {errors.description.message}
-                            </span>
+                            <span className="text-red-500 text-xs mt-1">{errors.description.message}</span>
                         )}
                     </label>
 
-                    {/* Visibility - Public/Private */}
                     <div className="flex flex-col items-start gap-1 text-sm font-medium">
                         <span>Who can see this note?</span>
                         <Controller
@@ -137,7 +129,6 @@ const CreateNoteModal = ({ teamId }) => {
                         />
                     </div>
 
-                    {/* Buttons */}
                     <div className="flex gap-2 justify-center items-center w-full mt-5">
                         <Button
                             name="Cancel"
@@ -148,11 +139,11 @@ const CreateNoteModal = ({ teamId }) => {
                             onClick={closeModal}
                         />
                         <Button
-                            name={isCreatingNote ? 'Creating...' : 'Create'}
+                            name={createNote.isPending ? 'Creating...' : 'Create'}
                             bgColor="#2A6E8C"
                             btnSize="16px"
                             type="submit"
-                            disabled={isCreatingNote}
+                            disabled={createNote.isPending}
                         />
                     </div>
                 </form>

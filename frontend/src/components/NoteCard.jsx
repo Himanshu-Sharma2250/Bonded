@@ -1,15 +1,15 @@
 import { EllipsisVertical } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import EditNoteModal from './EditNoteModal';
-import { useNoteStore } from '../store/useNoteStore';
+import { useDeleteNote } from '../hooks/useNoteQueries';
 
 const NoteCard = ({ note, teamId, isLeader }) => {
     const [showMenu, setShowMenu] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const menuRef = useRef(null);
-    const { deleteNote } = useNoteStore();
+    const deleteNote = useDeleteNote();
 
-    // Close menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -22,7 +22,12 @@ const NoteCard = ({ note, teamId, isLeader }) => {
 
     const handleDelete = async () => {
         if (window.confirm('Are you sure you want to delete this note?')) {
-            await deleteNote(note._id);
+            try {
+                await deleteNote.mutateAsync({ noteId: note._id, teamId });
+                toast.success('Note deleted');
+            } catch (error) {
+                toast.error('Failed to delete note');
+            }
         }
         setShowMenu(false);
     };
@@ -34,27 +39,24 @@ const NoteCard = ({ note, teamId, isLeader }) => {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', 
-            { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric', 
-                hour: '2-digit',
-                minute: '2-digit', 
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
         });
     };
 
     return (
         <>
             <div className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow">
-                {/* Header */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <h3 className="text-lg font-semibold text-[#0F172A]">{note.title}</h3>
                         <span className="text-xs text-[#64748B]">{formatDate(note.createdAt)}</span>
                     </div>
 
-                    {/* Only show menu for leaders or the note creator */}
                     {isLeader && (
                         <div className="relative" ref={menuRef}>
                             <button
@@ -64,7 +66,6 @@ const NoteCard = ({ note, teamId, isLeader }) => {
                                 <EllipsisVertical className="w-5 text-[#64748B]" />
                             </button>
 
-                            {/* Dropdown menu */}
                             {showMenu && (
                                 <div className="absolute right-0 mt-1 w-32 bg-white border border-[#CBD5E1] rounded-md shadow-lg z-10">
                                     <button
@@ -85,10 +86,8 @@ const NoteCard = ({ note, teamId, isLeader }) => {
                     )}
                 </div>
 
-                {/* Description */}
                 <p className="mt-2 text-sm text-[#334155]">{note.description}</p>
 
-                {/* show visibility tag */}
                 {note.isPrivate ? (
                     <span className="mt-2 self-start text-xs bg-[#E2E8F0] text-[#475569] px-2 py-0.5 rounded-full">
                         Private
@@ -100,13 +99,8 @@ const NoteCard = ({ note, teamId, isLeader }) => {
                 )}
             </div>
 
-            {/* Edit Modal */}
             {showEditModal && (
-                <EditNoteModal
-                    note={note}
-                    teamId={teamId}
-                    onClose={() => setShowEditModal(false)}
-                />
+                <EditNoteModal note={note} teamId={teamId} onClose={() => setShowEditModal(false)} />
             )}
         </>
     );
