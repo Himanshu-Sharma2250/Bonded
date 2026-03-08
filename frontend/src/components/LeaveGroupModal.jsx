@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTeamLeft } from '../hooks/useTeamMemberQueries';
-import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useMemberLeftHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserHistoryStore } from '../store/useUserHistoryStore';
 import { useAuthStore } from '../store/useAuthStore';
 import Button from './Button';
@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 
 const LeaveGroupModal = ({ teamId }) => {
     const teamLeftMutation = useTeamLeft();
-    const { memberLeftHistory } = useTeamHistoryStore();
+    const memberLeftHistoryMutation = useMemberLeftHistory();
     const { userLeftTeam } = useUserHistoryStore();
     const { user } = useAuthStore();
 
@@ -28,7 +28,10 @@ const LeaveGroupModal = ({ teamId }) => {
     const handleLeft = async (data) => {
         try {
             await teamLeftMutation.mutateAsync({ teamId, userId: user._id });
-            await memberLeftHistory(teamId, { reason: data.reason, memberName: user?.fullName });
+            await memberLeftHistoryMutation.mutateAsync({
+                teamId,
+                data: { reason: data.reason, memberName: user?.fullName },
+            });
             await userLeftTeam({ reason: data.reason });
             toast.success('You left the team');
             closeModal();
@@ -84,11 +87,11 @@ const LeaveGroupModal = ({ teamId }) => {
                             onClick={closeModal}
                         />
                         <Button
-                            name={teamLeftMutation.isPending ? 'Leaving...' : 'Leave'}
+                            name={teamLeftMutation.isPending || memberLeftHistoryMutation.isPending ? 'Leaving...' : 'Leave'}
                             bgColor="#FF7A59"
                             btnSize="16px"
                             type="submit"
-                            disabled={teamLeftMutation.isPending}
+                            disabled={teamLeftMutation.isPending || memberLeftHistoryMutation.isPending}
                         />
                     </div>
                 </form>

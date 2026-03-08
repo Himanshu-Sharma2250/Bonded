@@ -2,13 +2,13 @@ import { useRef } from 'react';
 import Button from './Button';
 import { useForm } from 'react-hook-form';
 import { useDeleteTeam } from '../hooks/useTeamQueries';
-import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useTeamDeleteHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserHistoryStore } from '../store/useUserHistoryStore';
 import toast from 'react-hot-toast';
 
 const DeleteGroupPopUp = ({ teamId }) => {
     const deleteTeamMutation = useDeleteTeam();
-    const { teamDeleteHistory } = useTeamHistoryStore();
+    const teamDeleteHistoryMutation = useTeamDeleteHistory();
     const { userDeletedTeam } = useUserHistoryStore();
 
     const { register, handleSubmit, reset } = useForm();
@@ -24,7 +24,7 @@ const DeleteGroupPopUp = ({ teamId }) => {
     const handleDelete = async (data) => {
         try {
             await deleteTeamMutation.mutateAsync(teamId);
-            await teamDeleteHistory(teamId, { reason: data.reason });
+            await teamDeleteHistoryMutation.mutateAsync({ teamId, data: { reason: data.reason } });
             await userDeletedTeam({ reason: data.reason });
             toast.success('Team Deleted');
             closeModal();
@@ -75,11 +75,11 @@ const DeleteGroupPopUp = ({ teamId }) => {
                             onClick={closeModal}
                         />
                         <Button
-                            name={deleteTeamMutation.isPending ? 'Deleting...' : 'Delete'}
+                            name={deleteTeamMutation.isPending || teamDeleteHistoryMutation.isPending ? 'Deleting...' : 'Delete'}
                             bgColor="#FF7A59"
                             btnSize="16px"
                             type="submit"
-                            disabled={deleteTeamMutation.isPending}
+                            disabled={deleteTeamMutation.isPending || teamDeleteHistoryMutation.isPending}
                         />
                     </div>
                 </form>

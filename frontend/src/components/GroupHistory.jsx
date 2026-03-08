@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { useTeamHistoryStore } from '../store/useTeamHistoryStore'
 import { Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
+import { useTeamHistory } from '../hooks/useTeamHistoryQueries';
 
 const actionColorMap = {
     CREATED: '#10b981',   // green
@@ -12,16 +12,7 @@ const actionColorMap = {
 };
 
 const GroupHistory = ({teamId}) => {
-    const {getHistory, loading, history} = useTeamHistoryStore();
-
-    useEffect(() => {
-        async function fetchHistory() {
-            if (teamId) {
-                await getHistory(teamId);
-            }
-        }
-        fetchHistory();
-    }, [teamId, getHistory])
+    const {data: history = [], isLoading, error} = useTeamHistory(teamId);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -72,10 +63,18 @@ const GroupHistory = ({teamId}) => {
         );
     };
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex justify-center items-center py-10">
                 <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center py-10 text-red-500">
+                Error loading History. Please retry
             </div>
         );
     }

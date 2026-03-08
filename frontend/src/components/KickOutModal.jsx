@@ -1,21 +1,18 @@
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useKickOut } from '../hooks/useTeamMemberQueries';
+import { useMemberKickedOutHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserHistoryStore } from '../store/useUserHistoryStore';
-import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
 import Button from './Button';
 import toast from 'react-hot-toast';
 
 const KickOutModal = ({ teamId, memberId, memberName }) => {
-    // Assume we need memberId and memberName passed from parent (e.g., GroupMembers)
     const kickOutMutation = useKickOut();
+    const memberKickedOutHistoryMutation = useMemberKickedOutHistory();
     const { userKickedOutOfTeam } = useUserHistoryStore();
-    const { memberKickedOutHistory } = useTeamHistoryStore();
 
     const { register, handleSubmit, reset } = useForm({
-        defaultValues: {
-            reason: '',
-        },
+        defaultValues: { reason: '' },
     });
 
     const dialogRef = useRef(null);
@@ -29,11 +26,11 @@ const KickOutModal = ({ teamId, memberId, memberName }) => {
     const handleKickOut = async (data) => {
         try {
             await kickOutMutation.mutateAsync({ teamId, memberId });
-            await userKickedOutOfTeam({ reason: data.reason });
-            await memberKickedOutHistory(teamId, {
-                memberName,
-                reason: data.reason,
+            await memberKickedOutHistoryMutation.mutateAsync({
+                teamId,
+                data: { memberName, reason: data.reason },
             });
+            await userKickedOutOfTeam({ reason: data.reason });
             toast.success('Member kicked out');
             closeModal();
         } catch (error) {
@@ -74,11 +71,11 @@ const KickOutModal = ({ teamId, memberId, memberName }) => {
                             onClick={closeModal}
                         />
                         <Button
-                            name={kickOutMutation.isPending ? 'Kicking...' : 'Kick Out'}
+                            name={kickOutMutation.isPending || memberKickedOutHistoryMutation.isPending ? 'Kicking...' : 'Kick Out'}
                             bgColor="#FF7A59"
                             btnSize="16px"
                             type="submit"
-                            disabled={kickOutMutation.isPending}
+                            disabled={kickOutMutation.isPending || memberKickedOutHistoryMutation.isPending}
                         />
                     </div>
                 </form>

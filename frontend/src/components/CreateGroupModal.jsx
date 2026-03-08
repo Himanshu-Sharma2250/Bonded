@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { useCreateTeam } from '../hooks/useTeamQueries';
 import { useCreateOwner } from '../hooks/useTeamMemberQueries';
 import { useAuthStore } from '../store/useAuthStore';
-import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useCreateTeamHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserHistoryStore } from '../store/useUserHistoryStore';
 import toast from 'react-hot-toast';
 
@@ -24,8 +24,8 @@ const CreateGroupModal = () => {
     });
     const createTeamMutation = useCreateTeam();
     const createOwnerMutation = useCreateOwner();
+    const createTeamHistoryMutation = useCreateTeamHistory();
     const { user } = useAuthStore();
-    const { createTeamHistory } = useTeamHistoryStore();
     const { userCreatedTeam } = useUserHistoryStore();
 
     const dialogRef = useRef(null);
@@ -38,12 +38,11 @@ const CreateGroupModal = () => {
 
     const onCreateTeam = async (data) => {
         try {
-            // Convert techUsed string to array (split by commas)
             const techArray = data.techUsed.split(',').map((t) => t.trim()).filter(Boolean);
             const teamData = { ...data, techUsed: techArray };
 
             const result = await createTeamMutation.mutateAsync(teamData);
-            const newTeam = result.data.team; // adjust based on your API response
+            const newTeam = result.data.team;
 
             if (newTeam?._id) {
                 await createOwnerMutation.mutateAsync({
@@ -54,7 +53,7 @@ const CreateGroupModal = () => {
                         reasonToJoin: 'Team creator',
                     },
                 });
-                await createTeamHistory(newTeam._id);
+                await createTeamHistoryMutation.mutateAsync({ teamId: newTeam._id });
                 await userCreatedTeam();
                 toast.success('Group created successfully!');
                 closeModal();
@@ -64,7 +63,7 @@ const CreateGroupModal = () => {
         }
     };
 
-    const isPending = createTeamMutation.isPending || createOwnerMutation.isPending;
+    const isPending = createTeamMutation.isPending || createOwnerMutation.isPending || createTeamHistoryMutation.isPending;
 
     return (
         <div>
@@ -79,6 +78,7 @@ const CreateGroupModal = () => {
                 </div>
 
                 <form className="flex flex-col gap-3" onSubmit={handleSubmit(onCreateTeam)}>
+                    {/* ... form fields (unchanged) ... */}
                     <label className="flex flex-col text-sm font-medium">
                         Name
                         <input

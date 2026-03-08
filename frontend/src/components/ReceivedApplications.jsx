@@ -2,7 +2,7 @@ import { Loader2, Users } from 'lucide-react';
 import Button from './Button';
 import { NavLink } from 'react-router-dom';
 import { useTeamMemberStore } from '../store/useTeamMemberStore';
-import { useTeamHistoryStore } from '../store/useTeamHistoryStore';
+import { useMemberJoinedHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserHistoryStore } from '../store/useUserHistoryStore';
 import toast from 'react-hot-toast';
 import {
@@ -27,22 +27,24 @@ const ReceivedApplications = () => {
     const { data: receivedApplications = [], isLoading, error } = useReceivedApplications();
     const acceptMutation = useAcceptApplication();
     const rejectMutation = useRejectApplication();
+    const memberJoinedHistoryMutation = useMemberJoinedHistory();
 
     const { teamJoin } = useTeamMemberStore();
-    const { memberJoinedHistory } = useTeamHistoryStore();
     const { userJoinedTeam } = useUserHistoryStore();
 
     const onAcceptApplication = async (application) => {
         try {
             await acceptMutation.mutateAsync(application._id);
             toast.success('Application accepted');
-            // After accept, add user to team and record history
             await teamJoin(application?.teamId, {
                 name: application?.name,
                 email: application?.email,
                 reasonToJoin: application?.reasonToJoin,
             });
-            await memberJoinedHistory(application?.teamId, { memberName: application?.name });
+            await memberJoinedHistoryMutation.mutateAsync({
+                teamId: application?.teamId,
+                data: { memberName: application?.name },
+            });
             await userJoinedTeam();
         } catch (error) {
             toast.error('Application accept failed');
@@ -85,10 +87,9 @@ const ReceivedApplications = () => {
             key={application._id}
             className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
         >
-            {/* Applicant info and view profile button */}
+            {/* ... (unchanged) ... */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    {/* Avatar with dynamic color */}
                     <div>
                         <span
                             className="w-10 h-10 rounded-md flex items-center justify-center text-white font-bold"
@@ -107,7 +108,6 @@ const ReceivedApplications = () => {
                 </NavLink>
             </div>
 
-            {/* Group and reason details */}
             <div className="mt-3 space-y-1 text-sm">
                 <div className="flex items-center gap-1 text-[#334155]">
                     <Users className="w-4 h-4 text-[#64748B]" />
@@ -123,7 +123,6 @@ const ReceivedApplications = () => {
                 </div>
             </div>
 
-            {/* Accept/Reject buttons */}
             <div className="flex gap-2 mt-4">
                 <Button
                     name={acceptMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Accept'}
