@@ -173,93 +173,103 @@ const UserProfilePage = () => {
             <div className='flex flex-col gap-2'>
                 <h1 className='text-2xl font-bold'>Social Information</h1>
                 <div className='flex flex-col gap-2 px-2 py-1 rounded-xs shadow'>
-                    {/* Bio and Website */}
+                    {/* shows bio and website */}
                     <div className='flex items-center'>
+                        {/* bio */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>Bio</span>
-                            <span className='w-145'>{otherUser?.bio}</span>
-                        </div>
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>Website</span>
-                            <span className='w-145'>
-                                {otherUser?.website ? (
-                                    <a href={otherUser?.website} target="_blank" rel="noopener noreferrer" className="text-[#2A6E8C] hover:underline">
-                                        {otherUser?.website}
-                                    </a>
-                                ) : 'Not provided'}
+                            <span className='text-xs text-gray-600 w-145'>
+                                Bio
                             </span>
+
+                            <span className='w-145'>
+                                {otherUser.bio || "NA"}
+                            </span>
+                        </div>
+
+                        {/* website */}
+                        <div className='flex flex-col gap-1'>
+                            <span className='text-xs text-gray-600 w-145'>
+                                Website
+                            </span>
+
+                            <a href={otherUser.website || '#'} target="_blank" className='w-145'>
+                                {otherUser.website || "NA"}
+                            </a>
                         </div>
                     </div>
 
-                    {/* LinkedIn and GitHub */}
+                    {/* shows linkedln and github */}
                     <div className='flex items-center'>
+                        {/* linkedln */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>LinkedIn</span>
-                            <span className='w-145'>
-                                {otherUser?.linkedln ? (
-                                    <a href={otherUser?.linkedln} target="_blank" rel="noopener noreferrer" className="text-[#2A6E8C] hover:underline">
-                                        {otherUser?.linkedln}
-                                    </a>
-                                ) : 'Not provided'}
+                            <span className='text-xs text-gray-600 w-145'>
+                                Linkedin
                             </span>
+
+                            <a href={otherUser.linkedln || '#'} target="_blank" className='w-145'>
+                                {otherUser.linkedln || "NA"}
+                            </a>
                         </div>
+
+                        {/* github */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>GitHub</span>
-                            <span className='w-145'>
-                                {otherUser?.github ? (
-                                    <a href={otherUser?.github} target="_blank" rel="noopener noreferrer" className="text-[#2A6E8C] hover:underline">
-                                        {otherUser?.github}
-                                    </a>
-                                ) : 'Not provided'}
+                            <span className='text-xs text-gray-600 w-145'>
+                                Github
                             </span>
+
+                            <a href={otherUser.github || '#'} target="_blank" className='w-145'>
+                                {otherUser.github || "NA"}
+                            </a>
                         </div>
                     </div>
 
-                    {/* Twitter and Hashnode */}
+                    {/* shows twitter and hashnode */}
                     <div className='flex items-center'>
+                        {/* twitter */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>Twitter/X</span>
-                            <span className='w-145'>
-                                {otherUser?.twitter ? (
-                                    <a href={otherUser?.twitter} target="_blank" rel="noopener noreferrer" className="text-[#2A6E8C] hover:underline">
-                                        {otherUser?.twitter}
-                                    </a>
-                                ) : 'Not provided'}
+                            <span className='text-xs text-gray-600 w-145'>
+                                Twitter/X
                             </span>
+
+                            <a href={otherUser.twitter || '#'} target="_blank" className='w-145'>
+                                {otherUser.twitter || "NA"}
+                            </a>
                         </div>
+
+                        {/* hashnode */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>Hashnode</span>
-                            <span className='w-145'>
-                                {otherUser?.hashnode ? (
-                                    <a href={otherUser?.hashnode} target="_blank" rel="noopener noreferrer" className="text-[#2A6E8C] hover:underline">
-                                        {otherUser?.hashnode}
-                                    </a>
-                                ) : 'Not provided'}
+                            <span className='text-xs text-gray-600 w-145'>
+                                hashnode
                             </span>
+
+                            <a href={otherUser.hashnode || '#'} target="_blank" className='w-145'>
+                                {otherUser.hashnode || "NA"}
+                            </a>
                         </div>
                     </div>
 
-                    {/* Medium and LeetCode */}
+                    {/* shows medium and leetcode */}
                     <div className='flex items-center'>
+                        {/* medium */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>Medium</span>
-                            <span className='w-145'>
-                                {otherUser?.medium ? (
-                                    <a href={otherUser?.medium} target="_blank" rel="noopener noreferrer" className="text-[#2A6E8C] hover:underline">
-                                        {otherUser?.medium}
-                                    </a>
-                                ) : 'Not provided'}
+                            <span className='text-xs text-gray-600 w-145'>
+                                Medium
                             </span>
+
+                            <a href={otherUser.medium || '#'} target="_blank" className='w-145'>
+                                {otherUser.medium || "NA"}
+                            </a>
                         </div>
+
+                        {/* leetcode */}
                         <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>LeetCode</span>
-                            <span className='w-145'>
-                                {otherUser?.leetcode ? (
-                                    <a href={otherUser?.leetcode} target="_blank" rel="noopener noreferrer" className="text-[#2A6E8C] hover:underline">
-                                        {otherUser?.leetcode}
-                                    </a>
-                                ) : 'Not provided'}
+                            <span className='text-xs text-gray-600 w-145'>
+                                Leetcode
                             </span>
+
+                            <a href={otherUser.leetcode || '#'} target="_blank" className='w-145'>
+                                {otherUser.leetcode || "NA"}
+                            </a>
                         </div>
                     </div>
                 </div>
