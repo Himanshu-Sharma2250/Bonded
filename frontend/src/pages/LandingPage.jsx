@@ -7,9 +7,9 @@ const LandingPage = () => {
             <Navbar />
 
             {/* hero section */}
-            <main className='flex items-center px-7 py-10 '>
+            <main className='flex items-center px-20 my-10 '>
                 {/* div - contains the texts and buttons */}
-                <div className='flex flex-col gap-2 justify-center h-86'>
+                <div className='flex flex-col gap-2 justify-center h-full w-[50%]'>
                     <h1 className='text-4xl w-87.5'>
                         Create Amazing <span className='font-bold text-[#FF7A59]'>Projects</span> Together
                     </h1>
@@ -18,20 +18,20 @@ const LandingPage = () => {
                         Find teammates you can actually rely on. Bonded matches you with verified developers, designers & creators who share your work style and values.
                     </p>
 
-                    <Button name="Get Started Now" bgColor="#2A6E8C" btnSize="25px"/>
+                    <Button name="Get Started Now" bgColor="#2A6E8C" btnSize="20px"/>
                 </div>
 
                 {/* div - contains image */}
-                <div className='w-4xl'>
+                <div className='w-[50%]'>
                     <img src="/photo-1552664730-d307ca884978.jpeg" alt="team-image" srcset="" />
                 </div>
             </main>
 
             {/* feature div */}
-            <div className='flex flex-col gap-4'>
+            <section className='flex flex-col gap-4'>
                 {/* header div */}
                 <div className='flex flex-col justify-center items-center'>
-                    <h1 className='text-4xl'>
+                    <h1 className='text-5xl'>
                         Features
                     </h1>
 
@@ -144,7 +144,7 @@ const LandingPage = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/* footer */}
             <div className='flex flex-col justify-center items-center bg-slate-900 mt-4 py-20'>

@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/useAuthStore'
 import { Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useUserHistory } from '../hooks/useUserHistoryQueries';
+import toast from 'react-hot-toast';
 
 const actionColorMap = {
     CREATED: '#10b981',   // green
@@ -30,6 +31,7 @@ const MyProfile = () => {
     useEffect(() => {
         async function getProfile() {
             await profile();
+            toast.success("Profile fetched");
         }
         getProfile();
     }, [profile])

@@ -11,6 +11,7 @@ import LeaveGroupModal from '../components/LeaveGroupModal';
 import { useAuthStore } from '../store/useAuthStore';
 import { useTeam } from '../hooks/useTeamQueries';
 import { useTeamMember } from '../hooks/useTeamMemberQueries';
+import toast from 'react-hot-toast';
 
 const getAvatarColor = (name) => {
     if (!name) return '#6b7280';
@@ -27,9 +28,9 @@ const GroupDetailPage = () => {
     const { teamId } = useParams();
     const { user } = useAuthStore();
 
-    const { data: team, isLoading: teamLoading, error: teamError } = useTeam(teamId);
+    const { data: team, isLoading: teamLoading, error: teamError, isSuccess: isTeamFetched } = useTeam(teamId);
 
-    const { data: member, isLoading: memberLoading, error: memberError } = useTeamMember(
+    const { data: member, isLoading: memberLoading, error: memberError, isSuccess: isMembersFetched } = useTeamMember(
         teamId,
         user?._id
     );
@@ -40,6 +41,10 @@ const GroupDetailPage = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
             </div>
         );
+    }
+
+    if (isMembersFetched && isTeamFetched) {
+        toast.success("Team Fetched");
     }
 
     if (teamError || !team) {

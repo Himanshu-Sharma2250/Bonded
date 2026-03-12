@@ -6,10 +6,9 @@ import toast from 'react-hot-toast';
 
 const CheckEmailPage = () => {
     const location = useLocation();
-    const { user, forgotPassword } = useAuthStore(); // or a dedicated resendVerification action
+    const { user, forgotPassword } = useAuthStore(); 
     const [resending, setResending] = useState(false);
 
-    // Email can be passed from registration via state, or from the logged-in user
     const email = location.state?.email || user?.email || 'your email';
 
     const handleResend = async () => {

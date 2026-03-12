@@ -26,7 +26,7 @@ const statusColorMap = {
 };
 
 const SentApplications = () => {
-    const { data: applications = [], isLoading: appsLoading, error: appsError } = useSentApplications();
+    const { data: applications = [], isLoading: appsLoading, error: appsError, isSuccess } = useSentApplications();
     const withdrawMutation = useWithdrawApplication();
 
     // Get unique team IDs from applications
@@ -70,6 +70,10 @@ const SentApplications = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
             </div>
         );
+    }
+
+    if (isSuccess) {
+        toast.success("Applications Loaded");
     }
 
     if (appsError) {

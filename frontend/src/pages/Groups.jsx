@@ -5,11 +5,12 @@ import AllGroupsTab from '../components/AllGroupsTab';
 import MyGroupTab from '../components/MyGroupTab';
 import { useAllTeams } from '../hooks/useTeamQueries';
 import { Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Groups = () => {
     const [selectedTab, setSelectedTab] = useState('All Groups');
     const [searchTerm, setSearchTerm] = useState('');
-    const { data: teams = [], error, isLoading } = useAllTeams();
+    const { data: teams = [], error, isLoading, isSuccess, isError } = useAllTeams();
 
     const filteredTeams = useMemo(() => {
         if (!searchTerm.trim()) return teams;
@@ -30,6 +31,14 @@ const Groups = () => {
         return <div className='flex items-center justify-center h-full w-full'>
             <Loader2 className='w-8 h-8 animate-spin text-[#2A6E8C]' />
         </div>
+    }
+
+    if (isSuccess) {
+        toast.success("Teams Loaded")
+    }
+
+    if (isError) {
+        toast.error("Failed to load teams")
     }
 
     if (error) {

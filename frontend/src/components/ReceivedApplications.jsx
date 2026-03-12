@@ -24,7 +24,7 @@ const formatDate = (dateString) => {
 };
 
 const ReceivedApplications = () => {
-    const { data: receivedApplications = [], isLoading, error } = useReceivedApplications();
+    const { data: receivedApplications = [], isLoading, error, isSuccess } = useReceivedApplications();
     const acceptMutation = useAcceptApplication();
     const rejectMutation = useRejectApplication();
     const memberJoinedHistoryMutation = useMemberJoinedHistory();
@@ -71,6 +71,10 @@ const ReceivedApplications = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
             </div>
         );
+    }
+
+    if (isSuccess) {
+        toast.success("Applications Loaded");
     }
 
     if (error) {

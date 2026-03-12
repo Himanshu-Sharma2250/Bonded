@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react'
 import { Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTeamHistory } from '../hooks/useTeamHistoryQueries';

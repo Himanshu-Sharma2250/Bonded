@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import z, { trim } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuthStore } from '../store/useAuthStore'
+import toast from 'react-hot-toast'
 
 const editProfileSchema = z.object({
     name: z.string().trim(),
@@ -50,8 +51,8 @@ const EditProfileModal = ({initialValue}) => {
 
     const onEditProfile = async (data) => {
         editProfile(data)
+        toast.success("Profile Updated")
         closeModal();
-        console.log(data)
     }
     
     return (
