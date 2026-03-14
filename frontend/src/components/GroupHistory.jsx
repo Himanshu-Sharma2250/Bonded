@@ -44,7 +44,7 @@ const GroupHistory = ({ teamId }) => {
                             className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
                             style={{ backgroundColor: dotColor }}
                         />
-                        <h3 className="text-base sm:text-lg font-semibold text-base-content break-words">
+                        <h3 className="text-base sm:text-lg font-semibold text-base-content wrap-break-words">
                             {historyItem.title}
                         </h3>
                     </div>
@@ -52,7 +52,7 @@ const GroupHistory = ({ teamId }) => {
                         {formatDate(historyItem.createdAt)}
                     </span>
                 </div>
-                <p className="mt-2 text-sm text-base-content/80 break-words">
+                <p className="mt-2 text-sm text-base-content/80 wrap-break-words">
                     {historyItem.description}
                 </p>
             </div>
