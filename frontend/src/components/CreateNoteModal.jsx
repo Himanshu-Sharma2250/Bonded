@@ -55,97 +55,98 @@ const CreateNoteModal = ({ teamId }) => {
     return (
         <div>
             <Button
-                name={<CirclePlus className="w-10 h-10 text-[#2A6E8C]" />}
-                txtColor="#000000"
-                btnSize="16px"
+                name={<CirclePlus className="w-6 h-6" />}
+                variant="ghost"
+                size="md"
                 onClick={openModal}
+                className="p-2"
             />
 
-            <dialog
-                ref={dialogRef}
-                className="open:flex flex-col gap-8 w-90 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60"
-            >
-                <div className="w-full flex items-center justify-center">
-                    <h1 className="text-2xl font-bold">Create Note</h1>
-                </div>
-
-                <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
-                    <label className="flex flex-col items-start text-sm font-medium">
-                        Title
-                        <input
-                            type="text"
-                            className={`border-2 w-full ${
-                                errors.title ? 'border-red-500' : 'border-[#CBD5E1]'
-                            } focus:outline-[#2A6E8C] rounded-xs px-1 h-10`}
-                            placeholder="Note's Title"
-                            {...register('title')}
-                        />
-                        {errors.title && (
-                            <span className="text-red-500 text-xs mt-1">{errors.title.message}</span>
-                        )}
-                    </label>
-
-                    <label className="flex flex-col items-start text-sm font-medium">
-                        Description
-                        <textarea
-                            className={`border-2 w-full ${
-                                errors.description ? 'border-red-500' : 'border-[#CBD5E1]'
-                            } focus:outline-[#2A6E8C] rounded-xs px-1 h-15`}
-                            placeholder="Note's Description"
-                            {...register('description')}
-                        />
-                        {errors.description && (
-                            <span className="text-red-500 text-xs mt-1">{errors.description.message}</span>
-                        )}
-                    </label>
-
-                    <div className="flex flex-col items-start gap-1 text-sm font-medium">
-                        <span>Who can see this note?</span>
-                        <Controller
-                            name="isPrivate"
-                            control={control}
-                            render={({ field }) => (
-                                <div className="flex gap-4">
-                                    <label className="flex items-center gap-1">
-                                        <input
-                                            type="radio"
-                                            value="false"
-                                            checked={field.value === false}
-                                            onChange={() => field.onChange(false)}
-                                        />
-                                        Public (visible to everyone)
-                                    </label>
-                                    <label className="flex items-center gap-1">
-                                        <input
-                                            type="radio"
-                                            value="true"
-                                            checked={field.value === true}
-                                            onChange={() => field.onChange(true)}
-                                        />
-                                        Private (visible only to members)
-                                    </label>
-                                </div>
+            <dialog ref={dialogRef} className="modal">
+                <div className="modal-box bg-base-100">
+                    <h3 className="font-bold text-lg text-center text-base-content">Create Note</h3>
+                    <form onSubmit={handleSubmit(onSubmit)} className="py-4">
+                        <label className="form-control w-full">
+                            <span className="label-text text-base-content/80">Title</span>
+                            <input
+                                type="text"
+                                className={`input input-bordered w-full bg-base-100 ${
+                                    errors.title ? 'input-error' : ''
+                                }`}
+                                placeholder="Note's Title"
+                                {...register('title')}
+                            />
+                            {errors.title && (
+                                <span className="text-error text-xs mt-1">{errors.title.message}</span>
                             )}
-                        />
-                    </div>
+                        </label>
 
-                    <div className="flex gap-2 justify-center items-center w-full mt-5">
-                        <Button
-                            name="Cancel"
-                            txtColor="#64748B"
-                            bgColor="transparent"
-                            btnSize="16px"
-                            type="button"
-                            onClick={closeModal}
-                        />
-                        <Button
-                            name={createNote.isPending ? 'Creating...' : 'Create'}
-                            bgColor="#2A6E8C"
-                            btnSize="16px"
-                            type="submit"
-                            disabled={createNote.isPending}
-                        />
-                    </div>
+                        <label className="form-control w-full mt-2">
+                            <span className="label-text text-base-content/80">Description</span>
+                            <textarea
+                                className={`textarea textarea-bordered w-full bg-base-100 h-24 ${
+                                    errors.description ? 'textarea-error' : ''
+                                }`}
+                                placeholder="Note's Description"
+                                {...register('description')}
+                            />
+                            {errors.description && (
+                                <span className="text-error text-xs mt-1">{errors.description.message}</span>
+                            )}
+                        </label>
+
+                        <div className="flex flex-col gap-1 mt-2">
+                            <span className="text-sm font-medium text-base-content/80">Who can see this note?</span>
+                            <Controller
+                                name="isPrivate"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex gap-4">
+                                        <label className="flex items-center gap-1 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                className="radio radio-primary"
+                                                value="false"
+                                                checked={field.value === false}
+                                                onChange={() => field.onChange(false)}
+                                            />
+                                            <span className="text-sm text-base-content/80">Public</span>
+                                        </label>
+                                        <label className="flex items-center gap-1 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                className="radio radio-primary"
+                                                value="true"
+                                                checked={field.value === true}
+                                                onChange={() => field.onChange(true)}
+                                            />
+                                            <span className="text-sm text-base-content/80">Private</span>
+                                        </label>
+                                    </div>
+                                )}
+                            />
+                        </div>
+
+                        <div className="modal-action flex gap-2 justify-center mt-6">
+                            <Button
+                                name="Cancel"
+                                variant="ghost"
+                                size="md"
+                                type="button"
+                                onClick={closeModal}
+                            />
+                            <Button
+                                name={createNote.isPending ? 'Creating...' : 'Create'}
+                                variant="primary"
+                                size="md"
+                                type="submit"
+                                disabled={createNote.isPending}
+                            />
+                        </div>
+                    </form>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button onClick={closeModal}>close</button>
                 </form>
             </dialog>
         </div>

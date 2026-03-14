@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react';
 import Button from './Button';
 import { NavLink } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, Moon, Sun, X } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useTheme } from '../context/ThemeContext';
 
 gsap.registerPlugin(useGSAP);
 
@@ -12,13 +13,13 @@ const Navbar = () => {
     const menuRef = useRef(null);
     const overlayRef = useRef(null);
     const linksRef = useRef([]);
+    const { theme, toggleTheme } = useTheme();
 
     const toggleMenu = () => setIsMenuOpen((prev) => !prev);
     const closeMenu = () => setIsMenuOpen(false);
 
     useGSAP(() => {
         if (isMenuOpen) {
-            // Open animation
             gsap.to(overlayRef.current, {
                 opacity: 1,
                 duration: 0.3,
@@ -41,7 +42,6 @@ const Navbar = () => {
                 }
             );
         } else {
-            // Close animation
             gsap.to(menuRef.current, {
                 x: '-100%',
                 duration: 0.3,
@@ -53,41 +53,49 @@ const Navbar = () => {
                 ease: 'power2.inOut',
             });
         }
-    }, { dependencies: [isMenuOpen], scope: menuRef.current }); 
+    }, { dependencies: [isMenuOpen], scope: menuRef.current });
 
     return (
         <>
-            <nav className="relative flex items-center justify-between px-4 py-2 bg-white shadow-sm md:px-5 z-20">
+            <nav className="relative flex items-center justify-between px-4 py-2 bg-base-100 shadow-sm md:px-5 z-20">
                 {/* Hamburger icon for mobile */}
                 <div className="md:hidden">
                     <button onClick={toggleMenu} className="p-1 focus:outline-none">
-                        <Menu className="w-6 h-6 text-[#374151]" />
+                        <Menu className="w-6 h-6 text-base-content" />
                     </button>
                 </div>
 
                 {/* Logo: centered on mobile, left-aligned on desktop */}
                 <div className="flex-1 text-center md:text-left md:flex-none">
-                    <h1 className="text-2xl font-bold md:text-3xl">Bonded</h1>
+                    <h1 className="text-2xl font-bold text-base-content md:text-3xl">Bonded</h1>
                 </div>
 
                 {/* Desktop navigation links (hidden on mobile) */}
                 <div className="hidden md:block">
                     <ul className="flex items-center gap-8">
-                        <li><a href="#" className="text-[#374151] hover:text-[#1E4A68] text-lg">Home</a></li>
-                        <li><a href="#" className="text-[#374151] hover:text-[#1E4A68] text-lg">Teams</a></li>
-                        <li><a href="#" className="text-[#374151] hover:text-[#1E4A68] text-lg">About Us</a></li>
-                        <li><a href="#" className="text-[#374151] hover:text-[#1E4A68] text-lg">Contact</a></li>
+                        <li><a href="#" className="text-base-content/70 hover:text-primary text-lg">Home</a></li>
+                        <li><a href="#" className="text-base-content/70 hover:text-primary text-lg">Teams</a></li>
+                        <li><a href="#" className="text-base-content/70 hover:text-primary text-lg">About Us</a></li>
+                        <li><a href="#" className="text-base-content/70 hover:text-primary text-lg">Contact</a></li>
                     </ul>
                 </div>
 
                 {/* Login/Signup buttons */}
                 <div className="flex items-center gap-2">
                     <NavLink to="/signin">
-                        <Button name="Log In" bgColor="#2A6E8C" btnSize="16px" />
+                        <Button name="Log In" variant="primary" size="md" />
                     </NavLink>
                     <NavLink to="/signup">
-                        <Button name="Sign Up" bgColor="#FF7A59" btnSize="16px" />
+                        <Button name="Sign Up" variant="accent" size="md" />
                     </NavLink>
+                    <button
+                        onClick={() => {
+                            toggleTheme();
+                        }}
+                            className="flex justify-between items-center px-2 py-1 rounded-md text-base-content hover:bg-base-200 transition-colors"
+                    >
+                        {theme === 'bonded' ? <Moon className="w-4" /> : <Sun className="w-4" />}
+                    </button>
                 </div>
             </nav>
 
@@ -103,12 +111,12 @@ const Navbar = () => {
             {/* Slide‑in side menu */}
             <div
                 ref={menuRef}
-                className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 md:hidden transform -translate-x-full"
+                className="fixed top-0 left-0 h-full w-64 bg-base-100 shadow-lg z-40 md:hidden transform -translate-x-full"
             >
-                <div className="flex items-center justify-between p-4 border-b">
-                    <h2 className="text-2xl font-bold">Bonded</h2>
-                    <button onClick={closeMenu} className="p-1">
-                        <X className="w-6 h-6 text-[#374151]" />
+                <div className="flex items-center justify-between p-4 border-b border-base-300">
+                    <h2 className="text-2xl font-bold text-base-content">Bonded</h2>
+                    <button onClick={closeMenu} className="p-1 rounded-md hover:bg-base-200">
+                        <X className="w-6 h-6 text-base-content" />
                     </button>
                 </div>
                 <ul className="flex flex-col gap-2 p-4">
@@ -119,7 +127,7 @@ const Navbar = () => {
                         >
                             <a
                                 href="#"
-                                className="block py-2 text-lg text-[#374151] hover:text-[#1E4A68]"
+                                className="block py-2 text-lg text-base-content hover:text-primary hover:bg-base-200 px-2 rounded-md transition-colors"
                                 onClick={closeMenu}
                             >
                                 {item}

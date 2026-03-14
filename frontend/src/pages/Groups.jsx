@@ -30,7 +30,7 @@ const Groups = () => {
     if (isLoading) {
         return (
             <div className='flex items-center justify-center h-full w-full'>
-                <Loader2 className='w-8 h-8 animate-spin text-[#2A6E8C]' />
+                <Loader2 className='w-8 h-8 animate-spin text-primary' />
             </div>
         );
     }
@@ -45,7 +45,7 @@ const Groups = () => {
 
     if (error) {
         return (
-            <div className='text-center text-red-500 py-10'>
+            <div className='text-center text-error py-10'>
                 Failed to load groups. Please try again later.
             </div>
         );
@@ -56,8 +56,8 @@ const Groups = () => {
             {/* Header */}
             <div className='flex justify-between items-center pb-1'>
                 <div className='flex flex-col gap-1'>
-                    <h1 className='text-2xl sm:text-3xl font-bold'>Groups</h1>
-                    <p className='text-sm sm:text-base text-[#64748B]'>
+                    <h1 className='text-2xl sm:text-3xl font-bold text-base-content'>Groups</h1>
+                    <p className='text-sm sm:text-base text-base-content/70'>
                         Full view of your groups and other groups.
                     </p>
                 </div>
@@ -68,12 +68,12 @@ const Groups = () => {
             <Searchbar onSearch={handleSearch} />
 
             {/* Tabs */}
-            <div className='flex gap-5 mt-2 border-b border-[#CBD5E1] pb-2 overflow-x-auto hide-scrollbar'>
+            <div className='flex gap-5 mt-2 border-b border-base-300 pb-2 overflow-x-auto hide-scrollbar'>
                 <span
                     className={`cursor-pointer text-sm sm:text-base pb-1 transition-colors ${
                         selectedTab === 'All Groups'
-                            ? 'text-[#2A6E8C] font-bold border-b-2 border-[#FF7A59]'
-                            : 'text-[#64748B] hover:text-[#475569]'
+                            ? 'text-primary font-bold border-b-2 border-accent'
+                            : 'text-base-content/60 hover:text-base-content/80'
                     }`}
                     onClick={() => setSelectedTab('All Groups')}
                 >
@@ -83,8 +83,8 @@ const Groups = () => {
                 <span
                     className={`cursor-pointer text-sm sm:text-base pb-1 transition-colors ${
                         selectedTab === 'My Group'
-                            ? 'text-[#2A6E8C] font-bold border-b-2 border-[#FF7A59]'
-                            : 'text-[#64748B] hover:text-[#475569]'
+                            ? 'text-primary font-bold border-b-2 border-accent'
+                            : 'text-base-content/60 hover:text-base-content/80'
                     }`}
                     onClick={() => setSelectedTab('My Group')}
                 >

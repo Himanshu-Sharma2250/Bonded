@@ -82,30 +82,30 @@ const MobileMenu = ({ isOpen, onClose }) => {
             />
             <div
                 ref={containerRef}
-                className="fixed inset-0 bg-[#F8FAFC] z-50 flex flex-col overflow-y-auto"
+                className="fixed inset-0 bg-base-100 z-50 flex flex-col overflow-y-auto"
                 style={{ opacity: 0, display: isOpen ? 'flex' : 'none' }}
             >
                 {/* Header with logo and close button */}
-                <div className="flex items-center justify-between px-4 py-3 border-b">
-                    <h1 ref={logoRef} className="text-2xl font-bold">Bonded</h1>
+                <div className="flex items-center justify-between px-4 py-3 border-b border-base-300">
+                    <h1 ref={logoRef} className="text-2xl font-bold text-base-content">Bonded</h1>
                     <button
                         ref={closeBtnRef}
                         onClick={onClose}
-                        className="p-2 rounded-md hover:bg-gray-100"
+                        className="p-2 rounded-md hover:bg-base-200 transition-colors"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-6 h-6 text-base-content" />
                     </button>
                 </div>
 
                 {/* Navigation links */}
-                <div className="flex-1 flex flex-col  gap-2 p-4 w-full max-w-md mx-auto">
+                <div className="flex-1 flex flex-col gap-2 p-4 w-full max-w-md mx-auto">
                     <NavLink
                         to="/dashboard"
                         className={({ isActive }) =>
                             `flex items-center gap-2 px-4 py-3 w-full rounded-md transition-colors duration-200 ${
                                 isActive
-                                    ? 'bg-[#2A6E8C] text-[#F8FAFC]'
-                                    : 'text-[#000000] hover:bg-[#E9F1F5] hover:text-[#2A6E8C]'
+                                    ? 'bg-primary text-primary-content'
+                                    : 'text-base-content hover:bg-base-200 hover:text-primary'
                             }`
                         }
                         onClick={onClose}
@@ -119,8 +119,8 @@ const MobileMenu = ({ isOpen, onClose }) => {
                         className={({ isActive }) =>
                             `flex items-center gap-2 px-4 py-3 w-full rounded-md transition-colors duration-200 ${
                                 isActive
-                                    ? 'bg-[#2A6E8C] text-[#F8FAFC]'
-                                    : 'text-[#000000] hover:bg-[#E9F1F5] hover:text-[#2A6E8C]'
+                                    ? 'bg-primary text-primary-content'
+                                    : 'text-base-content hover:bg-base-200 hover:text-primary'
                             }`
                         }
                         onClick={onClose}
@@ -134,8 +134,8 @@ const MobileMenu = ({ isOpen, onClose }) => {
                         className={({ isActive }) =>
                             `flex items-center gap-2 px-4 py-3 w-full rounded-md transition-colors duration-200 ${
                                 isActive
-                                    ? 'bg-[#2A6E8C] text-[#F8FAFC]'
-                                    : 'text-[#000000] hover:bg-[#E9F1F5] hover:text-[#2A6E8C]'
+                                    ? 'bg-primary text-primary-content'
+                                    : 'text-base-content hover:bg-base-200 hover:text-primary'
                             }`
                         }
                         onClick={onClose}
@@ -147,7 +147,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Profile section at bottom */}
-                <div ref={profileRef} className="border-t p-4">
+                <div ref={profileRef} className="border-t border-base-300 p-4">
                     <div className="max-w-md mx-auto">
                         <ProfileOptionModal isCollapsed={false} />
                     </div>

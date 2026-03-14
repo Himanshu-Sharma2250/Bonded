@@ -6,8 +6,8 @@ import { useAuthStore } from '../store/useAuthStore';
 const VerifyEmailPage = () => {
     const { token } = useParams();
     const navigate = useNavigate();
-    const { verifyEmail } = useAuthStore(); 
-    const [status, setStatus] = useState('loading'); 
+    const { verifyEmail } = useAuthStore();
+    const [status, setStatus] = useState('loading');
     const [message, setMessage] = useState('');
 
     useEffect(() => {
@@ -16,7 +16,6 @@ const VerifyEmailPage = () => {
                 await verifyEmail(token);
                 setStatus('success');
                 setMessage('Email verified successfully!');
-                // Redirect to login after 3 seconds
                 setTimeout(() => navigate('/signin'), 3000);
             } catch (error) {
                 setStatus('error');
@@ -27,30 +26,30 @@ const VerifyEmailPage = () => {
     }, [token, verifyEmail, navigate]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-4">
-            <div className="max-w-md w-full bg-white border-2 border-[#CBD5E1] rounded-md shadow-sm p-8 text-center">
+        <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
+            <div className="max-w-md w-full bg-base-100 border border-base-300 rounded-lg shadow-lg p-8 text-center">
                 {status === 'loading' && (
                     <>
-                        <Loader2 className="w-12 h-12 animate-spin text-[#2A6E8C] mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold text-[#0F172A]">Verifying your email...</h2>
+                        <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+                        <h2 className="text-xl font-semibold text-base-content">Verifying your email...</h2>
                     </>
                 )}
                 {status === 'success' && (
                     <>
-                        <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold text-[#0F172A] mb-2">Success!</h2>
-                        <p className="text-[#334155] mb-4">{message}</p>
-                        <p className="text-sm text-[#64748B]">Redirecting to login...</p>
+                        <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
+                        <h2 className="text-xl font-semibold text-base-content mb-2">Success!</h2>
+                        <p className="text-base-content/80 mb-4">{message}</p>
+                        <p className="text-sm text-base-content/60">Redirecting to login...</p>
                     </>
                 )}
                 {status === 'error' && (
                     <>
-                        <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold text-[#0F172A] mb-2">Verification failed</h2>
-                        <p className="text-[#334155] mb-6">{message}</p>
+                        <XCircle className="w-12 h-12 text-error mx-auto mb-4" />
+                        <h2 className="text-xl font-semibold text-base-content mb-2">Verification failed</h2>
+                        <p className="text-base-content/80 mb-6">{message}</p>
                         <button
                             onClick={() => navigate('/signin')}
-                            className="text-[#2A6E8C] hover:underline"
+                            className="text-primary hover:underline"
                         >
                             Go to login
                         </button>

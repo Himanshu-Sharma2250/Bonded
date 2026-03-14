@@ -37,7 +37,7 @@ const GroupDetailPage = () => {
     if (teamLoading || memberLoading) {
         return (
             <div className="flex justify-center items-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -48,9 +48,9 @@ const GroupDetailPage = () => {
 
     if (teamError || !team) {
         return (
-            <div className="text-center py-20 text-red-500">
+            <div className="text-center py-20 text-error">
                 <p>Failed to load group details.</p>
-                <NavLink to="/groups" className="text-[#2A6E8C] hover:underline mt-4 inline-block">
+                <NavLink to="/groups" className="text-primary hover:underline mt-4 inline-block">
                     Back to Groups
                 </NavLink>
             </div>
@@ -63,7 +63,7 @@ const GroupDetailPage = () => {
             <div className="flex justify-start items-center py-2">
                 <NavLink
                     to="/groups"
-                    className="cursor-pointer border-2 px-3 py-1.5 rounded-md flex items-center gap-2 hover:gap-3 transition-all text-sm sm:text-base text-[#64748B] hover:text-[#2A6E8C] hover:border-[#2A6E8C]"
+                    className="cursor-pointer border border-base-300 px-3 py-1.5 rounded-md flex items-center gap-2 hover:gap-3 transition-all text-sm sm:text-base text-base-content/70 hover:text-primary hover:border-primary"
                 >
                     <MoveLeft className="w-4 sm:w-5" />
                     <span>Back</span>
@@ -82,8 +82,8 @@ const GroupDetailPage = () => {
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-xl sm:text-2xl font-semibold">{team?.name}</h1>
-                        <span className="text-sm text-[#64748B]">{team?.totalMembers} members</span>
+                        <h1 className="text-xl sm:text-2xl font-semibold text-base-content">{team?.name}</h1>
+                        <span className="text-sm text-base-content/70">{team?.totalMembers} members</span>
                     </div>
                 </div>
 
@@ -97,14 +97,14 @@ const GroupDetailPage = () => {
 
             {/* Tab navigation */}
             <div className="overflow-x-auto hide-scrollbar pb-2">
-                <div className="flex gap-5 py-2 border-b border-[#CBD5E1] min-w-max">
+                <div className="flex gap-5 py-2 border-b border-base-300 min-w-max">
                     {['Overview', 'Members', 'Notes', 'History'].map((tab) => (
                         <span
                             key={tab}
                             className={`text-base sm:text-lg cursor-pointer pb-1 transition-colors whitespace-nowrap ${
                                 selectedTab === tab
-                                    ? 'text-[#2A6E8C] font-semibold border-b-2 border-[#FF7A59]'
-                                    : 'text-[#64748B] hover:text-[#475569]'
+                                    ? 'text-primary font-semibold border-b-2 border-accent'
+                                    : 'text-base-content/60 hover:text-base-content/80'
                             }`}
                             onClick={() => setSelectedTab(tab)}
                         >

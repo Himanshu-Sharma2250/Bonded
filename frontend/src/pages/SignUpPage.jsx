@@ -29,88 +29,75 @@ const SignUpPage = () => {
     };
 
     return (
-        <div className="bg-[#F8FAFC] flex justify-center items-center h-screen relative">
-            {/* Back button outside card */}
+        <div className="min-h-screen flex justify-center items-center bg-base-200 p-4 relative">
             <NavLink
                 to="/"
-                className="absolute top-6 left-6 flex items-center gap-1 text-[#64748B] hover:text-[#2A6E8C] transition-colors text-sm"
+                className="absolute top-6 left-6 flex items-center gap-1 text-base-content/60 hover:text-primary transition-colors text-sm"
             >
                 <MoveLeft className="w-4 h-4" />
                 <span>Back to Home</span>
             </NavLink>
 
-            <div className="bg-white flex flex-col w-xl px-5 py-5 rounded-md shadow-sm">
+            <div className="w-full max-w-md bg-base-100 border border-base-300 rounded-lg shadow-lg p-8">
                 <div className="flex justify-center mb-6">
-                    <h1 className="text-2xl font-bold text-[#0F172A]">Create Your Account</h1>
+                    <h1 className="text-2xl font-bold text-base-content">Create Your Account</h1>
                 </div>
 
                 <form onSubmit={handleSubmit(onSignUp)} className="w-full flex flex-col gap-4">
                     <label className="flex flex-col">
-                        <span className="text-sm text-[#334155] mb-1">Full Name</span>
+                        <span className="text-sm text-base-content/80 mb-1">Full Name</span>
                         <input
                             type="text"
                             {...register('name')}
-                            className={`border-2 h-10 px-2 rounded-sm ${
-                                errors.name ? 'border-red-500' : 'border-[#CBD5E1]'
-                            } focus:outline-[#2A6E8C]`}
+                            className={`input input-bordered w-full ${errors.name ? 'input-error' : ''}`}
                             placeholder="full name"
                         />
-                        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                        {errors.name && <p className="text-error text-xs mt-1">{errors.name.message}</p>}
                     </label>
 
                     <label className="flex flex-col">
-                        <span className="text-sm text-[#334155] mb-1">Email</span>
+                        <span className="text-sm text-base-content/80 mb-1">Email</span>
                         <input
                             type="email"
                             {...register('email')}
-                            className={`border-2 h-10 px-2 rounded-sm ${
-                                errors.email ? 'border-red-500' : 'border-[#CBD5E1]'
-                            } focus:outline-[#2A6E8C]`}
+                            className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
                             placeholder="you@email.com"
                         />
-                        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                        {errors.email && <p className="text-error text-xs mt-1">{errors.email.message}</p>}
                     </label>
 
                     <label className="flex flex-col">
-                        <span className="text-sm text-[#334155] mb-1">Password</span>
-                        <div
-                            className={`flex items-center border-2 rounded-sm pr-2 ${
-                                errors.password ? 'border-red-500' : 'border-[#CBD5E1]'
-                            }`}
-                        >
+                        <span className="text-sm text-base-content/80 mb-1">Password</span>
+                        <div className={`flex items-center border ${errors.password ? 'border-error' : 'border-base-300'} rounded-lg pr-2 bg-base-100`}>
                             <input
                                 type={seePassword ? 'text' : 'password'}
                                 {...register('password')}
-                                className="h-10 px-2 flex-1 outline-none"
+                                className="h-10 px-2 flex-1 outline-none bg-transparent"
                                 placeholder="password"
                             />
-                            {seePassword ? (
-                                <EyeOff
-                                    className="w-5 cursor-pointer text-[#64748B]"
-                                    onClick={() => setSeePassword(!seePassword)}
-                                />
-                            ) : (
-                                <Eye
-                                    className="w-5 cursor-pointer text-[#64748B]"
-                                    onClick={() => setSeePassword(!seePassword)}
-                                />
-                            )}
+                            <button
+                                type="button"
+                                onClick={() => setSeePassword(!seePassword)}
+                                className="text-base-content/60"
+                            >
+                                {seePassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
-                        {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+                        {errors.password && <p className="text-error text-xs mt-1">{errors.password.message}</p>}
                     </label>
 
                     <div className="flex flex-col mt-4">
                         <Button
                             name={loading ? <Loader className="w-4 animate-spin" /> : 'Sign Up'}
-                            bgColor="#2A6E8C"
+                            bgColor="primary"
                             btnSize="16px"
                             type="submit"
                             className="w-full justify-center"
                         />
 
-                        <p className="text-sm text-center text-[#64748B] mt-4">
+                        <p className="text-sm text-center text-base-content/60 mt-4">
                             Already have an account?{' '}
-                            <NavLink to="/signin" className="text-[#FF7A59] hover:underline">
+                            <NavLink to="/signin" className="text-accent hover:underline">
                                 Sign in
                             </NavLink>
                         </p>

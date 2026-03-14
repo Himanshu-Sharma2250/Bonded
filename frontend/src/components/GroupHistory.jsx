@@ -25,7 +25,6 @@ const GroupHistory = ({ teamId }) => {
         });
     };
 
-    // Sort history from latest to oldest
     const sortedHistory = useMemo(() => {
         if (!history) return [];
         return [...history].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -37,24 +36,23 @@ const GroupHistory = ({ teamId }) => {
         return (
             <div
                 key={historyItem._id}
-                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow w-full"
+                className="flex flex-col px-4 py-3 border border-base-300 rounded-box bg-base-100 shadow-sm hover:shadow-md transition-shadow w-full"
             >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                        {/* Colored dot */}
                         <span
                             className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
                             style={{ backgroundColor: dotColor }}
                         />
-                        <h3 className="text-base sm:text-lg font-semibold text-[#0F172A] wrap-break-words">
+                        <h3 className="text-base sm:text-lg font-semibold text-base-content break-words">
                             {historyItem.title}
                         </h3>
                     </div>
-                    <span className="text-xs text-[#64748B] sm:text-right">
+                    <span className="text-xs text-base-content/70 sm:text-right">
                         {formatDate(historyItem.createdAt)}
                     </span>
                 </div>
-                <p className="mt-2 text-sm text-[#334155] wrap-break-words">
+                <p className="mt-2 text-sm text-base-content/80 break-words">
                     {historyItem.description}
                 </p>
             </div>
@@ -64,25 +62,24 @@ const GroupHistory = ({ teamId }) => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-10">
-                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="flex justify-center items-center py-10 text-red-500">
+            <div className="flex justify-center items-center py-10 text-error">
                 Error loading History. Please retry
             </div>
         );
     }
 
     return (
-        <div className="px-2 sm:px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC]">
-            {/* histories */}
+        <div className="px-2 sm:px-4 py-4 border-2 border-base-300 rounded-box bg-base-200">
             {!sortedHistory || sortedHistory.length === 0 ? (
                 <div className="text-center py-10">
-                    <span className="text-lg text-[#64748B]">No History</span>
+                    <span className="text-lg text-base-content/70">No History</span>
                 </div>
             ) : (
                 <div className="flex flex-col gap-3">

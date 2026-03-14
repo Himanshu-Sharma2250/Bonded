@@ -2,10 +2,103 @@
 @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Inline:opsz,wght@10..72,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Karla:ital,wght@0,200..800;1,200..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 @import 'tailwind-scrollbar-hide/v4';
 
+/* Your custom theme with your colors */
+@plugin "daisyui/theme" {
+  name: "bonded";
+  default: true; /* set as default */
+  color-scheme: light;
+
+  /* Your primary color (#2A6E8C) */
+  --color-primary: #2A6E8C;
+  --color-primary-content: #ffffff;
+
+  /* Your accent color (#FF7A59) */
+  --color-accent: #FF7A59;
+  --color-accent-content: #000000;
+
+  /* Your tertiary color (#F8FAFC) as base-100 */
+  --color-base-100: #F8FAFC;
+  --color-base-200: #E9F1F5; /* slightly darker for contrast */
+  --color-base-300: #CBD5E1; /* borders */
+  --color-base-content: #0F172A; /* text color */
+
+  /* Other semantic colors - keep default or customize */
+  --color-secondary: #3b82f6;
+  --color-secondary-content: #ffffff;
+  --color-success: #10b981;
+  --color-success-content: #ffffff;
+  --color-error: #ef4444;
+  --color-error-content: #ffffff;
+  --color-warning: #f97316;
+  --color-warning-content: #000000;
+  --color-info: #3b82f6;
+  --color-info-content: #ffffff;
+
+  /* Border radius */
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.375rem;
+
+  /* Base sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Border size */
+  --border: 1px;
+
+  /* Effects */
+  --depth: 1;
+  --noise: 0;
+}
+
+/* Optional: Add a dark variant if you want */
+@plugin "daisyui/theme" {
+  name: "bonded-dark";
+  color-scheme: dark;
+
+  --color-primary: #1E4A68; /* darker primary for dark mode */
+  --color-primary-content: #ffffff;
+
+  --color-accent: #FF7A59;
+  --color-accent-content: #000000;
+
+  --color-base-100: #1a1f2b;
+  --color-base-200: #2a303c;
+  --color-base-300: #3a4252;
+  --color-base-content: #e2e8f0;
+
+  /* Keep other colors similar */
+  --color-secondary: #3b82f6;
+  --color-secondary-content: #ffffff;
+  --color-success: #10b981;
+  --color-success-content: #ffffff;
+  --color-error: #ef4444;
+  --color-error-content: #ffffff;
+  --color-warning: #f97316;
+  --color-warning-content: #000000;
+  --color-info: #3b82f6;
+  --color-info-content: #ffffff;
+
+  /* Same border radius, sizes, etc. */
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.375rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* Enable both themes */
+@plugin "daisyui" {
+  themes: bonded --default, bonded-dark --prefersdark;
+}
+
 body {
-    /* font-family: 'Big Shoulders Inline', cursive; */
-    /* font-family: 'Karla', sans-serif; */
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'JetBrains Mono', monospace;
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
 }
 
 .hide-scrollbar::-webkit-scrollbar {

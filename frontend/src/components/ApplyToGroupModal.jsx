@@ -46,43 +46,46 @@ const ApplyToGroupModal = ({ teamId }) => {
 
     return (
         <div>
-            <Button name="Apply" bgColor="#2A6E8C" btnSize="16px" onClick={openModal} />
+            <Button name="Apply" bgColor="primary" btnSize="16px" onClick={openModal} />
 
             <dialog
                 ref={dialogRef}
-                className="open:flex flex-col gap-8 w-90 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60"
+                className="modal modal-bottom sm:modal-middle"
+                onClose={closeModal}
             >
-                <div className="w-full flex items-center justify-center">
-                    <h1 className="text-2xl font-bold">Want to join?</h1>
+                <div className="modal-box bg-base-100">
+                    <h3 className="font-bold text-lg text-center text-base-content">Want to join?</h3>
+                    <form method="dialog" onSubmit={handleSubmit(onApplyToJoin)} className="mt-4">
+                        <label className="form-control">
+                            <span className="label-text text-base-content/80">Why should we add you to our team?</span>
+                            <textarea
+                                className="textarea textarea-bordered h-24 bg-base-100"
+                                placeholder="Give us reason"
+                                {...register('reasonToJoin')}
+                            ></textarea>
+                        </label>
+                        <div className="modal-action flex gap-2 justify-center mt-6">
+                            <Button
+                                name="Cancel"
+                                txtColor="base-content/60"
+                                bgColor="transparent"
+                                btnSize="16px"
+                                type="button"
+                                onClick={closeModal}
+                            />
+                            <Button
+                                name={applyMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Apply'}
+                                bgColor="primary"
+                                btnSize="16px"
+                                type="submit"
+                                disabled={applyMutation.isPending}
+                            />
+                        </div>
+                    </form>
                 </div>
-
-                <form className="flex flex-col gap-4" onSubmit={handleSubmit(onApplyToJoin)}>
-                    <label className="flex flex-col text-sm font-medium">
-                        Why should we add you to our team?
-                        <textarea
-                            className="border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-15"
-                            placeholder="Give us reason"
-                            {...register('reasonToJoin')}
-                        />
-                    </label>
-
-                    <div className="flex gap-2 justify-center items-center w-full mt-5">
-                        <Button
-                            name="Cancel"
-                            txtColor="#64748B"
-                            bgColor="transparent"
-                            btnSize="16px"
-                            type="button"
-                            onClick={closeModal}
-                        />
-                        <Button
-                            name={applyMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Apply'}
-                            bgColor="#2A6E8C"
-                            btnSize="16px"
-                            type="submit"
-                            disabled={applyMutation.isPending}
-                        />
-                    </div>
+                {/* Optional: click outside to close (handled by modal) */}
+                <form method="dialog" className="modal-backdrop">
+                    <button onClick={closeModal}>close</button>
                 </form>
             </dialog>
         </div>

@@ -75,87 +75,86 @@ const CreateGroupModal = () => {
             <div onClick={openModal} className="cursor-pointer">
                 {/* Desktop - full text button */}
                 <div className="hidden lg:block">
-                    <Button name="Create Group" bgColor="#2A6E8C" btnSize="16px" />
+                    <Button name="Create Group" variant="primary" size="md" />
                 </div>
-                
+
                 {/* Mobile/Tablet - icon with tooltip */}
                 <div className="lg:hidden">
-                    <button className="p-2 bg-[#2A6E8C] text-white rounded-md hover:bg-[#1E4A68] transition-colors relative group">
+                    <button className="btn btn-square btn-primary relative group">
                         <Plus className="w-5 h-5" />
-                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-base-800 text-base-content text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                             Create Group
                         </span>
                     </button>
                 </div>
             </div>
 
-            {/* Modal dialog */}
-            <dialog
-                ref={dialogRef}
-                className="open:flex flex-col gap-8 w-[90%] sm:w-96 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60"
-            >
-                <div className="w-full flex items-center justify-center">
-                    <h1 className="text-2xl font-bold">Create Group</h1>
+            {/* Modal dialog using daisyUI modal */}
+            <dialog ref={dialogRef} className="modal">
+                <div className="modal-box bg-base-100">
+                    <h3 className="font-bold text-lg text-center text-base-content">Create Group</h3>
+                    <form onSubmit={handleSubmit(onCreateTeam)} className="py-4">
+                        <label className="form-control w-full">
+                            <span className="label-text text-base-content/80">Name</span>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full bg-base-100"
+                                placeholder="Group's Name"
+                                {...register('name')}
+                            />
+                        </label>
+
+                        <label className="form-control w-full mt-2">
+                            <span className="label-text text-base-content/80">Description</span>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full bg-base-100"
+                                placeholder="Group's Description"
+                                {...register('description')}
+                            />
+                        </label>
+
+                        <label className="form-control w-full mt-2">
+                            <span className="label-text text-base-content/80">Total Members</span>
+                            <input
+                                type="number"
+                                className="input input-bordered w-full bg-base-100"
+                                placeholder="0"
+                                {...register('totalMembers')}
+                            />
+                        </label>
+
+                        <label className="form-control w-full mt-2">
+                            <span className="label-text text-base-content/80">Tech Stack (comma separated)</span>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full bg-base-100"
+                                placeholder="React, Node, MongoDB"
+                                {...register('techUsed')}
+                            />
+                        </label>
+
+                        <div className="modal-action flex gap-2 justify-center mt-6">
+                            <Button
+                                name="Cancel"
+                                variant="ghost"
+                                size="md"
+                                type="button"
+                                onClick={closeModal}
+                            />
+                            <Button
+                                name={isPending ? <Loader2 className="w-4 animate-spin" /> : 'Create'}
+                                variant="primary"
+                                size="md"
+                                type="submit"
+                                disabled={isPending}
+                            />
+                        </div>
+                    </form>
                 </div>
-
-                <form className="flex flex-col gap-3" onSubmit={handleSubmit(onCreateTeam)}>
-                    <label className="flex flex-col text-sm font-medium">
-                        Name
-                        <input
-                            type="text"
-                            className="border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10"
-                            placeholder="Group's Name"
-                            {...register('name')}
-                        />
-                    </label>
-
-                    <label className="flex flex-col text-sm font-medium">
-                        Description
-                        <input
-                            type="text"
-                            className="border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10"
-                            placeholder="Group's Description"
-                            {...register('description')}
-                        />
-                    </label>
-
-                    <label className="flex flex-col text-sm font-medium">
-                        Total Members
-                        <input
-                            type="number"
-                            className="border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10"
-                            placeholder="0"
-                            {...register('totalMembers')}
-                        />
-                    </label>
-
-                    <label className="flex flex-col text-sm font-medium">
-                        Tech Stack Using (comma separated)
-                        <input
-                            type="text"
-                            className="border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10"
-                            placeholder="React, Node, MongoDB"
-                            {...register('techUsed')}
-                        />
-                    </label>
-
-                    <div className="flex gap-2 justify-center items-center w-full mt-5">
-                        <Button
-                            name="Cancel"
-                            txtColor="#64748B"
-                            bgColor="transparent"
-                            btnSize="16px"
-                            type="button"
-                            onClick={closeModal}
-                        />
-                        <Button
-                            name={isPending ? <Loader2 className="w-4 animate-spin" /> : 'Create'}
-                            bgColor="#2A6E8C"
-                            btnSize="16px"
-                            type="submit"
-                            disabled={isPending}
-                        />
-                    </div>
+                {/* Backdrop click to close */}
+                <form method="dialog" className="modal-backdrop">
+                    <button onClick={closeModal}>close</button>
                 </form>
             </dialog>
         </div>

@@ -17,22 +17,20 @@ const formatDate = (dateString) => {
     });
 };
 
-// Map application status to badge colors
-const statusColorMap = {
-    PENDING: { bg: '#E9F1F5', text: '#2A6E8C' },
-    ACCEPTED: { bg: '#10b98120', text: '#10b981' },
-    REJECTED: { bg: '#ef444420', text: '#ef4444' },
-    WITHDRAWN: { bg: '#64748B20', text: '#64748B' },
+// Map application status to badge classes
+const statusBadgeMap = {
+    PENDING: 'badge badge-primary badge-outline',
+    ACCEPTED: 'badge badge-success',
+    REJECTED: 'badge badge-error',
+    WITHDRAWN: 'badge badge-ghost',
 };
 
 const SentApplications = () => {
     const { data: applications = [], isLoading: appsLoading, error: appsError, isSuccess } = useSentApplications();
     const withdrawMutation = useWithdrawApplication();
 
-    // Get unique team IDs from applications
     const teamIds = [...new Set(applications.map((app) => app.teamId).filter(Boolean))];
 
-    // Fetch each team using useQueries
     const teamQueries = useQueries({
         queries: teamIds.map((id) => ({
             queryKey: ['team', id],
@@ -44,7 +42,6 @@ const SentApplications = () => {
         })),
     });
 
-    // Build a map from teamId to team data
     const teamsMap = {};
     teamQueries.forEach((query, index) => {
         if (query.data) {
@@ -52,7 +49,6 @@ const SentApplications = () => {
         }
     });
 
-    // Check if any team query is still loading
     const anyTeamLoading = teamQueries.some((q) => q.isLoading);
 
     const onWithdraw = async (applicationId) => {
@@ -67,7 +63,7 @@ const SentApplications = () => {
     if (appsLoading || anyTeamLoading) {
         return (
             <div className="flex justify-center items-center py-10">
-                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -78,7 +74,7 @@ const SentApplications = () => {
 
     if (appsError) {
         return (
-            <div className="text-center py-10 text-red-500">
+            <div className="text-center py-10 text-error">
                 Failed to load sent applications.
             </div>
         );
@@ -86,31 +82,28 @@ const SentApplications = () => {
 
     if (applications.length === 0) {
         return (
-            <div className="text-center py-10 text-[#64748B]">No sent applications</div>
+            <div className="text-center py-10 text-base-content/70">No sent applications</div>
         );
     }
 
     const createApplicationCards = (application) => {
         const team = teamsMap[application.teamId];
-        const statusStyle = statusColorMap[application.status] || { bg: '#E2E8F0', text: '#475569' };
+        const badgeClass = statusBadgeMap[application.status] || 'badge badge-ghost';
 
         return (
             <div
                 key={application._id}
-                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="flex flex-col px-4 py-3 border border-base-300 rounded-box bg-base-100 shadow-sm hover:shadow-md transition-shadow"
             >
                 {/* Header: group name and status badge */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4 text-[#64748B]" />
-                        <h3 className="text-lg font-semibold text-[#0F172A]">
+                        <Users className="w-4 h-4 text-base-content/70" />
+                        <h3 className="text-lg font-semibold text-base-content">
                             {team?.name || 'Unknown Group'}
                         </h3>
                     </div>
-                    <span
-                        className="px-2 py-0.5 text-xs font-medium rounded-full"
-                        style={{ backgroundColor: statusStyle.bg, color: statusStyle.text }}
-                    >
+                    <span className={`${badgeClass} text-xs`}>
                         {application.status}
                     </span>
                 </div>
@@ -118,10 +111,10 @@ const SentApplications = () => {
                 {/* Reason and applied date */}
                 <div className="mt-2 space-y-1 text-sm">
                     <div className="flex gap-1">
-                        <span className="font-medium text-[#0F172A]">Reason:</span>
-                        <span className="text-[#334155]">{application.reasonToJoin}</span>
+                        <span className="font-medium text-base-content">Reason:</span>
+                        <span className="text-base-content/80">{application.reasonToJoin}</span>
                     </div>
-                    <div className="text-xs text-[#64748B]">
+                    <div className="text-xs text-base-content/70">
                         Applied on: {formatDate(application.appliedAt)}
                     </div>
                 </div>
@@ -131,8 +124,8 @@ const SentApplications = () => {
                     <div className="mt-4">
                         <Button
                             name={withdrawMutation.isPending ? 'Withdrawing...' : 'Withdraw'}
-                            bgColor="#ef4444"
-                            btnSize="14px"
+                            variant="error"
+                            size="sm"
                             onClick={() => onWithdraw(application._id)}
                             disabled={withdrawMutation.isPending}
                         />

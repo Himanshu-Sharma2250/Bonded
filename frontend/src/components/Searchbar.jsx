@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const Searchbar = ({ onSearch }) => {
@@ -13,21 +13,19 @@ const Searchbar = ({ onSearch }) => {
     }, [input, onSearch]);
 
     return (
-        <div className=''>
-            <label className='w-full h-12 px-2 rounded-xs flex items-center border-2'>
-                <Search className='w-5' />
-                <input 
-                    type="search" 
-                    name="search" 
+        <div className="w-full">
+            <label className="flex items-center gap-2 w-full h-12 px-3 rounded-lg border border-base-300 bg-base-100 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+                <Search className="w-5 h-5 text-base-content/70" />
+                <input
+                    type="search"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    id="search" 
-                    className='h-full w-full px-2 focus:outline-0' 
-                    placeholder='Search' 
+                    className="w-full h-full bg-transparent text-base-content placeholder-base-content/50 focus:outline-none"
+                    placeholder="Search groups..."
                 />
             </label>
         </div>
-    )
-}
+    );
+};
 
-export default Searchbar
+export default Searchbar;

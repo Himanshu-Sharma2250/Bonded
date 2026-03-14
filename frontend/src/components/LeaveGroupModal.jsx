@@ -40,70 +40,65 @@ const LeaveGroupModal = ({ teamId }) => {
         }
     };
 
+    const isPending =
+        teamLeftMutation.isPending ||
+        memberLeftHistoryMutation.isPending ||
+        userLeftTeamMutation.isPending;
+
     return (
         <div>
-            <Button name="Leave Group" bgColor="#FF7A59" btnSize="16px" onClick={openModal} />
+            <Button name="Leave Group" variant="error" size="md" onClick={openModal} />
 
-            <dialog
-                ref={dialogRef}
-                className="open:flex flex-col gap-8 w-90 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60"
-            >
-                <div className="w-full flex items-center justify-center">
-                    <h1 className="text-2xl font-bold">
+            <dialog ref={dialogRef} className="modal">
+                <div className="modal-box bg-base-100">
+                    <h3 className="font-bold text-lg text-center text-base-content">
                         Are you sure?
-                        <span className="font-light text-gray-300 text-xs block">
+                        <span className="font-light text-base-content/60 text-xs block mt-1">
                             (If you leave, you cannot join the same team again)
                         </span>
-                    </h1>
+                    </h3>
+                    <form onSubmit={handleSubmit(handleLeft)} className="py-4">
+                        <label className="form-control w-full">
+                            <span className="label-text text-base-content/80">Confirm Group Name</span>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full bg-base-100"
+                                placeholder="Enter Group's Name to leave"
+                                required
+                            />
+                        </label>
+
+                        <label className="form-control w-full mt-2">
+                            <span className="label-text text-base-content/80">Reason to leave</span>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full bg-base-100"
+                                placeholder="Reason to leave"
+                                required
+                                {...register('reason')}
+                            />
+                        </label>
+
+                        <div className="modal-action flex gap-2 justify-center mt-6">
+                            <Button
+                                name="Cancel"
+                                variant="ghost"
+                                size="md"
+                                type="button"
+                                onClick={closeModal}
+                            />
+                            <Button
+                                name={isPending ? 'Leaving...' : 'Leave'}
+                                variant="error"
+                                size="md"
+                                type="submit"
+                                disabled={isPending}
+                            />
+                        </div>
+                    </form>
                 </div>
-
-                <form className="flex flex-col gap-3" onSubmit={handleSubmit(handleLeft)}>
-                    <label className="flex flex-col text-sm font-medium">
-                        <input
-                            type="text"
-                            className="border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10"
-                            placeholder="Enter Group's Name to leave"
-                            required
-                        />
-                    </label>
-
-                    <label className="flex flex-col text-sm font-medium">
-                        <input
-                            type="text"
-                            className="border-2 border-[#CBD5E1] focus:outline-[#2A6E8C] rounded-xs px-1 h-10"
-                            placeholder="Reason to leave"
-                            required
-                            {...register('reason')}
-                        />
-                    </label>
-
-                    <div className="flex gap-2 justify-center items-center w-full mt-5">
-                        <Button
-                            name="Cancel"
-                            txtColor="#64748B"
-                            bgColor="transparent"
-                            btnSize="16px"
-                            type="button"
-                            onClick={closeModal}
-                        />
-                        <Button
-                            name={
-                                teamLeftMutation.isPending ||
-                                memberLeftHistoryMutation.isPending ||
-                                userLeftTeamMutation.isPending
-                                    ? 'Leaving...'
-                                    : 'Leave'
-                            }
-                            bgColor="#FF7A59"
-                            btnSize="16px"
-                            type="submit"
-                            disabled={
-                                teamLeftMutation.isPending ||
-                                memberLeftHistoryMutation.isPending ||
-                                userLeftTeamMutation.isPending
-                            }
-                        />
-                    </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button onClick={closeModal}>close</button>
                 </form>
             </dialog>
         </div>

@@ -14,29 +14,29 @@ const GroupNotes = ({ teamId, member }) => {
     if (loadingPrivate || loadingPublic) {
         return (
             <div className="flex justify-center items-center py-10">
-                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
         );
     }
 
     if (privateError || publicError) {
         return (
-            <div className="text-center text-red-500 py-10">
+            <div className="text-center text-error py-10">
                 Failed to load notes. Please try again later.
             </div>
         );
     }
 
     return (
-        <div className="px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] relative min-h-50">
+        <div className="px-4 py-4 border-2 border-base-300 rounded-box bg-base-200 relative min-h-50">
             {sortedNotes.length === 0 ? (
                 <div className="text-center py-10">
                     {!member ? (
-                        <span className="text-lg text-[#FF7A59]">
+                        <span className="text-lg text-accent">
                             You are not a member. Only public notes would appear here, but there are none.
                         </span>
                     ) : (
-                        <span className="text-lg text-[#64748B]">No notes yet. Create your first note!</span>
+                        <span className="text-lg text-base-content/70">No notes yet. Create your first note!</span>
                     )}
                 </div>
             ) : (

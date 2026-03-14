@@ -68,7 +68,7 @@ const ReceivedApplications = () => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-10">
-                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -79,7 +79,7 @@ const ReceivedApplications = () => {
 
     if (error) {
         return (
-            <div className="text-center py-10 text-red-500">
+            <div className="text-center py-10 text-error">
                 Failed to load received applications.
             </div>
         );
@@ -87,14 +87,14 @@ const ReceivedApplications = () => {
 
     if (receivedApplications.length === 0) {
         return (
-            <div className="text-center py-10 text-[#64748B]">No applications received</div>
+            <div className="text-center py-10 text-base-content/70">No applications received</div>
         );
     }
 
     const createApplicationCards = (application) => (
         <div
             key={application._id}
-            className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
+            className="flex flex-col px-4 py-3 border border-base-300 rounded-box bg-base-100 shadow-sm hover:shadow-md transition-shadow"
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -107,26 +107,26 @@ const ReceivedApplications = () => {
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <h3 className="text-lg font-semibold text-[#0F172A]">{application?.name}</h3>
-                        <span className="text-sm text-[#64748B]">{application?.email}</span>
+                        <h3 className="text-lg font-semibold text-base-content">{application?.name}</h3>
+                        <span className="text-sm text-base-content/70">{application?.email}</span>
                     </div>
                 </div>
                 <NavLink to={`/user/${application?.userId}`}>
-                    <Button name="View Profile" btnSize="14px" bgColor="#2A6E8C" />
+                    <Button name="View Profile" variant="primary" size="sm" />
                 </NavLink>
             </div>
 
             <div className="mt-3 space-y-1 text-sm">
-                <div className="flex items-center gap-1 text-[#334155]">
-                    <Users className="w-4 h-4 text-[#64748B]" />
-                    <span className="font-medium text-[#0F172A]">Group:</span>
-                    <span className="text-[#334155]">{application?.teamId?.name || 'Unknown'}</span>
+                <div className="flex items-center gap-1 text-base-content/80">
+                    <Users className="w-4 h-4 text-base-content/70" />
+                    <span className="font-medium text-base-content">Group:</span>
+                    <span className="text-base-content/80">{application?.teamId?.name || 'Unknown'}</span>
                 </div>
                 <div className="flex gap-1">
-                    <span className="font-medium text-[#0F172A]">Reason:</span>
-                    <span className="text-[#334155]">{application?.reasonToJoin}</span>
+                    <span className="font-medium text-base-content">Reason:</span>
+                    <span className="text-base-content/80">{application?.reasonToJoin}</span>
                 </div>
-                <div className="text-xs text-[#64748B]">
+                <div className="text-xs text-base-content/70">
                     Applied on: {formatDate(application?.appliedAt)}
                 </div>
             </div>
@@ -134,15 +134,15 @@ const ReceivedApplications = () => {
             <div className="flex gap-2 mt-4">
                 <Button
                     name={acceptMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Accept'}
-                    bgColor="#10b981"
-                    btnSize="14px"
+                    variant="success"
+                    size="sm"
                     onClick={() => onAcceptApplication(application)}
                     disabled={acceptMutation.isPending || rejectMutation.isPending}
                 />
                 <Button
                     name={rejectMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Reject'}
-                    bgColor="#ef4444"
-                    btnSize="14px"
+                    variant="error"
+                    size="sm"
                     onClick={() => onRejectApplication(application._id)}
                     disabled={acceptMutation.isPending || rejectMutation.isPending}
                 />

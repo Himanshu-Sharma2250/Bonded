@@ -50,33 +50,33 @@ const NoteCard = ({ note, teamId, isLeader }) => {
 
     return (
         <>
-            <div className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex flex-col px-4 py-3 border border-base-300 rounded-box bg-base-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-[#0F172A]">{note.title}</h3>
-                        <span className="text-xs text-[#64748B]">{formatDate(note.createdAt)}</span>
+                        <h3 className="text-lg font-semibold text-base-content">{note.title}</h3>
+                        <span className="text-xs text-base-content/70">{formatDate(note.createdAt)}</span>
                     </div>
 
                     {isLeader && (
                         <div className="relative" ref={menuRef}>
                             <button
                                 onClick={() => setShowMenu(!showMenu)}
-                                className="p-1 rounded-full hover:bg-[#F1F5F9] transition-colors"
+                                className="p-1 rounded-full hover:bg-base-200 transition-colors"
                             >
-                                <EllipsisVertical className="w-5 text-[#64748B]" />
+                                <EllipsisVertical className="w-5 text-base-content/70" />
                             </button>
 
                             {showMenu && (
-                                <div className="absolute right-0 mt-1 w-32 bg-white border border-[#CBD5E1] rounded-md shadow-lg z-10">
+                                <div className="absolute right-0 mt-1 w-32 bg-base-100 border border-base-300 rounded-box shadow-lg z-10">
                                     <button
                                         onClick={handleEdit}
-                                        className="w-full text-left px-4 py-2 text-sm text-[#0F172A] hover:bg-[#F1F5F9] transition-colors"
+                                        className="w-full text-left px-4 py-2 text-sm text-base-content hover:bg-base-200 transition-colors"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         onClick={handleDelete}
-                                        className="w-full text-left px-4 py-2 text-sm text-[#FF7A59] hover:bg-[#F1F5F9] transition-colors"
+                                        className="w-full text-left px-4 py-2 text-sm text-error hover:bg-base-200 transition-colors"
                                     >
                                         Delete
                                     </button>
@@ -86,14 +86,14 @@ const NoteCard = ({ note, teamId, isLeader }) => {
                     )}
                 </div>
 
-                <p className="mt-2 text-sm text-[#334155]">{note.description}</p>
+                <p className="mt-2 text-sm text-base-content/80">{note.description}</p>
 
                 {note.isPrivate ? (
-                    <span className="mt-2 self-start text-xs bg-[#E2E8F0] text-[#475569] px-2 py-0.5 rounded-full">
+                    <span className="mt-2 self-start text-xs bg-base-300 text-base-content/70 px-2 py-0.5 rounded-full">
                         Private
                     </span>
                 ) : (
-                    <span className="mt-2 self-start text-xs bg-[#2A6E8C]/10 text-[#2A6E8C] px-2 py-0.5 rounded-full">
+                    <span className="mt-2 self-start text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
                         Public
                     </span>
                 )}

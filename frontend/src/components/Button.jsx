@@ -1,15 +1,35 @@
-const Button = ({ name, txtColor, bgColor, btnSize, ...rest }) => {
-    return (
-        <div>
-            <button 
+import { forwardRef } from 'react';
+
+const Button = forwardRef(
+    (
+        {
+            name,
+            variant = 'primary',
+            size = 'md', 
+            className = '',
+            disabled = false,
+            ...rest
+        },
+        ref
+    ) => {
+        const baseClasses = 'btn transition-all duration-200 active:scale-95';
+        const variantClass = variant ? `btn-${variant}` : '';
+        const sizeClass = size !== 'md' ? `btn-${size}` : '';
+        const disabledClass = disabled ? 'btn-disabled' : '';
+
+        return (
+            <button
+                ref={ref}
+                className={`${baseClasses} ${variantClass} ${sizeClass} ${disabledClass} ${className}`}
+                disabled={disabled}
                 {...rest}
-                className={`px-4 py-1 cursor-pointer rounded-xs font-medium transition-all duration-200 active:scale-95 hover:opacity-90`} 
-                style={{ backgroundColor: bgColor, fontSize: btnSize, color: txtColor ? txtColor : '#F8FAFC' }}
             >
                 {name}
             </button>
-        </div>
-    )
-}
+        );
+    }
+);
+
+Button.displayName = 'Button';
 
 export default Button;
