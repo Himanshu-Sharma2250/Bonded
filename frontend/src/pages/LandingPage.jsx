@@ -3,142 +3,141 @@ import Navbar from '../components/Navbar'
 
 const LandingPage = () => {
     return (
-        <div className='flex flex-col h-screen overflow-y-auto hide-scrollbar'>
+        <div className='flex flex-col h-screen w-screen overflow-y-auto hide-scrollbar'>
             <Navbar />
 
-            {/* hero section */}
-            <main className='flex items-center px-20 my-10 '>
-                {/* div - contains the texts and buttons */}
-                <div className='flex flex-col gap-2 justify-center h-full w-[50%]'>
-                    <h1 className='text-4xl w-87.5'>
-                        Create Amazing <span className='font-bold text-[#FF7A59]'>Projects</span> Together
+            {/* Hero Section */}
+            <main className='flex flex-col lg:flex-row items-center px-4 sm:px-8 md:px-12 lg:px-20 py-10 gap-8 lg:gap-4'>
+                {/* Text Content */}
+                <div className='flex flex-col gap-4 w-full lg:w-1/2 text-center lg:text-left'>
+                    <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold leading-tight'>
+                        Create Amazing{' '}
+                        <span className='text-[#FF7A59]'>Projects</span> Together
                     </h1>
-
-                    <p className='text-xl'>
-                        Find teammates you can actually rely on. Bonded matches you with verified developers, designers & creators who share your work style and values.
+                    <p className='text-base sm:text-lg md:text-xl text-gray-600'>
+                        Find teammates you can actually rely on. Bonded matches you with verified developers,
+                        designers & creators who share your work style and values.
                     </p>
-
-                    <Button name="Get Started Now" bgColor="#2A6E8C" btnSize="20px"/>
+                    <div className='flex justify-center lg:justify-start'>
+                        <Button name="Get Started Now" bgColor="#2A6E8C" btnSize="20px" />
+                    </div>
                 </div>
 
-                {/* div - contains image */}
-                <div className='w-[50%]'>
-                    <img src="/photo-1552664730-d307ca884978.jpeg" alt="team-image" srcset="" />
+                {/* Image */}
+                <div className='w-full lg:w-1/2 flex justify-center'>
+                    <img
+                        src="/photo-1552664730-d307ca884978.jpeg"
+                        alt="team collaborating"
+                        className='w-full max-w-md lg:max-w-full rounded-lg shadow-xl'
+                    />
                 </div>
             </main>
 
-            {/* feature div */}
-            <section className='flex flex-col gap-4'>
-                {/* header div */}
-                <div className='flex flex-col justify-center items-center'>
-                    <h1 className='text-5xl'>
-                        Features
-                    </h1>
-
-                    <p>
+            {/* Features Section */}
+            <section className='py-12 px-4 sm:px-8 md:px-12 lg:px-20 bg-gray-50'>
+                <div className='text-center mb-10'>
+                    <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold mb-2'>Features</h2>
+                    <p className='text-lg text-gray-600'>
                         Contains all essential features that you need
                     </p>
                 </div>
 
-                {/* grid div to contain the feature cards */}
-                <div className='grid-rows-3 max-w-[65%] m-auto'>
-                    {/* div 1 - contains 3 features */}
-                    <div className='flex max-w-full items-center justify-center'>
-                        {/* feature - 1 */}
-                        <div className='flex flex-col gap-3 justify-center px-2  h-44 hover:bg-sky-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-sky-300 text-sky-700'>
+                {/* Feature Cards Grid */}
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto'>
+                    {/* Row 1 - 3 features */}
+                    <div className='flex flex-col gap-6 md:col-span-2 lg:col-span-3 lg:grid lg:grid-cols-3 lg:gap-6'>
+                        {/* Collaborative */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-sky-100 text-sky-700 font-medium'>
                                 Collaborative
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 Create or join Teams of your batches, compete with other teams and build network.
                             </p>
                         </div>
-                        {/* feature - 2 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-fuchsia-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-fuchsia-300 text-fuchsia-700'>
+
+                        {/* Focused Work */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-fuchsia-100 text-fuchsia-700 font-medium'>
                                 Focused Work
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 Team members focus on a single task at a time, reducing distractions and increasing productivity.
                             </p>
                         </div>
-                        {/* feature - 3 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-lime-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-lime-300 text-lime-700'>
-                                LeaderShip Skills
-                            </span>
 
-                            <p>
+                        {/* Leadership Skills */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-lime-100 text-lime-700 font-medium'>
+                                Leadership Skills
+                            </span>
+                            <p className='text-gray-700'>
                                 Enhance the Leadership and management skills by leading a Team which build job-ready skills.
                             </p>
                         </div>
                     </div>
 
-                    {/* div 2 - contains 4 features */}
-                    <div className='flex max-w-full items-center justify-center'>
-                        {/* feature - 1 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-gray-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-gray-300 text-gray-700'>
+                    {/* Row 2 - 4 features */}
+                    <div className='flex flex-col gap-6 md:col-span-2 lg:col-span-3 lg:grid lg:grid-cols-4 lg:gap-6'>
+                        {/* Peer Reviews */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-medium'>
                                 Peer Reviews
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 Give and receive constructive feedback and learn by collaboration.
                             </p>
                         </div>
-                        {/* feature - 2 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-blue-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-blue-300 text-blue-700'>
+
+                        {/* Join Request */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-medium'>
                                 Join Request
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 Request multiple teams to join with transparent application tracking.
                             </p>
                         </div>
-                        {/* feature - 3 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-orange-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-orange-300 text-orange-700'>
+
+                        {/* Management */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-orange-100 text-orange-700 font-medium'>
                                 Management
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 Leader review application and add member base on skills and requirements.
                             </p>
                         </div>
-                        {/* feature - 4 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-indigo-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-indigo-300 text-indigo-700'>
+
+                        {/* Activity History */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium'>
                                 Activity History
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 All Users and Teams activity stored for future word and collaboration.
                             </p>
                         </div>
                     </div>
 
-                    {/* div 3 - contains 2 features */}
-                    <div className='flex max-w-full items-center justify-center'>
-                        {/* feature - 1 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-red-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-red-300 text-red-700'>
+                    {/* Row 3 - 2 features */}
+                    <div className='flex flex-col gap-6 md:col-span-2 lg:col-span-3 lg:grid lg:grid-cols-2 lg:gap-6 lg:max-w-2xl lg:mx-auto'>
+                        {/* Proof of work */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-red-100 text-red-700 font-medium'>
                                 Proof of work
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 Everything you create builds a public portfolio you can proudly share with others.
                             </p>
                         </div>
-                        {/* feature - 2 */}
-                        <div className='flex flex-col gap-3 justify-center px-2 h-44 hover:bg-teal-100 rounded-xs'>
-                            <span className='w-fit px-1 py-0.5 rounded-xs bg-teal-300 text-teal-700'>
+
+                        {/* Recommendation */}
+                        <div className='flex flex-col gap-3 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 duration-300'>
+                            <span className='w-fit px-3 py-1 rounded-full bg-teal-100 text-teal-700 font-medium'>
                                 Recommendation
                             </span>
-
-                            <p>
+                            <p className='text-gray-700'>
                                 Work hard and get recommended by your Batch Teachers and stand out from crowd.
                             </p>
                         </div>
@@ -146,20 +145,11 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* footer */}
-            <div className='flex flex-col justify-center items-center bg-slate-900 mt-4 py-20'>
-                <div>
-                    <h1 className='font-bold text-2xl'>
-                        Bonded
-                    </h1>
-                </div>
-
-                <div>
-                    <span className='text-gray-700'>
-                        Thanks for using😸
-                    </span>
-                </div>
-            </div>
+            {/* Footer */}
+            <footer className='bg-slate-900 text-white py-12 px-4 text-center'>
+                <h2 className='text-3xl font-bold mb-2'>Bonded</h2>
+                <p className='text-gray-400'>Thanks for using 😸</p>
+            </footer>
         </div>
     )
 }

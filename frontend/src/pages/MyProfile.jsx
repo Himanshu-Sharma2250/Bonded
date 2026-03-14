@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import EditProfileModal from '../components/EditProfileModal'
-import { useAuthStore } from '../store/useAuthStore'
+import React, { useEffect } from 'react';
+import EditProfileModal from '../components/EditProfileModal';
+import { useAuthStore } from '../store/useAuthStore';
 import { Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useUserHistory } from '../hooks/useUserHistoryQueries';
@@ -25,8 +25,8 @@ const getAvatarColor = (name) => {
 };
 
 const MyProfile = () => {
-    const {profile, user} = useAuthStore();
-    const {data: userHistory = [], isLoading} = useUserHistory();
+    const { profile, user } = useAuthStore();
+    const { data: userHistory = [], isLoading } = useUserHistory();
 
     useEffect(() => {
         async function getProfile() {
@@ -34,7 +34,7 @@ const MyProfile = () => {
             toast.success("Profile fetched");
         }
         getProfile();
-    }, [profile])
+    }, [profile]);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -60,24 +60,23 @@ const MyProfile = () => {
         return (
             <div
                 key={historyItem._id}
-                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow w-full"
             >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                        {/* Colored dot */}
                         <span
-                            className="w-2.5 h-2.5 rounded-full inline-block"
+                            className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
                             style={{ backgroundColor: dotColor }}
                         />
-                        <h3 className="text-lg font-semibold text-[#0F172A]">
+                        <h3 className="text-base sm:text-lg font-semibold text-[#0F172A] wrap-break-words">
                             {historyItem.title}
                         </h3>
                     </div>
-                    <span className="text-xs text-[#64748B]">
+                    <span className="text-xs text-[#64748B] sm:text-right">
                         {formatDate(historyItem.createdAt)}
                     </span>
                 </div>
-                <p className="mt-2 text-sm text-[#334155]">
+                <p className="mt-2 text-sm text-[#334155] wrap-break-words">
                     {historyItem.description}
                 </p>
             </div>
@@ -85,221 +84,154 @@ const MyProfile = () => {
     };
 
     return (
-        <div className='py-2 flex flex-col gap-10'>
-            {/* shows page's header */}
-            <div className='flex flex-col'>
-                <h1 className='text-2xl font-bold'>
-                    My Profile
-                </h1>
-
-                <span>
+        <div className="py-2 flex flex-col gap-6 px-2 sm:px-4">
+            {/* Header */}
+            <div className="flex flex-col gap-1">
+                <h1 className="text-2xl sm:text-3xl font-bold">My Profile</h1>
+                <p className="text-sm sm:text-base text-[#64748B]">
                     Manage your account and settings
-                </span>
+                </p>
             </div>
 
-            {/* shows user profile and role and edit profile button */}
-            <div className='flex justify-between items-center'>
-                {/* shows user profile , name and role */}
-                <div className='flex gap-3 items-center'>
-                    {/* user profile image */}
-                    <div className='flex items-center'>
-                        <span className='p-5 bg-cyan-800' style={{ backgroundColor: getAvatarColor(user?.name) }}>
-                            {user?.fullName?.toUpperCase().slice(0,1) || U}
-                        </span>
+            {/* Profile card */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-[#CBD5E1] rounded-md p-4 shadow-sm">
+                <div className="flex gap-3 items-center">
+                    <div
+                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-md flex items-center justify-center text-white font-bold text-xl sm:text-2xl"
+                        style={{ backgroundColor: getAvatarColor(user?.name) }}
+                    >
+                        {user?.fullName?.charAt(0).toUpperCase() || 'U'}
                     </div>
-
-                    {/* page header */}
-                    <div className='flex flex-col'>
-                        <h1 className='text-xl '>
+                    <div className="flex flex-col">
+                        <h2 className="text-lg sm:text-xl font-semibold text-[#0F172A]">
                             {user?.fullName}
-                        </h1>
-
-                        <span className='text-gray-400 text-[14px]'>
-                           {user?.name}
-                        </span>
-
-                        <span className='text-gray-400 text-[13px]'>
-                            {user?.email}
-                        </span>
+                        </h2>
+                        <span className="text-sm text-[#64748B]">{user?.name}</span>
+                        <span className="text-sm text-[#64748B]">{user?.email}</span>
                     </div>
                 </div>
-
-                <div>
-                    <EditProfileModal initialValue={user} />
-                </div>
+                <EditProfileModal initialValue={user} />
             </div>
 
-            {/* personal info - username, email, role and date of joining team */}
-            <div className='flex flex-col gap-2'>
-                <h1 className='text-2xl font-bold'>
-                    Personal Information
-                </h1>
-
-                <div className='flex flex-col gap-2 px-2 py-1 rounded-xs shadow'>
-                    {/* shows username and user email */}
-                    <div className='flex items-center'>
-                        {/* username */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Full Name
-                            </span>
-
-                            <span className='w-145'>
-                                {user.fullName}
-                            </span>
-                        </div>
-
-                        {/* user email */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Username
-                            </span>
-
-                            <span className='w-145'>
-                                {user.name}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* shows user role and date of joining team */}
-                    <div className='flex items-center'>
-                        {/* user role */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600'>
-                                email
-                            </span>
-
-                            <span className='w-145'>
-                                {user.email}
-                            </span>
-                        </div>
-
-                        {/* user date of joining bonded */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Role
-                            </span>
-
-                            <span className='w-145'>
-                                {user.role}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* social info - bio, website, github, linkedln, hashnode, twitter, leetcode */}
-            <div className='flex flex-col gap-2'>
-                <h1 className='text-2xl font-bold'>
-                    Social Information
-                </h1>
-
-                <div className='flex flex-col gap-2 px-2 py-1 rounded-xs shadow'>
-                    {/* shows bio and website */}
-                    <div className='flex items-center'>
-                        {/* bio */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Bio
-                            </span>
-
-                            <span className='w-145'>
-                                {user.bio || "NA"}
-                            </span>
-                        </div>
-
-                        {/* website */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Website
-                            </span>
-
-                            <a href={user.website || '#'} target="_blank" className='w-145'>
-                                {user.website || "NA"}
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* shows linkedln and github */}
-                    <div className='flex items-center'>
-                        {/* linkedln */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Linkedin
-                            </span>
-
-                            <a href={user.linkedln || '#'} target="_blank" className='w-145'>
-                                {user.linkedln || "NA"}
-                            </a>
-                        </div>
-
-                        {/* github */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Github
-                            </span>
-
-                            <a href={user.github || '#'} target="_blank" className='w-145'>
-                                {user.github || "NA"}
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* shows twitter and hashnode */}
-                    <div className='flex items-center'>
-                        {/* twitter */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Twitter/X
-                            </span>
-
-                            <a href={user.twitter || '#'} target="_blank" className='w-145'>
-                                {user.twitter || "NA"}
-                            </a>
-                        </div>
-
-                        {/* hashnode */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                hashnode
-                            </span>
-
-                            <a href={user.hashnode || '#'} target="_blank" className='w-145'>
-                                {user.hashnode || "NA"}
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* shows medium and leetcode */}
-                    <div className='flex items-center'>
-                        {/* medium */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Medium
-                            </span>
-
-                            <a href={user.medium || '#'} target="_blank" className='w-145'>
-                                {user.medium || "NA"}
-                            </a>
-                        </div>
-
-                        {/* leetcode */}
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-xs text-gray-600 w-145'>
-                                Leetcode
-                            </span>
-
-                            <a href={user.leetcode || '#'} target="_blank" className='w-145'>
-                                {user.leetcode || "NA"}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* user history */}
+            {/* Personal Information */}
             <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">User History</h1>
+                <h2 className="text-xl font-bold">Personal Information</h2>
+                <div className="flex flex-col gap-4 p-4 border border-[#CBD5E1] rounded-md bg-white shadow-sm">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Full Name</p>
+                            <p className="text-sm text-[#0F172A]">{user?.fullName || 'NA'}</p>
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Username</p>
+                            <p className="text-sm text-[#0F172A]">{user?.name || 'NA'}</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Email</p>
+                            <p className="text-sm text-[#0F172A]">{user?.email || 'NA'}</p>
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Role</p>
+                            <p className="text-sm text-[#0F172A]">{user?.role || 'NA'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Social Information */}
+            <div className="flex flex-col gap-2">
+                <h2 className="text-xl font-bold">Social Information</h2>
+                <div className="flex flex-col gap-4 p-4 border border-[#CBD5E1] rounded-md bg-white shadow-sm">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Bio</p>
+                            <p className="text-sm text-[#0F172A]">{user?.bio || 'NA'}</p>
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Website</p>
+                            {user?.website ? (
+                                <a href={user.website} target="_blank" rel="noopener noreferrer" className="text-sm text-[#2A6E8C] hover:underline">
+                                    {user.website}
+                                </a>
+                            ) : (
+                                <p className="text-sm text-[#0F172A]">NA</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">LinkedIn</p>
+                            {user?.linkedln ? (
+                                <a href={user.linkedln} target="_blank" rel="noopener noreferrer" className="text-sm text-[#2A6E8C] hover:underline">
+                                    {user.linkedln}
+                                </a>
+                            ) : (
+                                <p className="text-sm text-[#0F172A]">NA</p>
+                            )}
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">GitHub</p>
+                            {user?.github ? (
+                                <a href={user.github} target="_blank" rel="noopener noreferrer" className="text-sm text-[#2A6E8C] hover:underline">
+                                    {user.github}
+                                </a>
+                            ) : (
+                                <p className="text-sm text-[#0F172A]">NA</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Twitter/X</p>
+                            {user?.twitter ? (
+                                <a href={user.twitter} target="_blank" rel="noopener noreferrer" className="text-sm text-[#2A6E8C] hover:underline">
+                                    {user.twitter}
+                                </a>
+                            ) : (
+                                <p className="text-sm text-[#0F172A]">NA</p>
+                            )}
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Hashnode</p>
+                            {user?.hashnode ? (
+                                <a href={user.hashnode} target="_blank" rel="noopener noreferrer" className="text-sm text-[#2A6E8C] hover:underline">
+                                    {user.hashnode}
+                                </a>
+                            ) : (
+                                <p className="text-sm text-[#0F172A]">NA</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">Medium</p>
+                            {user?.medium ? (
+                                <a href={user.medium} target="_blank" rel="noopener noreferrer" className="text-sm text-[#2A6E8C] hover:underline">
+                                    {user.medium}
+                                </a>
+                            ) : (
+                                <p className="text-sm text-[#0F172A]">NA</p>
+                            )}
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-xs text-[#64748B]">LeetCode</p>
+                            {user?.leetcode ? (
+                                <a href={user.leetcode} target="_blank" rel="noopener noreferrer" className="text-sm text-[#2A6E8C] hover:underline">
+                                    {user.leetcode}
+                                </a>
+                            ) : (
+                                <p className="text-sm text-[#0F172A]">NA</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* User History */}
+            <div className="flex flex-col gap-2">
+                <h2 className="text-xl font-bold">User History</h2>
                 <div className="px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC]">
                     {isLoading ? (
                         <div className="flex justify-center items-center py-10">
@@ -317,7 +249,7 @@ const MyProfile = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default MyProfile
+export default MyProfile;

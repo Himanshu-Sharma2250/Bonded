@@ -1,5 +1,5 @@
-import Searchbar from '../components/Searchbar'
-import CreateGroupModal from '../components/CreateGroupModal'
+import Searchbar from '../components/Searchbar';
+import CreateGroupModal from '../components/CreateGroupModal';
 import { useMemo, useState } from 'react';
 import AllGroupsTab from '../components/AllGroupsTab';
 import MyGroupTab from '../components/MyGroupTab';
@@ -28,76 +28,80 @@ const Groups = () => {
     };
 
     if (isLoading) {
-        return <div className='flex items-center justify-center h-full w-full'>
-            <Loader2 className='w-8 h-8 animate-spin text-[#2A6E8C]' />
-        </div>
+        return (
+            <div className='flex items-center justify-center h-full w-full'>
+                <Loader2 className='w-8 h-8 animate-spin text-[#2A6E8C]' />
+            </div>
+        );
     }
 
     if (isSuccess) {
-        toast.success("Teams Loaded")
+        toast.success('Teams Loaded');
     }
 
     if (isError) {
-        toast.error("Failed to load teams")
+        toast.error('Failed to load teams');
     }
 
     if (error) {
         return (
-            <div className="text-center text-red-500 py-10">
+            <div className='text-center text-red-500 py-10'>
                 Failed to load groups. Please try again later.
             </div>
         );
     }
 
     return (
-        <div className='flex flex-col gap-1'>
-            {/* header */}
+        <div className='flex flex-col gap-4 px-2 sm:px-4'>
+            {/* Header */}
             <div className='flex justify-between items-center pb-1'>
                 <div className='flex flex-col gap-1'>
-                    <h1 className='text-3xl font-bold'>
-                        Groups
-                    </h1>
-
-                    <p>
+                    <h1 className='text-2xl sm:text-3xl font-bold'>Groups</h1>
+                    <p className='text-sm sm:text-base text-[#64748B]'>
                         Full view of your groups and other groups.
                     </p>
                 </div>
 
-                <div>
-                    {/* for the create group button to open a dialog */}
-                    <CreateGroupModal />
-                </div>
+                <CreateGroupModal />
             </div>
 
             <Searchbar onSearch={handleSearch} />
 
-            {/* tab - seperate my group and all groups */}
-            <div className='flex gap-5 mt-3'>
-                <span 
-                    className={`cursor-pointer ${selectedTab === 'All Groups' ? 'text-[#2A6E8C] font-bold' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab("All Groups")}
+            {/* Tabs */}
+            <div className='flex gap-5 mt-2 border-b border-[#CBD5E1] pb-2 overflow-x-auto hide-scrollbar'>
+                <span
+                    className={`cursor-pointer text-sm sm:text-base pb-1 transition-colors ${
+                        selectedTab === 'All Groups'
+                            ? 'text-[#2A6E8C] font-bold border-b-2 border-[#FF7A59]'
+                            : 'text-[#64748B] hover:text-[#475569]'
+                    }`}
+                    onClick={() => setSelectedTab('All Groups')}
                 >
                     All Groups
                 </span>
 
-                <span 
-                    className={`cursor-pointer ${selectedTab === 'My Group' ? 'text-[#2A6E8C] font-bold' : 'text-[#64748B] hover:text-[#475569]'}`}
-                    onClick={() => setSelectedTab("My Group")}
+                <span
+                    className={`cursor-pointer text-sm sm:text-base pb-1 transition-colors ${
+                        selectedTab === 'My Group'
+                            ? 'text-[#2A6E8C] font-bold border-b-2 border-[#FF7A59]'
+                            : 'text-[#64748B] hover:text-[#475569]'
+                    }`}
+                    onClick={() => setSelectedTab('My Group')}
                 >
                     My Group
                 </span>
             </div>
 
-            {/* announcement hero */}
+            {/* Content */}
             <main className='flex flex-wrap w-full py-1 gap-3'>
-                {selectedTab === "My Group" ? (
+                {selectedTab === 'My Group' ? (
                     <MyGroupTab />
                 ) : (
                     <AllGroupsTab teams={filteredTeams} loading={isLoading} />
                 )}
             </main>
         </div>
-    )
-}
+    );
+};
 
-export default Groups
+export default Groups;

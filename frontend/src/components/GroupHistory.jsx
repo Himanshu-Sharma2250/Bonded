@@ -10,8 +10,8 @@ const actionColorMap = {
     DELETED: '#6b7280',   // gray
 };
 
-const GroupHistory = ({teamId}) => {
-    const {data: history = [], isLoading, error} = useTeamHistory(teamId);
+const GroupHistory = ({ teamId }) => {
+    const { data: history = [], isLoading, error } = useTeamHistory(teamId);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -31,31 +31,30 @@ const GroupHistory = ({teamId}) => {
         return [...history].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }, [history]);
 
-
     const createHistoryCard = (historyItem) => {
-        const dotColor = actionColorMap[historyItem.teamAction] || '#64748B'; 
+        const dotColor = actionColorMap[historyItem.teamAction] || '#64748B';
 
         return (
             <div
                 key={historyItem._id}
-                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="flex flex-col px-4 py-3 border border-[#CBD5E1] rounded-md bg-white shadow-sm hover:shadow-md transition-shadow w-full"
             >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                         {/* Colored dot */}
                         <span
-                            className="w-2.5 h-2.5 rounded-full inline-block"
+                            className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
                             style={{ backgroundColor: dotColor }}
                         />
-                        <h3 className="text-lg font-semibold text-[#0F172A]">
+                        <h3 className="text-base sm:text-lg font-semibold text-[#0F172A] wrap-break-words">
                             {historyItem.title}
                         </h3>
                     </div>
-                    <span className="text-xs text-[#64748B]">
+                    <span className="text-xs text-[#64748B] sm:text-right">
                         {formatDate(historyItem.createdAt)}
                     </span>
                 </div>
-                <p className="mt-2 text-sm text-[#334155]">
+                <p className="mt-2 text-sm text-[#334155] wrap-break-words">
                     {historyItem.description}
                 </p>
             </div>
@@ -77,9 +76,9 @@ const GroupHistory = ({teamId}) => {
             </div>
         );
     }
-    
+
     return (
-        <div className="px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC]">
+        <div className="px-2 sm:px-4 py-4 border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC]">
             {/* histories */}
             {!sortedHistory || sortedHistory.length === 0 ? (
                 <div className="text-center py-10">
@@ -91,7 +90,7 @@ const GroupHistory = ({teamId}) => {
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default GroupHistory
+export default GroupHistory;

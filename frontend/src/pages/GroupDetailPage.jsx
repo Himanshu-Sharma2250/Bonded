@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Loader2, MoveLeft } from 'lucide-react';
 import { NavLink, useParams } from 'react-router-dom';
 import GroupOverview from '../components/GroupOverview';
@@ -29,7 +29,6 @@ const GroupDetailPage = () => {
     const { user } = useAuthStore();
 
     const { data: team, isLoading: teamLoading, error: teamError, isSuccess: isTeamFetched } = useTeam(teamId);
-
     const { data: member, isLoading: memberLoading, error: memberError, isSuccess: isMembersFetched } = useTeamMember(
         teamId,
         user?._id
@@ -59,37 +58,37 @@ const GroupDetailPage = () => {
     }
 
     return (
-        <div className="pb-1 flex flex-col gap-1">
+        <div className="pb-1 flex flex-col gap-1 px-2 sm:px-4">
             {/* Back button */}
-            <div className="flex justify-start items-center px-2 h-12">
+            <div className="flex justify-start items-center py-2">
                 <NavLink
                     to="/groups"
-                    className="cursor-pointer border-2 px-2 py-1 rounded-xs flex items-center gap-2 hover:gap-3 hover:ease-out text-[#64748B] hover:text-[#2A6E8C] transition-colors"
+                    className="cursor-pointer border-2 px-3 py-1.5 rounded-md flex items-center gap-2 hover:gap-3 transition-all text-sm sm:text-base text-[#64748B] hover:text-[#2A6E8C] hover:border-[#2A6E8C]"
                 >
-                    <MoveLeft className="w-6" />
+                    <MoveLeft className="w-4 sm:w-5" />
                     <span>Back</span>
                 </NavLink>
             </div>
 
             {/* Group header */}
-            <div className="flex justify-between items-center py-2 px-3">
-                <div className="flex gap-3 items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
+                <div className="flex gap-3 items-center w-full sm:w-auto">
                     <div className="flex items-center justify-center">
                         <span
-                            className="p-4 rounded-md text-white font-bold"
+                            className="p-3 sm:p-4 rounded-md text-white font-bold text-lg sm:text-xl"
                             style={{ backgroundColor: getAvatarColor(team?.name) }}
                         >
                             {team?.name?.toUpperCase().slice(0, 1) || 'G'}
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-2xl">{team?.name}</h1>
-                        <span>{team?.totalMembers} members</span>
+                        <h1 className="text-xl sm:text-2xl font-semibold">{team?.name}</h1>
+                        <span className="text-sm text-[#64748B]">{team?.totalMembers} members</span>
                     </div>
                 </div>
 
-                {/* Action buttons based on membership */}
-                <div>
+                {/* Action button */}
+                <div className="w-full sm:w-auto">
                     {!member && <ApplyToGroupModal teamId={teamId} />}
                     {member?.teamRole === 'MEMBER' && <LeaveGroupModal teamId={teamId} />}
                     {member?.teamRole === 'LEADER' && <DeleteGroupPopUp teamId={teamId} />}
@@ -97,24 +96,26 @@ const GroupDetailPage = () => {
             </div>
 
             {/* Tab navigation */}
-            <div className="flex gap-5 py-2 px-2 border-b border-[#CBD5E1]">
-                {['Overview', 'Members', 'Notes', 'History'].map((tab) => (
-                    <span
-                        key={tab}
-                        className={`text-lg cursor-pointer pb-1 transition-colors ${
-                            selectedTab === tab
-                                ? 'text-[#2A6E8C] font-semibold border-[#FF7A59]'
-                                : 'text-[#64748B] hover:text-[#475569]'
-                        }`}
-                        onClick={() => setSelectedTab(tab)}
-                    >
-                        {tab === 'History' ? 'Group History' : tab}
-                    </span>
-                ))}
+            <div className="overflow-x-auto hide-scrollbar pb-2">
+                <div className="flex gap-5 py-2 border-b border-[#CBD5E1] min-w-max">
+                    {['Overview', 'Members', 'Notes', 'History'].map((tab) => (
+                        <span
+                            key={tab}
+                            className={`text-base sm:text-lg cursor-pointer pb-1 transition-colors whitespace-nowrap ${
+                                selectedTab === tab
+                                    ? 'text-[#2A6E8C] font-semibold border-b-2 border-[#FF7A59]'
+                                    : 'text-[#64748B] hover:text-[#475569]'
+                            }`}
+                            onClick={() => setSelectedTab(tab)}
+                        >
+                            {tab === 'History' ? 'Group History' : tab}
+                        </span>
+                    ))}
+                </div>
             </div>
 
             {/* Tab content */}
-            <div className="px-2">
+            <div className="py-2">
                 {selectedTab === 'Overview' && (
                     <GroupOverview team={team} members={team?.members || []} />
                 )}

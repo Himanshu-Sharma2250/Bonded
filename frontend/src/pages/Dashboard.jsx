@@ -39,7 +39,7 @@ const Dashboard = () => {
 
     const [recommendedGroups, setRecommendedGroups] = useState([]);
 
-    // Build recommended groups when teams are loaded
+    // recommended groups when teams are loaded
     useEffect(() => {
         if (teams.length > 0) {
             const otherTeams = team ? teams.filter((t) => t._id !== team._id) : teams;
@@ -106,44 +106,46 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="flex-1 flex flex-col gap-6">
+        <div className="flex-1 flex flex-col gap-4 md:gap-6 px-2 sm:px-4 md:px-0">
             {/* Header */}
             <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold">Dashboard</h1>
-                <p className="text-[#64748B]">Welcome back, {user?.fullName || user?.name}!</p>
+                <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+                <p className="text-sm sm:text-base text-[#64748B]">
+                    Welcome back, {user?.fullName || user?.name}!
+                </p>
             </div>
 
             {/* Stats Cards */}
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
                 {/* Groups card */}
-                <div className="flex flex-col border-2 border-[#CBD5E1] rounded-md bg-white p-4 flex-1 min-w-50 shadow-sm">
+                <div className="flex flex-col border-2 border-[#CBD5E1] rounded-md bg-white p-4 w-full sm:flex-1 min-w-[200px] shadow-sm">
                     <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold text-[#0F172A]">Groups</span>
+                        <span className="text-base sm:text-lg font-semibold text-[#0F172A]">Groups</span>
                         <Users className="w-5 text-[#64748B]" />
                     </div>
-                    <div className="mt-2 text-3xl font-bold text-[#0F172A]">
+                    <div className="mt-2 text-2xl sm:text-3xl font-bold text-[#0F172A]">
                         {team ? 1 : 0}
                     </div>
-                    <div className="mt-2 text-sm text-[#64748B]">
+                    <div className="mt-2 text-xs sm:text-sm text-[#64748B]">
                         <div>{team ? '1 Joined' : '0 Joined'}</div>
                         <div>{teams?.length || 0} Available</div>
                     </div>
                 </div>
 
                 {/* Applications card */}
-                <div className="flex flex-col border-2 border-[#CBD5E1] rounded-md bg-white p-4 flex-1 min-w-50 shadow-sm">
+                <div className="flex flex-col border-2 border-[#CBD5E1] rounded-md bg-white p-4 w-full sm:flex-1 min-w-[200px] shadow-sm">
                     <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold text-[#0F172A]">Applications</span>
+                        <span className="text-base sm:text-lg font-semibold text-[#0F172A]">Applications</span>
                         <Megaphone className="w-5 text-[#64748B]" />
                     </div>
                     {receivedError || sentError ? (
-                        <div className="mt-2 text-sm text-red-500">Error loading applications</div>
+                        <div className="mt-2 text-xs sm:text-sm text-red-500">Error loading applications</div>
                     ) : (
                         <>
-                            <div className="mt-2 text-3xl font-bold text-[#0F172A]">
+                            <div className="mt-2 text-2xl sm:text-3xl font-bold text-[#0F172A]">
                                 {receivedApplications?.length || 0}
                             </div>
-                            <div className="mt-2 text-sm text-[#64748B]">
+                            <div className="mt-2 text-xs sm:text-sm text-[#64748B]">
                                 <div>{receivedApplications?.length || 0} Received</div>
                                 <div>{sentApplications?.length || 0} Sent</div>
                             </div>
@@ -157,38 +159,38 @@ const Dashboard = () => {
                 // User has a group → show group summary and recent applications
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Your Group Card */}
-                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-4">
-                        <h2 className="text-xl font-bold text-[#0F172A] mb-3">Your Group</h2>
+                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-3 sm:p-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-[#0F172A] mb-3">Your Group</h2>
                         {myTeamError ? (
-                            <p className="text-red-500">Failed to load group (or there are no groups)</p>
+                            <p className="text-sm text-red-500">Failed to load group</p>
                         ) : (
-                            <div className="bg-white border border-[#CBD5E1] rounded-md p-4 shadow-sm">
+                            <div className="bg-white border border-[#CBD5E1] rounded-md p-3 sm:p-4 shadow-sm">
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className="w-10 h-10 rounded-md flex items-center justify-center text-white font-bold"
+                                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center text-white font-bold text-sm sm:text-base"
                                         style={{ backgroundColor: `hsl(${team.name.length * 30 % 360}, 70%, 60%)` }}
                                     >
                                         {team.name.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-[#0F172A]">{team.name}</h3>
-                                        <p className="text-sm text-[#64748B]">{team.totalMembers} members</p>
+                                        <h3 className="text-base sm:text-lg font-semibold text-[#0F172A]">{team.name}</h3>
+                                        <p className="text-xs sm:text-sm text-[#64748B]">{team.totalMembers} members</p>
                                     </div>
                                 </div>
                                 <NavLink to={`/groups/${team._id}`} className="mt-3 inline-block">
-                                    <Button name="View Group" bgColor="#2A6E8C" btnSize="14px" />
+                                    <Button name="View Group" bgColor="#2A6E8C" btnSize="12px sm:14px" />
                                 </NavLink>
                             </div>
                         )}
                     </div>
 
                     {/* Recent Received Applications */}
-                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-4">
-                        <h2 className="text-xl font-bold text-[#0F172A] mb-3">Recent Applications</h2>
+                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-3 sm:p-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-[#0F172A] mb-3">Recent Applications</h2>
                         {receivedError ? (
-                            <p className="text-red-500">Failed to load applications (no sent or received applications) </p>
+                            <p className="text-sm text-red-500">Failed to load applications</p>
                         ) : receivedApplications.filter((app) => app.status === 'PENDING').length === 0 ? (
-                            <p className="text-[#64748B] text-sm">No pending applications</p>
+                            <p className="text-xs sm:text-sm text-[#64748B]">No pending applications</p>
                         ) : (
                             <div className="space-y-3">
                                 {receivedApplications
@@ -196,12 +198,12 @@ const Dashboard = () => {
                                     .slice(0, 3)
                                     .map((app) => (
                                         <div key={app._id} className="bg-white border border-[#CBD5E1] rounded-md p-3 shadow-sm">
-                                            <div className="flex justify-between items-start">
+                                            <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                                                 <div>
                                                     <p className="font-medium text-[#0F172A]">{app.name}</p>
                                                     <p className="text-xs text-[#64748B]">{formatDate(app.appliedAt)}</p>
                                                 </div>
-                                                <div className="flex gap-2">
+                                                <div className="flex gap-2 self-end sm:self-auto">
                                                     <Button
                                                         name="✓"
                                                         bgColor="#10b981"
@@ -218,11 +220,11 @@ const Dashboard = () => {
                                                     />
                                                 </div>
                                             </div>
-                                            <p className="text-sm text-[#334155] mt-1 line-clamp-2">{app.reasonToJoin}</p>
+                                            <p className="text-xs sm:text-sm text-[#334155] mt-1 line-clamp-2">{app.reasonToJoin}</p>
                                         </div>
                                     ))}
                                 {receivedApplications.filter((app) => app.status === 'PENDING').length > 3 && (
-                                    <NavLink to="/applications?tab=received" className="text-sm text-[#2A6E8C] hover:underline flex items-center gap-1">
+                                    <NavLink to="/applications?tab=received" className="text-xs sm:text-sm text-[#2A6E8C] hover:underline flex items-center gap-1">
                                         View all <ArrowRight className="w-3 h-3" />
                                     </NavLink>
                                 )}
@@ -234,21 +236,21 @@ const Dashboard = () => {
                 // User has no group → show recommendations and recent sent applications
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Recommended Groups */}
-                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-4">
-                        <h2 className="text-xl font-bold text-[#0F172A] mb-3">Recommended Groups</h2>
+                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-3 sm:p-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-[#0F172A] mb-3">Recommended Groups</h2>
                         {teamsError ? (
-                            <p className="text-red-500">Failed to load groups</p>
+                            <p className="text-sm text-red-500">Failed to load groups</p>
                         ) : recommendedGroups.length === 0 ? (
-                            <p className="text-[#64748B] text-sm">No groups available</p>
+                            <p className="text-xs sm:text-sm text-[#64748B]">No groups available</p>
                         ) : (
                             <div className="space-y-3">
                                 {recommendedGroups.map((group) => (
-                                    <div key={group._id} className="bg-white border border-[#CBD5E1] rounded-md p-3 shadow-sm flex items-center justify-between">
+                                    <div key={group._id} className="bg-white border border-[#CBD5E1] rounded-md p-3 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                         <div>
                                             <p className="font-medium text-[#0F172A]">{group.name}</p>
                                             <p className="text-xs text-[#64748B]">{group.totalMembers} members</p>
                                         </div>
-                                        <NavLink to={`/groups/${group._id}`}>
+                                        <NavLink to={`/groups/${group._id}`} className="self-end sm:self-auto">
                                             <Button name="View" bgColor="#2A6E8C" btnSize="12px" />
                                         </NavLink>
                                     </div>
@@ -258,22 +260,22 @@ const Dashboard = () => {
                     </div>
 
                     {/* Recent Sent Applications */}
-                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-4">
-                        <h2 className="text-xl font-bold text-[#0F172A] mb-3">Your Applications</h2>
+                    <div className="border-2 border-[#CBD5E1] rounded-md bg-[#F8FAFC] p-3 sm:p-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-[#0F172A] mb-3">Your Applications</h2>
                         {sentError ? (
-                            <p className="text-red-500">Failed to load applications</p>
+                            <p className="text-sm text-red-500">Failed to load applications</p>
                         ) : sentApplications.length === 0 ? (
-                            <p className="text-[#64748B] text-sm">No applications sent</p>
+                            <p className="text-xs sm:text-sm text-[#64748B]">No applications sent</p>
                         ) : (
                             <div className="space-y-3">
                                 {sentApplications.slice(0, 3).map((app) => (
                                     <div key={app._id} className="bg-white border border-[#CBD5E1] rounded-md p-3 shadow-sm">
-                                        <div className="flex justify-between items-start">
+                                        <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                                             <div>
                                                 <p className="font-medium text-[#0F172A]">{app.teamId?.name || 'Group'}</p>
                                                 <p className="text-xs text-[#64748B]">{formatDate(app.appliedAt)}</p>
                                             </div>
-                                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full self-end sm:self-auto ${
                                                 app.status === 'PENDING'
                                                     ? 'bg-[#E9F1F5] text-[#2A6E8C]'
                                                     : app.status === 'ACCEPTED'
@@ -285,11 +287,11 @@ const Dashboard = () => {
                                                 {app.status}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-[#334155] mt-1 line-clamp-2">{app.reasonToJoin}</p>
+                                        <p className="text-xs sm:text-sm text-[#334155] mt-1 line-clamp-2">{app.reasonToJoin}</p>
                                     </div>
                                 ))}
                                 {sentApplications.length > 3 && (
-                                    <NavLink to="/applications?tab=sent" className="text-sm text-[#2A6E8C] hover:underline flex items-center gap-1">
+                                    <NavLink to="/applications?tab=sent" className="text-xs sm:text-sm text-[#2A6E8C] hover:underline flex items-center gap-1">
                                         View all <ArrowRight className="w-3 h-3" />
                                     </NavLink>
                                 )}

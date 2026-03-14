@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Button = ({ name, txtColor, bgColor, btnSize, ...rest }) => {
     return (
         <div>

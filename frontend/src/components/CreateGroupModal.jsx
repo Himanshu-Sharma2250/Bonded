@@ -3,7 +3,7 @@ import Button from './Button';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { useCreateTeam } from '../hooks/useTeamQueries';
 import { useCreateOwner } from '../hooks/useTeamMemberQueries';
 import { useAuthStore } from '../store/useAuthStore';
@@ -71,11 +71,28 @@ const CreateGroupModal = () => {
 
     return (
         <div>
-            <Button name="Create Group" bgColor="#2A6E8C" btnSize="16px" onClick={openModal} />
+            {/* Responsive trigger button */}
+            <div onClick={openModal} className="cursor-pointer">
+                {/* Desktop - full text button */}
+                <div className="hidden lg:block">
+                    <Button name="Create Group" bgColor="#2A6E8C" btnSize="16px" />
+                </div>
+                
+                {/* Mobile/Tablet - icon with tooltip */}
+                <div className="lg:hidden">
+                    <button className="p-2 bg-[#2A6E8C] text-white rounded-md hover:bg-[#1E4A68] transition-colors relative group">
+                        <Plus className="w-5 h-5" />
+                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                            Create Group
+                        </span>
+                    </button>
+                </div>
+            </div>
 
+            {/* Modal dialog */}
             <dialog
                 ref={dialogRef}
-                className="open:flex flex-col gap-8 w-90 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60"
+                className="open:flex flex-col gap-8 w-[90%] sm:w-96 px-4 py-5 rounded-sm bg-[#F8FAFC] border-t-4 border-t-[#2A6E8C] shadow-xl m-auto backdrop:bg-black/60"
             >
                 <div className="w-full flex items-center justify-center">
                     <h1 className="text-2xl font-bold">Create Group</h1>
