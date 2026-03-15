@@ -8,7 +8,7 @@ import GroupNotes from '../components/GroupNotes';
 import ApplyToGroupModal from '../components/ApplyToGroupModal';
 import DeleteGroupPopUp from '../components/DeleteGroupPopUp';
 import LeaveGroupModal from '../components/LeaveGroupModal';
-import { useAuthStore } from '../store/useAuthStore';
+import { useProfile } from '../hooks/useAuthQueries'; 
 import { useTeam } from '../hooks/useTeamQueries';
 import { useTeamMember } from '../hooks/useTeamMemberQueries';
 import toast from 'react-hot-toast';
@@ -26,7 +26,7 @@ const getAvatarColor = (name) => {
 const GroupDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState('Overview');
     const { teamId } = useParams();
-    const { user } = useAuthStore();
+    const { data: user } = useProfile();
 
     const { data: team, isLoading: teamLoading, error: teamError, isSuccess: isTeamFetched } = useTeam(teamId);
     const { data: member, isLoading: memberLoading, error: memberError, isSuccess: isMembersFetched } = useTeamMember(
@@ -101,11 +101,10 @@ const GroupDetailPage = () => {
                     {['Overview', 'Members', 'Notes', 'History'].map((tab) => (
                         <span
                             key={tab}
-                            className={`text-base sm:text-lg cursor-pointer pb-1 transition-colors whitespace-nowrap ${
-                                selectedTab === tab
+                            className={`text-base sm:text-lg cursor-pointer pb-1 transition-colors whitespace-nowrap ${selectedTab === tab
                                     ? 'text-primary font-semibold border-b-2 border-accent'
                                     : 'text-base-content/60 hover:text-base-content/80'
-                            }`}
+                                }`}
                             onClick={() => setSelectedTab(tab)}
                         >
                             {tab === 'History' ? 'Group History' : tab}

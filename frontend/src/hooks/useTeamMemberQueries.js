@@ -37,8 +37,8 @@ export const useTeamMember = (teamId, userId) => {
 export const useTeamJoin = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ teamId, data }) =>
-            axiosInstance.post(`/team/${teamId}/join`, data),
+        mutationFn: ({ teamId, userId, data }) =>
+            axiosInstance.post(`/team/${teamId}/join/${userId}`, data),
         // Optimistic update
         onMutate: async ({ teamId }) => {
             // Cancel outgoing refetches for members list

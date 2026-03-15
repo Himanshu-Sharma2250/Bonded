@@ -3,7 +3,7 @@ import Button from '../components/Button';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthStore } from '../store/useAuthStore';
+import { useSignIn } from '../hooks/useAuthQueries'; 
 import toast from 'react-hot-toast';
 import z from 'zod';
 import { useState } from 'react';
@@ -15,20 +15,22 @@ const signInSchema = z.object({
 
 const SignInPage = () => {
     const [seePassword, setSeePassword] = useState(false);
-    const { login, loading } = useAuthStore();
+    const signInMutation = useSignIn(); 
     const { register, handleSubmit } = useForm({
         resolver: zodResolver(signInSchema),
     });
 
     const onLogin = async (data) => {
-        const success = await login(data);
-        if (success) toast.success('User logged in');
-        else toast.error('Login failed');
+        try {
+            await signInMutation.mutateAsync(data);
+            toast.success('User logged in');
+        } catch (error) {
+            toast.error('Login failed');
+        }
     };
 
     return (
         <div className="min-h-screen flex justify-center items-center bg-base-200 p-4 relative">
-            {/* Back button */}
             <NavLink
                 to="/"
                 className="absolute top-6 left-6 flex items-center gap-1 text-base-content/60 hover:text-primary transition-colors text-sm"
@@ -74,7 +76,7 @@ const SignInPage = () => {
 
                     <div className="flex flex-col mt-4">
                         <Button
-                            name={loading ? <Loader className="w-4 animate-spin" /> : 'Sign In'}
+                            name={signInMutation.isPending ? <Loader className="w-4 animate-spin" /> : 'Sign In'}
                             type="submit"
                             bgColor="primary"
                             btnSize="16px"

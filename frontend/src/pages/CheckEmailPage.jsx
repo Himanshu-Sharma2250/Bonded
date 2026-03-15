@@ -1,12 +1,14 @@
 import { Mail, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
+import { useProfile } from '../hooks/useAuthQueries';
+import { useForgotPassword } from '../hooks/useAuthQueries'; 
 import toast from 'react-hot-toast';
 
 const CheckEmailPage = () => {
     const location = useLocation();
-    const { user, forgotPassword } = useAuthStore();
+    const { data: user } = useProfile(); 
+    const forgotPasswordMutation = useForgotPassword();
     const [resending, setResending] = useState(false);
 
     const email = location.state?.email || user?.email || 'your email';
@@ -14,7 +16,7 @@ const CheckEmailPage = () => {
     const handleResend = async () => {
         setResending(true);
         try {
-            await forgotPassword({ email });
+            await forgotPasswordMutation.mutateAsync({ email });
             toast.success('Verification email resent!');
         } catch (error) {
             toast.error('Failed to resend email. Please try again.');
@@ -33,19 +35,16 @@ const CheckEmailPage = () => {
                     </div>
                 </div>
 
-                {/* Heading */}
                 <h1 className="text-2xl font-bold text-center text-base-content mb-2">
                     Verify your email
                 </h1>
 
-                {/* Message */}
                 <p className="text-center text-base-content/80 mb-6">
                     We've sent a verification link to{' '}
                     <span className="font-semibold text-primary">{email}</span>.
                     Please check your inbox and click the link to activate your account.
                 </p>
 
-                {/* Tip about spam */}
                 <div className="bg-base-200 border border-base-300 rounded-lg p-3 mb-6 text-sm text-base-content/70">
                     <p className="flex items-start gap-2">
                         <span className="text-accent font-bold">!</span>
@@ -55,7 +54,6 @@ const CheckEmailPage = () => {
                     </p>
                 </div>
 
-                {/* Resend button (optional) */}
                 <div className="mb-4">
                     <button
                         onClick={handleResend}
@@ -66,7 +64,6 @@ const CheckEmailPage = () => {
                     </button>
                 </div>
 
-                {/* Link to login */}
                 <div className="text-center">
                     <NavLink
                         to="/signin"

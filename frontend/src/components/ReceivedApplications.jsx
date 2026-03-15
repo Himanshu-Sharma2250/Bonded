@@ -34,23 +34,24 @@ const ReceivedApplications = () => {
     const onAcceptApplication = async (application) => {
         try {
             await acceptMutation.mutateAsync(application._id);
-            toast.success('Application accepted');
-
+            
             await teamJoinMutation.mutateAsync({
                 teamId: application?.teamId,
+                userId: application?.userId,
                 data: {
                     name: application?.name,
                     email: application?.email,
                     reasonToJoin: application?.reasonToJoin,
                 },
             });
-
+            
             await memberJoinedHistoryMutation.mutateAsync({
                 teamId: application?.teamId,
                 data: { memberName: application?.name },
             });
-
+            
             await userJoinTeamMutation.mutateAsync();
+            toast.success('Application accepted');
         } catch (error) {
             toast.error('Application accept failed');
         }

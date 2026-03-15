@@ -4,6 +4,7 @@ import Button from './Button';
 import { useSentApplications, useWithdrawApplication } from '../hooks/useApplicationQueries';
 import { useQueries } from '@tanstack/react-query';
 import { axiosInstance } from '../lib/axios';
+import { useMemo } from 'react';
 
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -17,7 +18,6 @@ const formatDate = (dateString) => {
     });
 };
 
-// Map application status to badge classes
 const statusBadgeMap = {
     PENDING: 'badge badge-primary badge-outline',
     ACCEPTED: 'badge badge-success',
@@ -29,7 +29,12 @@ const SentApplications = () => {
     const { data: applications = [], isLoading: appsLoading, error: appsError, isSuccess } = useSentApplications();
     const withdrawMutation = useWithdrawApplication();
 
-    const teamIds = [...new Set(applications.map((app) => app.teamId).filter(Boolean))];
+    // Sort applications by appliedAt descending (newest first)
+    const sortedApplications = useMemo(() => {
+        return [...applications].sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt));
+    }, [applications]);
+
+    const teamIds = [...new Set(sortedApplications.map((app) => app.teamId).filter(Boolean))];
 
     const teamQueries = useQueries({
         queries: teamIds.map((id) => ({
@@ -80,7 +85,7 @@ const SentApplications = () => {
         );
     }
 
-    if (applications.length === 0) {
+    if (sortedApplications.length === 0) {
         return (
             <div className="text-center py-10 text-base-content/70">No sent applications</div>
         );
@@ -95,7 +100,6 @@ const SentApplications = () => {
                 key={application._id}
                 className="flex flex-col px-4 py-3 border border-base-300 rounded-box bg-base-100 shadow-sm hover:shadow-md transition-shadow"
             >
-                {/* Header: group name and status badge */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                         <Users className="w-4 h-4 text-base-content/70" />
@@ -108,7 +112,6 @@ const SentApplications = () => {
                     </span>
                 </div>
 
-                {/* Reason and applied date */}
                 <div className="mt-2 space-y-1 text-sm">
                     <div className="flex gap-1">
                         <span className="font-medium text-base-content">Reason:</span>
@@ -119,7 +122,6 @@ const SentApplications = () => {
                     </div>
                 </div>
 
-                {/* Withdraw button (only if status is PENDING) */}
                 {application.status === 'PENDING' && (
                     <div className="mt-4">
                         <Button
@@ -137,7 +139,7 @@ const SentApplications = () => {
 
     return (
         <div className="flex flex-col gap-3 px-2 py-4">
-            {applications.map(createApplicationCards)}
+            {sortedApplications.map(createApplicationCards)}
         </div>
     );
 };

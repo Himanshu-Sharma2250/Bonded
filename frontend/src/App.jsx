@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -14,7 +13,7 @@ import GroupDetailPage from './pages/GroupDetailPage';
 import UserProfilePage from './pages/UserProfilePage';
 import MyProfile from './pages/MyProfile';
 import Layout from './components/Layout';
-import { useAuthStore } from './store/useAuthStore';
+import { useProfile } from './hooks/useAuthQueries'; 
 import { Loader2 } from 'lucide-react';
 import CheckEmailPage from './pages/CheckEmailPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
@@ -23,19 +22,16 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-    const { loading, profile, user } = useAuthStore();
+    const { data: user, isLoading, error } = useProfile();
 
-    useEffect(() => {
-        async function getProfile() {
-            await profile();
-        }
-        getProfile();
-    }, []);
+    if (error) {
+        console.error('Failed to fetch profile:', error);
+    }
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen w-screen">
-                <Loader2 className="w-8 h-8 animate-spin text-[#2A6E8C]" />
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -75,7 +71,7 @@ function App() {
                         <Route path="/announcements" element={<Announcement />} />
                         <Route path="/applications" element={<Applications />} />
                         <Route path="/groups/:teamId" element={<GroupDetailPage />} />
-                        <Route path="/user/:userId" element={<UserProfilePage />} />
+                        <Route path="/user/:name" element={<UserProfilePage />} />
                         <Route path="/profile" element={<MyProfile />} />
                     </Route>
 

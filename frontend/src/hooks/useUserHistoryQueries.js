@@ -16,6 +16,22 @@ export const useUserHistory = () => {
     })
 }
 
+export const useOtherUserHistory = (userId) => {
+    return useQuery({
+        queryKey: ['otherUserHistory', userId],
+        queryFn: async () => {
+            try {
+                const { data } = await axiosInstance.get(`/userHistory/${userId}`);
+                return data.history;
+            } catch (error) {
+                if (error.response?.status === 404) return null;
+                throw error;
+            }
+        },
+        enabled: !!userId,
+    })
+}
+
 export const useUserJoinTeam = () => {
     const queryClient = useQueryClient();
     return useMutation({

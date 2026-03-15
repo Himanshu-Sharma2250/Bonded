@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Users, Mail, X } from 'lucide-react';
 import ProfileOptionModal from './ProfileOptionModal';

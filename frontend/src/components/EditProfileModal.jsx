@@ -4,7 +4,7 @@ import { Loader2, Pencil } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthStore } from '../store/useAuthStore';
+import { useEditProfile } from '../hooks/useAuthQueries';
 import toast from 'react-hot-toast';
 
 const editProfileSchema = z.object({
@@ -41,7 +41,7 @@ const EditProfileModal = ({ initialValue }) => {
         },
     });
 
-    const { editProfile, isEditing } = useAuthStore();
+    const editProfileMutation = useEditProfile();
 
     const dialogRef = useRef(null);
 
@@ -54,9 +54,13 @@ const EditProfileModal = ({ initialValue }) => {
     };
 
     const onEditProfile = async (data) => {
-        await editProfile(data);
-        toast.success('Profile Updated');
-        closeModal();
+        try {
+            await editProfileMutation.mutateAsync(data);
+            toast.success('Profile Updated');
+            closeModal();
+        } catch (error) {
+            toast.error('Failed to update profile');
+        }
     };
 
     return (
@@ -88,7 +92,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('fullName')}
                                 />
                             </label>
-
                             {/* Username */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Username</span>
@@ -99,7 +102,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('name')}
                                 />
                             </label>
-
                             {/* Bio */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Bio</span>
@@ -109,7 +111,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('bio')}
                                 />
                             </label>
-
                             {/* Website */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Website</span>
@@ -120,7 +121,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('website')}
                                 />
                             </label>
-
                             {/* Leetcode */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Leetcode</span>
@@ -131,7 +131,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('leetcode')}
                                 />
                             </label>
-
                             {/* Github */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Github</span>
@@ -142,7 +141,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('github')}
                                 />
                             </label>
-
                             {/* LinkedIn */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">LinkedIn</span>
@@ -153,7 +151,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('linkedln')}
                                 />
                             </label>
-
                             {/* Twitter/X */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Twitter/X</span>
@@ -164,7 +161,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('twitter')}
                                 />
                             </label>
-
                             {/* Hashnode */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Hashnode</span>
@@ -175,7 +171,6 @@ const EditProfileModal = ({ initialValue }) => {
                                     {...register('hashnode')}
                                 />
                             </label>
-
                             {/* Medium */}
                             <label className="form-control">
                                 <span className="label-text text-base-content/80">Medium</span>
@@ -187,7 +182,6 @@ const EditProfileModal = ({ initialValue }) => {
                                 />
                             </label>
                         </div>
-
                         <div className="modal-action flex gap-2 justify-center mt-6">
                             <Button
                                 name="Cancel"
@@ -197,11 +191,11 @@ const EditProfileModal = ({ initialValue }) => {
                                 onClick={closeModal}
                             />
                             <Button
-                                name={isEditing ? <Loader2 className="w-4 animate-spin" /> : 'Save Changes'}
+                                name={editProfileMutation.isPending ? <Loader2 className="w-4 animate-spin" /> : 'Save Changes'}
                                 variant="primary"
                                 size="md"
                                 type="submit"
-                                disabled={isEditing}
+                                disabled={editProfileMutation.isPending}
                             />
                         </div>
                     </form>

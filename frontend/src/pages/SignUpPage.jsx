@@ -4,18 +4,19 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader, MoveLeft } from 'lucide-react';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthStore } from '../store/useAuthStore';
+import { useSignUp } from '../hooks/useAuthQueries'; 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const signUpSchema = z.object({
     name: z.string().trim().min(1, 'Full name is required'),
-    email: z.string().email('Enter valid email'),
+    email: z.email('Enter valid email'),
     password: z.string().min(8, 'Password must contain min 8 characters').max(13),
 });
 
 const SignUpPage = () => {
     const [seePassword, setSeePassword] = useState(false);
-    const { signUp, loading } = useAuthStore();
+    const signUpMutation = useSignUp(); 
     const {
         register,
         handleSubmit,
@@ -24,8 +25,12 @@ const SignUpPage = () => {
     const navigate = useNavigate();
 
     const onSignUp = async (data) => {
-        await signUp(data);
-        navigate('/verify-email');
+        try {
+            await signUpMutation.mutateAsync(data);
+            navigate('/verify-email');
+        } catch (error) {
+            toast.error("Failed to register user")
+        }
     };
 
     return (
@@ -88,7 +93,7 @@ const SignUpPage = () => {
 
                     <div className="flex flex-col mt-4">
                         <Button
-                            name={loading ? <Loader className="w-4 animate-spin" /> : 'Sign Up'}
+                            name={signUpMutation.isPending ? <Loader className="w-4 animate-spin" /> : 'Sign Up'}
                             bgColor="primary"
                             btnSize="16px"
                             type="submit"

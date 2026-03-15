@@ -1,7 +1,6 @@
 import { Loader2, User, Users } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
-// Generate a consistent HSL color from a string (team name)
 const getAvatarColor = (name) => {
     if (!name) return '#6b7280';
     let hash = 0;

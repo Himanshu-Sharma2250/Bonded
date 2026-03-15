@@ -1,7 +1,6 @@
 import { Megaphone, Users, ArrowRight, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
 import Button from '../components/Button';
 import { useAllTeams, useMyTeam } from '../hooks/useTeamQueries';
 import {
@@ -14,8 +13,11 @@ import { useTeamJoin } from '../hooks/useTeamMemberQueries';
 import { useMemberJoinedHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserJoinTeam } from '../hooks/useUserHistoryQueries';
 import toast from 'react-hot-toast';
+import { useProfile } from '../hooks/useAuthQueries';
 
 const Dashboard = () => {
+    const { data: user } = useProfile(); 
+
     const { data: teams = [], isLoading: teamsLoading, error: teamsError } = useAllTeams();
     const { data: team, isLoading: myTeamLoading, error: myTeamError } = useMyTeam();
     const {
@@ -35,11 +37,8 @@ const Dashboard = () => {
     const memberJoinedHistoryMutation = useMemberJoinedHistory();
     const userJoinTeamMutation = useUserJoinTeam();
 
-    const { user } = useAuthStore();
-
     const [recommendedGroups, setRecommendedGroups] = useState([]);
 
-    // recommended groups when teams are loaded
     useEffect(() => {
         if (teams.length > 0) {
             const otherTeams = team ? teams.filter((t) => t._id !== team._id) : teams;
@@ -51,8 +50,7 @@ const Dashboard = () => {
     const handleAccept = async (application) => {
         try {
             await acceptMutation.mutateAsync(application._id);
-            toast.success('Application accepted');
-
+            
             await teamJoinMutation.mutateAsync({
                 teamId: application?.teamId,
                 data: {
@@ -61,13 +59,14 @@ const Dashboard = () => {
                     reasonToJoin: application?.reasonToJoin,
                 },
             });
-
+            
             await memberJoinedHistoryMutation.mutateAsync({
                 teamId: application?.teamId,
                 data: { memberName: application?.name },
             });
-
+            
             await userJoinTeamMutation.mutateAsync();
+            toast.success('Application accepted');
         } catch (error) {
             toast.error('Accept failed');
         }
@@ -94,7 +93,6 @@ const Dashboard = () => {
         });
     };
 
-    // Combined loading state
     const isLoading = teamsLoading || myTeamLoading || sentLoading || receivedLoading;
 
     if (isLoading) {
@@ -275,15 +273,14 @@ const Dashboard = () => {
                                                 <p className="font-medium text-base-content">{app.teamId?.name || 'Group'}</p>
                                                 <p className="text-xs text-base-content/70">{formatDate(app.appliedAt)}</p>
                                             </div>
-                                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full self-end sm:self-auto ${
-                                                app.status === 'PENDING'
+                                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full self-end sm:self-auto ${app.status === 'PENDING'
                                                     ? 'bg-primary/10 text-primary'
                                                     : app.status === 'ACCEPTED'
-                                                    ? 'bg-success/10 text-success'
-                                                    : app.status === 'REJECTED'
-                                                    ? 'bg-error/10 text-error'
-                                                    : 'bg-base-300 text-base-content/70'
-                                            }`}>
+                                                        ? 'bg-success/10 text-success'
+                                                        : app.status === 'REJECTED'
+                                                            ? 'bg-error/10 text-error'
+                                                            : 'bg-base-300 text-base-content/70'
+                                                }`}>
                                                 {app.status}
                                             </span>
                                         </div>

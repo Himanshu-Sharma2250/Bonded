@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>          {/* 👈 wrap App */}
+      <ThemeProvider>
         <App />
       </ThemeProvider>
     </QueryClientProvider>

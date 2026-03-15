@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
-import { useAuthStore } from '../store/useAuthStore';
+import { useVerifyEmail } from '../hooks/useAuthQueries';
 
 const VerifyEmailPage = () => {
     const { token } = useParams();
     const navigate = useNavigate();
-    const { verifyEmail } = useAuthStore();
+    const verifyEmailMutation = useVerifyEmail(); 
     const [status, setStatus] = useState('loading');
     const [message, setMessage] = useState('');
 
     useEffect(() => {
         const verify = async () => {
             try {
-                await verifyEmail(token);
+                await verifyEmailMutation.mutateAsync(token);
                 setStatus('success');
                 setMessage('Email verified successfully!');
                 setTimeout(() => navigate('/signin'), 3000);
@@ -23,7 +23,7 @@ const VerifyEmailPage = () => {
             }
         };
         if (token) verify();
-    }, [token, verifyEmail, navigate]);
+    }, [token, verifyEmailMutation, navigate]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">

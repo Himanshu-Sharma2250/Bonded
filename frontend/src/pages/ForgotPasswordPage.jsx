@@ -3,7 +3,7 @@ import Button from '../components/Button';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthStore } from '../store/useAuthStore';
+import { useForgotPassword } from '../hooks/useAuthQueries';
 import toast from 'react-hot-toast';
 import z from 'zod';
 
@@ -12,16 +12,16 @@ const forgotPasswordSchema = z.object({
 });
 
 const ForgotPasswordPage = () => {
-    const { forgotPassword, loading } = useAuthStore();
+    const forgotPasswordMutation = useForgotPassword(); 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(forgotPasswordSchema),
     });
 
     const onSubmit = async (data) => {
-        const success = await forgotPassword(data);
-        if (success) {
+        try {
+            await forgotPasswordMutation.mutateAsync(data);
             toast.success('Password reset link sent to your email', { position: 'top-center' });
-        } else {
+        } catch (error) {
             toast.error('Failed to send reset email. Try again.', { position: 'top-center' });
         }
     };
@@ -48,11 +48,11 @@ const ForgotPasswordPage = () => {
                     </label>
 
                     <Button
-                        name={loading ? <Loader className='w-4 animate-spin' /> : 'Send Reset Link'}
+                        name={forgotPasswordMutation.isPending ? <Loader className='w-4 animate-spin' /> : 'Send Reset Link'}
                         type='submit'
                         bgColor='primary'
                         btnSize='16px'
-                        disabled={loading}
+                        disabled={forgotPasswordMutation.isPending}
                         className='w-full justify-center mt-2'
                     />
 

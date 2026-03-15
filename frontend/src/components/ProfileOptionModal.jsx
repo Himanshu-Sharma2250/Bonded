@@ -2,13 +2,14 @@ import { NavLink } from 'react-router-dom';
 import { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { User, Moon, Sun } from 'lucide-react';
-import { useAuthStore } from '../store/useAuthStore';
+import { useProfile, useLogout } from '../hooks/useAuthQueries';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
 
 const ProfileOptionModal = ({ isCollapsed }) => {
     const dialogRef = useRef(null);
-    const { user, logout } = useAuthStore();
+    const { data: user } = useProfile();
+    const logoutMutation = useLogout();
     const { theme, toggleTheme } = useTheme();
 
     const openModal = () => {
@@ -19,7 +20,6 @@ const ProfileOptionModal = ({ isCollapsed }) => {
         dialogRef.current?.close();
     };
 
-    // Close on outside click (backdrop)
     useEffect(() => {
         const dialog = dialogRef.current;
         const handleClickOutside = (e) => {
@@ -33,13 +33,15 @@ const ProfileOptionModal = ({ isCollapsed }) => {
 
     const onLogout = async () => {
         try {
-            await logout();
+            await logoutMutation.mutateAsync();
             toast.success('Logout successful');
             closeModal();
         } catch (error) {
             toast.error('Error in logout');
         }
     };
+
+    const isDarkTheme = theme.includes('dark') || theme === 'dark';
 
     return (
         <div className="relative">
@@ -84,7 +86,11 @@ const ProfileOptionModal = ({ isCollapsed }) => {
                             className="w-full flex justify-between items-center px-2 py-1 rounded-md text-base-content hover:bg-base-200 transition-colors"
                         >
                             Toggle theme
-                            {theme === 'bonded' ? <Moon className="w-4" /> : <Sun className="w-4" />}
+                            {isDarkTheme ? (
+                                <Sun className="w-4 text-base-content" />
+                            ) : (
+                                <Moon className="w-4 text-base-content" />
+                            )}
                         </button>
 
                         <button

@@ -53,7 +53,7 @@ const GroupMembers = ({ teamId, teamRole, members, loading }) => {
                         className="p-3 rounded-md text-white font-bold"
                         style={{ backgroundColor: getAvatarColor(member?.name) }}
                     >
-                        {member?.name?.toUpperCase().slice(0, 1) || 'M'}
+                        {member?.name?.toUpperCase().slice(1, 2) || 'M'}
                     </span>
                 </div>
                 <div className="flex flex-col">
@@ -66,7 +66,7 @@ const GroupMembers = ({ teamId, teamRole, members, loading }) => {
                     <KickOutModal teamId={teamId} memberId={member._id} memberName={member.name} />
                 )}
                 {teamRole === 'MEMBER' && (
-                    <NavLink to={`/user/${member?.userId}`}>
+                    <NavLink to={`/user/${member?.name}`}>
                         <Button name="View Profile" variant="primary" size="sm" />
                     </NavLink>
                 )}

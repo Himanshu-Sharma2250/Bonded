@@ -1,8 +1,7 @@
 import { MoveLeft, Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '../store/useAuthStore';
-import { useUserHistoryStore } from '../store/useUserHistoryStore';
+import { useGetUserProfile } from '../hooks/useAuthQueries';
+import { useOtherUserHistory } from '../hooks/useUserHistoryQueries';
 
 const actionColorMap = {
     CREATED: '#10b981',
@@ -23,30 +22,12 @@ const getAvatarColor = (name) => {
 };
 
 const UserProfilePage = () => {
-    const { userId } = useParams();
+    const { name } = useParams();
     const navigate = useNavigate();
-    const { getUserProfile, loading, otherUser } = useAuthStore();
-    const { getUserHistories, userHistory, loading: historyLoading } = useUserHistoryStore();
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const abortController = new AbortController();
-        const fetchUserProfile = async () => {
-            try {
-                setError(null);
-                await getUserProfile(userId);
-                await getUserHistories();
-            } catch (err) {
-                setError('User not found or failed to load.');
-            }
-        };
-
-        if (userId) {
-            fetchUserProfile();
-        }
-
-        return () => abortController.abort();
-    }, [userId, getUserProfile, getUserHistories]);
+    const { data: otherUser, isLoading, error } = useGetUserProfile(name);
+    const { data: userHistory, error: historyError, isLoading: historyLoading } = useOtherUserHistory(otherUser?._id);
+    console.log("other user", otherUser )
+    console.log("name in paramas ", name)
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -60,7 +41,7 @@ const UserProfilePage = () => {
         });
     };
 
-    if (loading) {
+    if (isLoading || historyLoading) {
         return (
             <div className="flex justify-center items-center py-20">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -68,10 +49,10 @@ const UserProfilePage = () => {
         );
     }
 
-    if (error) {
+    if (error || !otherUser) {
         return (
             <div className="text-center py-20 text-error">
-                {error}
+                User not found or failed to load.
             </div>
         );
     }
@@ -132,7 +113,7 @@ const UserProfilePage = () => {
                     <h2 className="text-lg sm:text-xl font-semibold text-base-content">
                         {otherUser?.fullName || otherUser?.name}
                     </h2>
-                    <span className="text-sm text-base-content/70">@{otherUser?.name}</span>
+                    <span className="text-sm text-base-content/70">{otherUser?.name}</span>
                     <span className="text-sm text-base-content/70">{otherUser?.email}</span>
                 </div>
             </div>
@@ -261,6 +242,9 @@ const UserProfilePage = () => {
             <div className="flex flex-col gap-2">
                 <h2 className="text-xl font-bold text-base-content">User History</h2>
                 <div className="px-4 py-4 border-2 border-base-300 rounded-box bg-base-200">
+                    {historyError && <div>
+                        Error getting User's History
+                    </div>}
                     {historyLoading ? (
                         <div className="flex justify-center items-center py-10">
                             <Loader2 className="w-8 h-8 animate-spin text-primary" />

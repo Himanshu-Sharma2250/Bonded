@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Plus } from 'lucide-react';
 import { useCreateTeam } from '../hooks/useTeamQueries';
 import { useCreateOwner } from '../hooks/useTeamMemberQueries';
-import { useAuthStore } from '../store/useAuthStore';
+import { useProfile } from '../hooks/useAuthQueries';
 import { useTeamCreateHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserCreateTeam } from '../hooks/useUserHistoryQueries';
 import toast from 'react-hot-toast';
@@ -26,7 +26,7 @@ const CreateGroupModal = () => {
     const createOwnerMutation = useCreateOwner();
     const createTeamHistoryMutation = useTeamCreateHistory();
     const userCreateTeamMutation = useUserCreateTeam();
-    const { user } = useAuthStore();
+    const { data: user } = useProfile();
 
     const dialogRef = useRef(null);
 
@@ -71,14 +71,10 @@ const CreateGroupModal = () => {
 
     return (
         <div>
-            {/* Responsive trigger button */}
             <div onClick={openModal} className="cursor-pointer">
-                {/* Desktop - full text button */}
                 <div className="hidden lg:block">
                     <Button name="Create Group" variant="primary" size="md" />
                 </div>
-
-                {/* Mobile/Tablet - icon with tooltip */}
                 <div className="lg:hidden">
                     <button className="btn btn-square btn-primary relative group">
                         <Plus className="w-5 h-5" />
@@ -89,11 +85,10 @@ const CreateGroupModal = () => {
                 </div>
             </div>
 
-            {/* Modal dialog using daisyUI modal */}
             <dialog ref={dialogRef} className="modal">
                 <div className="modal-box bg-base-100">
                     <h3 className="font-bold text-lg text-center text-base-content">Create Group</h3>
-                    <form onSubmit={handleSubmit(onCreateTeam)} className="py-4">
+                    <form onSubmit={handleSubmit(onCreateTeam)} className="py-4 flex flex-col gap-3">
                         <label className="form-control w-full">
                             <span className="label-text text-base-content/80">Name</span>
                             <input
@@ -103,7 +98,6 @@ const CreateGroupModal = () => {
                                 {...register('name')}
                             />
                         </label>
-
                         <label className="form-control w-full mt-2">
                             <span className="label-text text-base-content/80">Description</span>
                             <input
@@ -113,7 +107,6 @@ const CreateGroupModal = () => {
                                 {...register('description')}
                             />
                         </label>
-
                         <label className="form-control w-full mt-2">
                             <span className="label-text text-base-content/80">Total Members</span>
                             <input
@@ -123,7 +116,6 @@ const CreateGroupModal = () => {
                                 {...register('totalMembers')}
                             />
                         </label>
-
                         <label className="form-control w-full mt-2">
                             <span className="label-text text-base-content/80">Tech Stack (comma separated)</span>
                             <input
@@ -133,7 +125,6 @@ const CreateGroupModal = () => {
                                 {...register('techUsed')}
                             />
                         </label>
-
                         <div className="modal-action flex gap-2 justify-center mt-6">
                             <Button
                                 name="Cancel"
@@ -152,7 +143,6 @@ const CreateGroupModal = () => {
                         </div>
                     </form>
                 </div>
-                {/* Backdrop click to close */}
                 <form method="dialog" className="modal-backdrop">
                     <button onClick={closeModal}>close</button>
                 </form>

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useTeamLeft } from '../hooks/useTeamMemberQueries';
 import { useMemberLeftHistory } from '../hooks/useTeamHistoryQueries';
 import { useUserLeftTeam } from '../hooks/useUserHistoryQueries';
-import { useAuthStore } from '../store/useAuthStore';
+import { useProfile } from '../hooks/useAuthQueries';
 import Button from './Button';
 import toast from 'react-hot-toast';
 
@@ -11,7 +11,7 @@ const LeaveGroupModal = ({ teamId }) => {
     const teamLeftMutation = useTeamLeft();
     const memberLeftHistoryMutation = useMemberLeftHistory();
     const userLeftTeamMutation = useUserLeftTeam();
-    const { user } = useAuthStore();
+    const { data: user } = useProfile();
 
     const { register, handleSubmit, reset } = useForm({
         defaultValues: { reason: '' },
@@ -67,7 +67,6 @@ const LeaveGroupModal = ({ teamId }) => {
                                 required
                             />
                         </label>
-
                         <label className="form-control w-full mt-2">
                             <span className="label-text text-base-content/80">Reason to leave</span>
                             <input
@@ -78,7 +77,6 @@ const LeaveGroupModal = ({ teamId }) => {
                                 {...register('reason')}
                             />
                         </label>
-
                         <div className="modal-action flex gap-2 justify-center mt-6">
                             <Button
                                 name="Cancel"

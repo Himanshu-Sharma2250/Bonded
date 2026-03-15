@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import EditProfileModal from '../components/EditProfileModal';
-import { useAuthStore } from '../store/useAuthStore';
+import { useProfile } from '../hooks/useAuthQueries'; 
 import { Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useUserHistory } from '../hooks/useUserHistoryQueries';
 import toast from 'react-hot-toast';
 
 const actionColorMap = {
-    CREATED: '#10b981',   // green
-    JOINED: '#3b82f6',    // blue
-    LEFT: '#ef4444',      // red
-    KICKED_OUT: '#f97316', // orange
-    DELETED: '#6b7280',   // gray
+    CREATED: '#10b981',
+    JOINED: '#3b82f6',
+    LEFT: '#ef4444',
+    KICKED_OUT: '#f97316',
+    DELETED: '#6b7280',
 };
 
 const getAvatarColor = (name) => {
@@ -25,16 +25,15 @@ const getAvatarColor = (name) => {
 };
 
 const MyProfile = () => {
-    const { profile, user } = useAuthStore();
-    const { data: userHistory = [], isLoading } = useUserHistory();
+    const { data: user, isLoading: userLoading, error: userError } = useProfile();
+    const { data: userHistory = [], isLoading: historyLoading } = useUserHistory();
 
-    useEffect(() => {
-        async function getProfile() {
-            await profile();
+    // Show success toast when user loads (optional)
+    React.useEffect(() => {
+        if (user) {
             toast.success("Profile fetched");
         }
-        getProfile();
-    }, [profile]);
+    }, [user]);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -81,6 +80,20 @@ const MyProfile = () => {
             </div>
         );
     };
+
+    if (userLoading || historyLoading) {
+        return (
+            <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+        );
+    }
+
+    if (userError || !user) {
+        return (
+            <div className="text-center py-10 text-error">Failed to load profile.</div>
+        );
+    }
 
     return (
         <div className="py-2 flex flex-col gap-6 px-2 sm:px-4">
@@ -236,7 +249,7 @@ const MyProfile = () => {
             <div className="flex flex-col gap-2">
                 <h2 className="text-xl font-bold text-base-content">User History</h2>
                 <div className="px-4 py-4 border-2 border-base-300 rounded-box bg-base-200">
-                    {isLoading ? (
+                    {historyLoading ? (
                         <div className="flex justify-center items-center py-10">
                             <Loader2 className="w-8 h-8 animate-spin text-primary" />
                         </div>

@@ -3,7 +3,7 @@ import Button from '../components/Button';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthStore } from '../store/useAuthStore';
+import { useResetPassword } from '../hooks/useAuthQueries'; 
 import toast from 'react-hot-toast';
 import z from 'zod';
 import { useState } from 'react';
@@ -20,7 +20,7 @@ const resetPasswordSchema = z.object({
 const ResetPasswordPage = () => {
     const { token } = useParams();
     const navigate = useNavigate();
-    const { resetPassword, loading } = useAuthStore();
+    const resetPasswordMutation = useResetPassword(); 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
@@ -30,7 +30,7 @@ const ResetPasswordPage = () => {
 
     const onSubmit = async (data) => {
         try {
-            await resetPassword(token, { password: data.password });
+            await resetPasswordMutation.mutateAsync({ token, passwordData: { password: data.password } });
             toast.success('Password reset successfully!');
             navigate('/signin');
         } catch (error) {
@@ -93,11 +93,11 @@ const ResetPasswordPage = () => {
                     </label>
 
                     <Button
-                        name={loading ? <Loader className='w-4 animate-spin' /> : 'Reset Password'}
+                        name={resetPasswordMutation.isPending ? <Loader className='w-4 animate-spin' /> : 'Reset Password'}
                         type='submit'
                         bgColor='primary'
                         btnSize='16px'
-                        disabled={loading}
+                        disabled={resetPasswordMutation.isPending}
                         className='w-full justify-center mt-2'
                     />
 

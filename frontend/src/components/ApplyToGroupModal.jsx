@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useApplyApplication } from '../hooks/useApplicationQueries';
-import { useAuthStore } from '../store/useAuthStore';
+import { useProfile } from '../hooks/useAuthQueries';
 import toast from 'react-hot-toast';
 
 const applySchema = z.object({
@@ -17,7 +17,7 @@ const ApplyToGroupModal = ({ teamId }) => {
         resolver: zodResolver(applySchema),
     });
     const applyMutation = useApplyApplication();
-    const { user } = useAuthStore();
+    const { data: user } = useProfile();
 
     const dialogRef = useRef(null);
 
@@ -59,7 +59,7 @@ const ApplyToGroupModal = ({ teamId }) => {
                         <label className="form-control">
                             <span className="label-text text-base-content/80">Why should we add you to our team?</span>
                             <textarea
-                                className="textarea textarea-bordered h-24 bg-base-100"
+                                className="textarea textarea-bordered h-24 bg-base-100 w-full"
                                 placeholder="Give us reason"
                                 {...register('reasonToJoin')}
                             ></textarea>
@@ -67,9 +67,8 @@ const ApplyToGroupModal = ({ teamId }) => {
                         <div className="modal-action flex gap-2 justify-center mt-6">
                             <Button
                                 name="Cancel"
-                                txtColor="base-content/60"
-                                bgColor="transparent"
-                                btnSize="16px"
+                                variant="ghost"
+                                size="md"
                                 type="button"
                                 onClick={closeModal}
                             />
@@ -83,7 +82,6 @@ const ApplyToGroupModal = ({ teamId }) => {
                         </div>
                     </form>
                 </div>
-                {/* Optional: click outside to close (handled by modal) */}
                 <form method="dialog" className="modal-backdrop">
                     <button onClick={closeModal}>close</button>
                 </form>
