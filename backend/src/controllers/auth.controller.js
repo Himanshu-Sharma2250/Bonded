@@ -12,7 +12,7 @@ import { emailVerificationMailgenContent, forgotPasswordMailgenContent, sendEmai
 import { User } from "../models/user.model.js";
 
 export const registerUser = async (req, res) => {
-    const {data, error} = registerUserSchema.safeParse(req.body);
+    const { data, error } = registerUserSchema.safeParse(req.body);
 
     if (error) {
         console.error("Error in safeParse : ", error);
@@ -22,8 +22,8 @@ export const registerUser = async (req, res) => {
         })
     }
 
-    const {name, email, password} = data;
-    const username = email.slice(0, -10);
+    const { name, email, password } = data;
+    const username = email.split('@')[0];
 
     try {
         // find if the user already exist or not 
@@ -45,7 +45,7 @@ export const registerUser = async (req, res) => {
             password,
         });
 
-        const {unHashedToken, hashedToken, tokenExpiry} = user.generateTemporaryToken();
+        const { unHashedToken, hashedToken, tokenExpiry } = user.generateTemporaryToken();
 
         user.emailVerificationToken = hashedToken;
         user.emailVerificationExpiry = tokenExpiry;
@@ -53,13 +53,13 @@ export const registerUser = async (req, res) => {
         await user.save();
 
         sendEmail({
-            email: user?.email,
+            email: user.email,
             subject: "Verify Your Email",
             mailgenContent: emailVerificationMailgenContent(
                 user.name,
                 `${process.env.FRONTEND_BASE_URL}/verify-email/${unHashedToken}`
             )
-        });
+        }).catch(err => console.error("Email sending failed:", err));
 
         const createdUser = await User.findById(user._id).select(
             "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
@@ -82,14 +82,14 @@ export const registerUser = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Error registering User"
-        })   
+        })
     }
 }
 
-export const verifyEmail = async function(req, res) {
+export const verifyEmail = async function (req, res) {
     // get the unhashed token from the user's params
     // check if the hashed token we stored is the same after hashing the token
-    const {token} = req.params;
+    const { token } = req.params;
 
     try {
         // convert the unhashed token in hashed token
@@ -118,11 +118,22 @@ export const verifyEmail = async function(req, res) {
 
         await user.save();
 
-        res.status(200).json({
-            success: true,
-            message: "User's email verified",
-            user
-        })
+        const cookieOption = {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
+        }
+
+        // clear any previous tokens
+        res.status(200)
+            .clearCookie("AccessToken", cookieOption)
+            .clearCookie("RefreshToken", cookieOption)
+            .json({
+                success: true,
+                message: "User's email verified",
+                user
+            })
     } catch (error) {
         console.error("Error in verifying the User's email: ", error);
         res.status(500).json({
@@ -133,7 +144,7 @@ export const verifyEmail = async function(req, res) {
 };
 
 export const loginUser = async (req, res) => {
-    const {data, error} = loginUserSchema.safeParse(req.body);
+    const { data, error } = loginUserSchema.safeParse(req.body);
 
     if (error) {
         console.error("Error in safeParse: ", error);
@@ -143,7 +154,7 @@ export const loginUser = async (req, res) => {
         })
     }
 
-    const {email, password} = data;
+    const { email, password } = data;
 
     try {
         // get the user using email and check if the user is present
@@ -189,8 +200,8 @@ export const loginUser = async (req, res) => {
         const cookieOption = {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24,
-            secure: true,
-            sameSite: 'none'
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
         }
 
         res.status(200)
@@ -198,7 +209,7 @@ export const loginUser = async (req, res) => {
             .cookie("RefreshToken", refreshToken, cookieOption)
             .json({
                 success: true,
-                message: "User logged in successfully", 
+                message: "User logged in successfully",
                 user
             })
     } catch (error) {
@@ -219,14 +230,15 @@ export const logoutUser = async (req, res) => {
                 $set: {
                     refreshToken: "",
                 }
-            }, 
-            {new: true}
+            },
+            { new: true }
         )
 
         const cookieOption = {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24,
-            secure: process.env.NODE_ENV === "production"
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
         }
 
         res.status(200)
@@ -234,7 +246,7 @@ export const logoutUser = async (req, res) => {
             .clearCookie("RefreshToken", cookieOption)
             .json({
                 success: true,
-                message: "User logged out successfully", 
+                message: "User logged out successfully",
             })
     } catch (error) {
         console.error("Error logging out user: ", error);
@@ -248,7 +260,7 @@ export const logoutUser = async (req, res) => {
 export const forgotPassword = async (req, res) => {
     // get the email from the user and get the user 
     // send the email to the user
-    const {data, error} = forgotPasswordSchema.safeParse(req.body);
+    const { data, error } = forgotPasswordSchema.safeParse(req.body);
 
     if (error) {
         console.error("Error in safeParse: ", error);
@@ -258,10 +270,10 @@ export const forgotPassword = async (req, res) => {
         })
     }
 
-    const {email} = data;
+    const { email } = data;
 
     try {
-        const user = await User.findOne({email});
+        const user = await User.findOne({ email });
 
         if (!user) {
             return res.status(400).json({
@@ -270,7 +282,7 @@ export const forgotPassword = async (req, res) => {
             })
         }
 
-        const {unHashedToken, hashedToken, tokenExpiry} = user.generateTemporaryToken();
+        const { unHashedToken, hashedToken, tokenExpiry } = user.generateTemporaryToken();
 
         user.forgetPasswordToken = hashedToken;
         user.forgetPasswordExpiry = tokenExpiry;
@@ -280,13 +292,13 @@ export const forgotPassword = async (req, res) => {
         await user.save();
 
         sendEmail({
-            email: user?.email,
+            email: user.email,
             subject: "Reset Your Password",
             mailgenContent: forgotPasswordMailgenContent(
                 user.name,
                 `${process.env.FRONTEND_BASE_URL}/reset-password/${unHashedToken}`
             )
-        });
+        }).catch((err) => console.error("Email sending failed: ", err));
 
         res.status(200).json({
             success: true,
@@ -305,8 +317,8 @@ export const resetForgottenPassword = async (req, res) => {
     // get the token from the params
     // check if the token is correct or not
     // get the passwords from the user 
-    const {token} = req.params;
-    const {data, error} = resetPasswordSchema.safeParse(req.body);
+    const { token } = req.params;
+    const { data, error } = resetPasswordSchema.safeParse(req.body);
 
     if (error) {
         console.error("Error in safeParse: ", error);
@@ -316,7 +328,7 @@ export const resetForgottenPassword = async (req, res) => {
         })
     }
 
-    const {newPassword, confirmPassword} = data;
+    const { newPassword, confirmPassword } = data;
 
     if (newPassword !== confirmPassword) {
         return res.status(400).json({
@@ -330,7 +342,7 @@ export const resetForgottenPassword = async (req, res) => {
             .createHash("sha256")
             .update(token)
             .digest("hex");
-        
+
         console.log("hashed token in reset password : ", hashedToken);
 
         const user = await User.findOne({
@@ -413,7 +425,7 @@ export const resendEmailVerification = async (req, res) => {
             })
         }
 
-        const {unHashedToken, hashedToken, tokenExpiry} = user.generateTemporaryToken();
+        const { unHashedToken, hashedToken, tokenExpiry } = user.generateTemporaryToken();
 
         user.emailVerificationToken = hashedToken;
         user.emailVerificationExpiry = tokenExpiry;
@@ -421,13 +433,13 @@ export const resendEmailVerification = async (req, res) => {
         await user.save();
 
         sendEmail({
-            email: user?.email,
+            email: user.email,
             subject: "Verify Your Email",
             mailgenContent: emailVerificationMailgenContent(
                 user.name,
-                `${process.env.BASE_URL}/api/v1/auth/verify-email/${unHashedToken}`
+                `${process.env.FRONTEND_BASE_URL}/verify-email/${unHashedToken}`
             )
-        });
+        }).catch((err) => console.error("Email sending failed: ", err));
 
         res.status(200).json({
             success: true,
@@ -485,7 +497,7 @@ export const refreshAccessToken = async (req, res) => {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24,
             secure: process.env.NODE_ENV === "production",
-            sameSite: 'none'
+            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
         }
 
         res.cookie("AccessToken", accessToken, cookieOption)
@@ -506,7 +518,7 @@ export const refreshAccessToken = async (req, res) => {
 }
 
 export const editProfile = async (req, res) => {
-    const {data, error} = editProfileSchema.safeParse(req.body);
+    const { data, error } = editProfileSchema.safeParse(req.body);
 
     if (error) {
         console.error("Error in safeParse: ", error);
@@ -516,7 +528,7 @@ export const editProfile = async (req, res) => {
         })
     }
 
-    const {bio, fullName, github, hashnode, leetcode, linkedln, medium, name, twitter, website} = data;
+    const { bio, fullName, github, hashnode, leetcode, linkedln, medium, name, twitter, website } = data;
     const userId = req.user._id;
 
     try {
@@ -531,7 +543,7 @@ export const editProfile = async (req, res) => {
             hashnode,
             github,
             linkedln
-        }, {new: true})
+        }, { new: true })
 
         if (!updatedUser) {
             return res.status(400).json({
@@ -550,7 +562,7 @@ export const editProfile = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Error updating user profile"
-        })        
+        })
     }
 }
 

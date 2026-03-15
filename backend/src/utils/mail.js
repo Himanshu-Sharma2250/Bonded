@@ -4,14 +4,13 @@ import nodemailer from "nodemailer"
 const sendEmail = async (options) => {
     // Initialize mailgen instance with default theme and brand configuration
     const mailGenerator = new Mailgen({
-            theme: "default",
-            product: {
+        theme: "default",
+        product: {
             name: "Bonded",
-            link: "https://bonded.app",
+            link: "https://bondedhub.in",
         },
     });
 
-    // For more info on how mailgen content work visit https://github.com/eladnava/mailgen#readme
     // Generate the plaintext version of the e-mail (for clients that do not support HTML)
     const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
 
@@ -20,16 +19,15 @@ const sendEmail = async (options) => {
 
     // Create a nodemailer transporter instance which is responsible to send a mail
     const transporter = nodemailer.createTransport({
-        host: process.env.MAILTRAP_HOST,
-        port: process.env.MAILTRAP_PORT,
+        service: 'gmail',
         auth: {
-            user: process.env.MAILTRAP_USER,
-            pass: process.env.MAILTRAP_PASSWORD,
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
         },
     });
 
     const mail = {
-        from: process.env.MAILTRAP_SENDER, // We can name this anything. The mail will go to your Mailtrap inbox
+        from: process.env.EMAIL_USER,
         to: options.email, // receiver's mail
         subject: options.subject, // mail subject
         text: emailTextual, // mailgen content textual variant
@@ -47,19 +45,19 @@ const sendEmail = async (options) => {
 const emailVerificationMailgenContent = (name, verificationUrl) => {
     return {
         body: {
-        name: name,
-        intro: "Welcome to our app! We're very excited to have you on board.",
-        action: {
-            instructions:
-            "To verify your email please click on the following button:",
-            button: {
-                color: "#22BC66", // Optional action button color
-                text: "Verify your email",
-                link: verificationUrl,
+            name: name,
+            intro: "Welcome to our app! We're very excited to have you on board.",
+            action: {
+                instructions:
+                    "To verify your email please click on the following button:",
+                button: {
+                    color: "#22BC66", 
+                    text: "Verify your email",
+                    link: verificationUrl,
+                },
             },
-        },
-        outro:
-            "Need help, or have questions? Just reply to this email, we'd love to help.",
+            outro:
+                "Need help, or have questions? Just reply to this email, we'd love to help.",
         },
     };
 };
@@ -67,25 +65,25 @@ const emailVerificationMailgenContent = (name, verificationUrl) => {
 const forgotPasswordMailgenContent = (name, passwordResetUrl) => {
     return {
         body: {
-        name: name,
-        intro: "We got a request to reset the password of our account",
-        action: {
-            instructions:
-            "To reset your password click on the following button or link:",
-            button: {
-            color: "#22BC66", // Optional action button color
-            text: "Reset password",
-            link: passwordResetUrl,
+            name: name,
+            intro: "We got a request to reset the password of our account",
+            action: {
+                instructions:
+                    "To reset your password click on the following button or link:",
+                button: {
+                    color: "#22BC66",
+                    text: "Reset password",
+                    link: passwordResetUrl,
+                },
             },
-        },
-        outro:
-            "Need help, or have questions? Just reply to this email, we'd love to help.",
+            outro:
+                "Need help, or have questions? Just reply to this email, we'd love to help.",
         },
     };
 };
 
 export {
-  sendEmail,
-  emailVerificationMailgenContent,
-  forgotPasswordMailgenContent,
+    sendEmail,
+    emailVerificationMailgenContent,
+    forgotPasswordMailgenContent,
 };
