@@ -12,17 +12,33 @@ import teamHistoryRouter from "./routes/team_history.route.js";
 import userHistoryRouter from "./routes/user_history.route.js";
 import applicationRouter from "./routes/application.route.js";
 
-dotenv.config({path: './.env'});
+dotenv.config();
 
 const app = express()
 const port = process.env.PORT || 8000;
+const FRONTEND_URL = process.env.FRONTEND_BASE_URL || 'https://www.bondedhub.in';
 
-app.use(cors({
-  origin: process.env.FRONTEND_BASE_URL,
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  methods:['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS', 'PATCH'],
-  credentials: true
-}));
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Check if the origin matches your frontend
+    if (origin === FRONTEND_URL) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked for origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS', 'PATCH'],
+};
+
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
