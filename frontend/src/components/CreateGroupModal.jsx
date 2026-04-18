@@ -19,7 +19,7 @@ const createTeamSchema = z.object({
 });
 
 const CreateGroupModal = () => {
-    const { register, handleSubmit, reset } = useForm({
+    const { register, handleSubmit, reset, formState: {errors} } = useForm({
         resolver: zodResolver(createTeamSchema),
     });
     const createTeamMutation = useCreateTeam();
@@ -97,6 +97,9 @@ const CreateGroupModal = () => {
                                 placeholder="Group's Name"
                                 {...register('name')}
                             />
+                            {errors.name && (
+                                <span className="text-error text-sm mt-1">{errors.name.message}</span>
+                            )}
                         </label>
                         <label className="form-control w-full mt-2">
                             <span className="label-text text-base-content/80">Description</span>
@@ -106,6 +109,9 @@ const CreateGroupModal = () => {
                                 placeholder="Group's Description"
                                 {...register('description')}
                             />
+                            {errors.description && (
+                                <span className="text-error text-sm mt-1">{errors.description.message}</span>
+                            )}
                         </label>
                         <label className="form-control w-full mt-2">
                             <span className="label-text text-base-content/80">Total Members</span>
@@ -115,6 +121,9 @@ const CreateGroupModal = () => {
                                 placeholder="0"
                                 {...register('totalMembers')}
                             />
+                            {errors.totalMembers && (
+                                <span className="text-error text-sm mt-1">{errors.totalMembers.message}</span>
+                            )}
                         </label>
                         <label className="form-control w-full mt-2">
                             <span className="label-text text-base-content/80">Tech Stack (comma separated)</span>
@@ -124,6 +133,9 @@ const CreateGroupModal = () => {
                                 placeholder="React, Node, MongoDB"
                                 {...register('techUsed')}
                             />
+                            {errors.techUsed && (
+                                <span className="text-error text-sm mt-1">{errors.techUsed.message}</span>
+                            )}
                         </label>
                         <div className="modal-action flex gap-2 justify-center mt-6">
                             <Button

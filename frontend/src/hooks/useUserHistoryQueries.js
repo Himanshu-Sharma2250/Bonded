@@ -35,7 +35,7 @@ export const useOtherUserHistory = (userId) => {
 export const useUserJoinTeam = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async () => await axiosInstance.post("/userHistory/user-joined-team"),
+        mutationFn: async (userId) => await axiosInstance.post(`/userHistory/user-joined-team/${userId}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['userHistory'] })
         }
@@ -65,7 +65,7 @@ export const useUserLeftTeam = () => {
 export const useUserKickedOutOfTeam = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (data) => await axiosInstance.post("/userHistory/user-kicked-out-team", data),
+        mutationFn: async ({name, data}) => await axiosInstance.post(`/userHistory/user-kicked-out-team/${name}`, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['userHistory'] })
         }

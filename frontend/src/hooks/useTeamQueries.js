@@ -26,7 +26,7 @@ export const useCreateTeam = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (teamData) => await axiosInstance.post("/team/create-team", teamData),
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['teams'] });
             queryClient.setQueriesData(['team', data.data.team._id], data.data.team);
         }

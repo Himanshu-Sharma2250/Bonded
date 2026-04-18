@@ -50,10 +50,11 @@ const ReceivedApplications = () => {
                 data: { memberName: application?.name },
             });
             
-            await userJoinTeamMutation.mutateAsync();
+            await userJoinTeamMutation.mutateAsync(application?.userId);
             toast.success('Application accepted');
         } catch (error) {
-            toast.error('Application accept failed');
+            toast.error(error.response?.data?.message || 'Application accept failed');
+            console.log("error accepting app: ", error);
         }
     };
 

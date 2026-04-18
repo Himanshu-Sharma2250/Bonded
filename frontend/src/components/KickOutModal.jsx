@@ -30,7 +30,7 @@ const KickOutModal = ({ teamId, memberId, memberName }) => {
                 teamId,
                 data: { memberName, reason: data.reason },
             });
-            await userKickedOutMutation.mutateAsync({ reason: data.reason });
+            await userKickedOutMutation.mutateAsync({name: memberName, data: { reason: data.reason }});
             toast.success('Member kicked out');
             closeModal();
         } catch (error) {
